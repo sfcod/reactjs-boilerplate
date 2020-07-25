@@ -1,0 +1,16 @@
+###> other ###
+.idea
+/.env
+env.js
+.cache
+.config
+.local
+.bash_history
+logs
+.selected_editor
+.nano
+.viminfo
+httpdocs
+node_modules
+build
+###< other ###

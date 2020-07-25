@@ -1,0 +1,13 @@
+@import 'variables';
+
+.layout {
+    background: linear-gradient($main-color, #011a1f);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1 0 auto;
+    background: #f3f8fa;
+}
