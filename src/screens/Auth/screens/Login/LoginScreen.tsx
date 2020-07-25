@@ -5,19 +5,15 @@ import classNames from 'classnames';
 import MainLayout from 'src/components/layout/MainLayout';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface StateProps {
-}
+export interface StateProps {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DispatchProps {
-}
+export interface DispatchProps {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface OwnProps {
-}
+export interface OwnProps {}
 
-export interface Props extends StateProps, DispatchProps, OwnProps {
-}
+export interface Props extends StateProps, DispatchProps, OwnProps {}
 
 type State = {};
 
@@ -35,14 +31,14 @@ class LoginScreen extends React.Component<Props, State> {
                                 <p className={classNames(styles.note)}>
                                     <em>
                                         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                                        Ipsum has been the industry's standard dummy text ever since the 1500s, when an
-                                        unknown printer took a galley of type and scrambled it to make a type specimen
-                                        book.
+                                        Ipsum has been the `${"industry's"}` standard dummy text ever since the 1500s,
+                                        when an unknown printer took a galley of type and scrambled it to make a type
+                                        specimen book.
                                     </em>
                                 </p>
                             </div>
                             <div className={classNames('col-lg-6')}>
-                                <LoginForm/>
+                                <LoginForm />
                             </div>
                         </div>
                     </div>
