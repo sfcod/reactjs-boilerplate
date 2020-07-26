@@ -10,10 +10,8 @@ import { ToastContainer } from 'react-toastify';
 import { appMount } from './store/actions/app-actions';
 
 function App(): React.ReactElement {
-    const dispatch = store.dispatch;
-
     useEffect(() => {
-        dispatch(appMount());
+        store.dispatch(appMount());
     }, []);
 
     return (

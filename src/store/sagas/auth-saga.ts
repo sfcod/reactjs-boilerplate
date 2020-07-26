@@ -1,14 +1,6 @@
-import { FormErrors, SubmissionError } from 'redux-form';
+import { SubmissionError } from 'redux-form';
 import { call, put, takeLatest } from 'redux-saga/effects';
-import {
-    failureType,
-    handleError,
-    requestType,
-    resolveApiCall,
-    ResolverApiFailure,
-    ResolverApiSuccess,
-    successType,
-} from 'src/services/api-handlers/api-resolver';
+import { failureType, handleError, requestType, successType } from 'src/services/api-handlers/api-resolver';
 import routes from '../../navigation/routes';
 import { AuthLoginAction, AuthLogoutAction } from '../actions/auth-actions';
 import { AuthActions } from '../constants';
