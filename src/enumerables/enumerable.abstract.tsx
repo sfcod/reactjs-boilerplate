@@ -47,6 +47,7 @@ export abstract class EnumerableAbstract {
             delete data[key];
         }
 
+        // eslint-disable-next-line
         Object.keys(data).map((key: any) => {
             result.push({
                 name: data[key],
