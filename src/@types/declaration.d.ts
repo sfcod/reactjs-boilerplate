@@ -8,8 +8,3 @@ declare module '*.css' {
 }
 declare module '*.jpg';
 declare module '*.png';
-
-declare module 'react-widgets-simple-number' {
-    const numberLocalizer: () => void;
-    export default numberLocalizer;
-}

@@ -3,7 +3,6 @@ import { DateTimePicker } from 'react-widgets';
 import { FilterProps } from './types';
 import moment from 'moment';
 import momentLocalizer from 'react-widgets-moment';
-import { DATE_FORMAT } from '../../../config/env';
 
 moment.locale('en');
 momentLocalizer();
@@ -18,7 +17,7 @@ function dateTimeFilter<T extends object = {}>(): React.FunctionComponent<Filter
             }
         };
 
-        return <DateTimePicker onChange={handleChange} time={false} format={DATE_FORMAT} />;
+        return <DateTimePicker onChange={handleChange} time={false} format="LLL" />;
     });
 }
 
