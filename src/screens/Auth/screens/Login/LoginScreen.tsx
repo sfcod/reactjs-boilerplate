@@ -15,9 +15,7 @@ export interface OwnProps {}
 
 export interface Props extends StateProps, DispatchProps, OwnProps {}
 
-type State = {};
-
-class LoginScreen extends React.Component<Props, State> {
+class LoginScreen extends React.Component<Props> {
     render() {
         return (
             <MainLayout>

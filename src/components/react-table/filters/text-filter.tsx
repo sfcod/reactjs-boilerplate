@@ -5,7 +5,7 @@ import { FilterProps } from './types';
 
 let timeoutInstance: any = null;
 
-function textFilter<T extends object = {}>(
+function textFilter<T extends Record<string, unknown>>(
     type: 'text' | 'number' = 'text',
     timeout = 500,
 ): React.FunctionComponent<FilterProps<T>> {

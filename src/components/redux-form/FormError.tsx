@@ -16,7 +16,7 @@ export interface FormErrorProps {
 /**
  * Form error component
  */
-export class FormError extends React.Component<FormErrorProps, {}> {
+export class FormError extends React.Component<FormErrorProps> {
     /**
      * Default props
      *

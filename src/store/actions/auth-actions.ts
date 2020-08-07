@@ -18,17 +18,17 @@ export interface AuthLoginAction {
 
 export interface AuthLogoutAction {
     type: typeof AuthActions.AUTH_LOGOUT;
-    payload: {};
+    payload: AnyObject;
 }
 
 export interface AuthCheckAction {
     type: typeof AuthActions.AUTH_CHECK;
-    payload: {};
+    payload: AnyObject;
 }
 
 export interface AuthSignResetAction {
     type: string;
-    payload: {};
+    payload: AnyObject;
 }
 
 export function authCheck(): AuthLogoutAction {

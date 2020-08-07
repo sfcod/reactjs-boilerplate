@@ -2,7 +2,7 @@ import { FormErrors } from 'redux-form';
 
 export function scrollToFirstError<T>(formName: string, offset = 50) {
     return (errors: FormErrors<T>) => {
-        const firstError = Object.keys(errors as object)[0];
+        const firstError = Object.keys(errors as AnyObject)[0];
 
         let element: HTMLElement;
         if (firstError === '_error') {

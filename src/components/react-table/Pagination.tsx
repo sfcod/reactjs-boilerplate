@@ -4,12 +4,12 @@ import { TableInstance } from 'react-table';
 import PageItem from './PageItem';
 import styles from './assets/pagination.module.scss';
 
-interface Props<T extends object = {}> {
+interface Props<T extends Record<string, unknown>> {
     table: TableInstance<T>;
     marginPagesDisplayed?: number;
 }
 
-function Pagination<T extends object = {}>({ table, marginPagesDisplayed = 2 }: Props<T>) {
+function Pagination<T extends Record<string, unknown>>({ table, marginPagesDisplayed = 2 }: Props<T>) {
     const {
         canPreviousPage,
         canNextPage,

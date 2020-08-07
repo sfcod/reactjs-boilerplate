@@ -5,8 +5,8 @@ export interface PaginationProps {
 }
 
 export interface QueryParams extends PaginationProps {
-    filters?: object;
-    sorting?: object;
+    filters?: AnyObject;
+    sorting?: AnyObject;
 }
 
 export type SortDirection = 'asc' | 'desc' | null;

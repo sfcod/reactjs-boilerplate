@@ -5,7 +5,7 @@ import { FilterProps } from './types';
 
 moment.locale('en');
 
-function dateFilter<T extends object = {}>(): React.FunctionComponent<FilterProps<T>> {
+function dateFilter<T extends Record<string, unknown>>(): React.FunctionComponent<FilterProps<T>> {
     return React.memo(({ column: { setFilter, filterValue } }: FilterProps<T>) => {
         const handleChange = (value: Date | undefined) => {
             if (value) {

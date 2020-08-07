@@ -8,8 +8,8 @@ import classNames from 'classnames';
  * Input props
  */
 export interface InputComponentProps extends InputHTMLAttributes<HTMLInputElement> {
-    inputStyle?: object | string;
-    inputErrorStyle?: object | string;
+    inputStyle?: AnyObject | string;
+    inputErrorStyle?: AnyObject | string;
     wrapperConfig?: FieldWrapperConfig;
     children?: ReactNode;
 }

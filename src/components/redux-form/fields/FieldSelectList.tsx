@@ -5,8 +5,8 @@ import { FieldWrapper, FieldWrapperConfig } from './FieldWrapper';
 import { ReactNode } from 'react';
 
 interface SelectListComponentProps {
-    data: object[];
-    disabled?: boolean | object[];
+    data: AnyObject[];
+    disabled?: boolean | AnyObject[];
     textField?: string;
     valueField?: string;
     busy?: boolean;

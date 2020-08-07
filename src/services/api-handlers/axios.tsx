@@ -20,23 +20,23 @@ class Axios {
     //     this.authorizationToken = '';
     // }
 
-    public get(endPoint: string, config: {} = {}): AxiosPromise {
+    public get(endPoint: string, config: AnyObject = {}): AxiosPromise {
         return axios.get(endPoint, this.addHeaders(config));
     }
 
-    public post(endPoint: string, params: object = {}, config: object = {}): AxiosPromise {
+    public post(endPoint: string, params: AnyObject = {}, config: AnyObject = {}): AxiosPromise {
         return axios.post(endPoint, params, this.addHeaders(config));
     }
 
-    public put(endPoint: string, params: object = {}, config: object = {}): AxiosPromise {
+    public put(endPoint: string, params: AnyObject = {}, config: AnyObject = {}): AxiosPromise {
         return axios.put(endPoint, params, this.addHeaders(config));
     }
 
-    public patch(endPoint: string, params: object = {}, config: object = {}): AxiosPromise {
+    public patch(endPoint: string, params: AnyObject = {}, config: AnyObject = {}): AxiosPromise {
         return axios.patch(endPoint, params, this.addHeaders(config));
     }
 
-    public delete(endPoint: string, config: object = {}): AxiosPromise {
+    public delete(endPoint: string, config: AnyObject = {}): AxiosPromise {
         return axios.delete(endPoint, this.addHeaders(config));
     }
 
@@ -52,8 +52,8 @@ class Axios {
         return axios(resultConfig);
     }
 
-    private addHeaders(userConfig: any): {} {
-        let requestHeaders: object = {
+    private addHeaders(userConfig: any): AnyObject {
+        let requestHeaders: AnyObject = {
             // Some custom request headers
         };
 

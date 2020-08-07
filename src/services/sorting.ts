@@ -1,7 +1,7 @@
 import lodash from 'lodash';
 
 class Sorting {
-    public makeOrder(sorting?: object): string | null {
+    public makeOrder(sorting?: AnyObject): string | null {
         if (!sorting) {
             return null;
         }

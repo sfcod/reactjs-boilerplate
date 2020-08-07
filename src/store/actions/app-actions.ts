@@ -2,7 +2,7 @@ import { AppActions } from 'src/store/constants';
 
 export interface AppMountAction {
     type: string;
-    payload: {};
+    payload: AnyObject;
 }
 
 export function appMount(): AppMountAction {

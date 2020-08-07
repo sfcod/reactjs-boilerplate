@@ -7,7 +7,7 @@ interface Props {
     disabled?: boolean;
     type?: 'submit' | 'reset' | 'button';
     onClick?: () => void;
-    className?: object | string;
+    className?: AnyObject | string;
 }
 
 const Button: React.FunctionComponent<Props> = ({ children, type, onClick, className, disabled }: Props) => (

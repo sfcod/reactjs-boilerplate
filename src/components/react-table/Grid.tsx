@@ -17,9 +17,11 @@ import styles from './assets/grid.module.scss';
 import textFilter from './filters/text-filter';
 import useMemoCompare from './hooks/memo-compare';
 
-export type Column<T extends object = {}> = ColumnType<T> & UseSortByColumnOptions<T> & UseFiltersColumnOptions<T>;
+export type Column<T extends Record<string, unknown>> = ColumnType<T> &
+    UseSortByColumnOptions<T> &
+    UseFiltersColumnOptions<T>;
 
-interface Props<T extends object = {}> {
+interface Props<T extends Record<string, unknown>> {
     columns: Column<T>[];
     data: Paginated<T, PaginatedBaseMeta>;
     getData: (params: QueryParams) => void;
@@ -29,7 +31,7 @@ const defaultColumn = {
     Filter: textFilter(),
 };
 
-function Grid<T extends object = {}>(props: Props<T>): ReactElement {
+function Grid<T extends Record<string, unknown>>(props: Props<T>): ReactElement {
     const { columns, data, getData } = props;
     const instance = useTable<T>(
         {

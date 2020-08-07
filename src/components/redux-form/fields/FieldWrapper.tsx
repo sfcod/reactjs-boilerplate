@@ -5,11 +5,11 @@ import styles from '../assets/wrapper-input.module.scss';
 import classNames from 'classnames';
 
 interface ClassesList {
-    inputContainer?: object | string;
-    inputWrapper?: object | string;
-    label?: object | string;
-    errorRow?: object | string;
-    errorMessage?: object | string;
+    inputContainer?: AnyObject | string;
+    inputWrapper?: AnyObject | string;
+    label?: AnyObject | string;
+    errorRow?: AnyObject | string;
+    errorMessage?: AnyObject | string;
 }
 
 export interface FieldWrapperConfig {

@@ -15,7 +15,7 @@ export interface ListTypeMeta<T, M extends PaginatedBaseMeta> {
 
 export type CallbackType<T, M> = ListType<T> | ListTypeMeta<T, M> | AxiosResponse<ListType<T>>;
 
-export interface Paginated<T, M extends PaginatedBaseMeta = {}> {
+export interface Paginated<T, M extends PaginatedBaseMeta = Record<string, unknown>> {
     list: ListType<T>;
     page: number;
     meta?: M;
@@ -29,7 +29,7 @@ class Pagination {
 
     private infinity = false;
 
-    public *resolveApiCall<T, M extends PaginatedBaseMeta = {}>(
+    public *resolveApiCall<T, M extends PaginatedBaseMeta = Record<string, any>>(
         action: ResolverApi,
         nextPage: number,
         oldData: Paginated<T, M>,
@@ -38,12 +38,12 @@ class Pagination {
         by = 'id',
     ): any {
         if (this.hasNext(nextPage, oldData.totalPages, oldData.list.length)) {
-            return yield resolveApiCall(action, () => this.next<T, M>(nextPage, oldData, callback, reverse, by));
+            return yield resolveApiCall(action, () => this.next<T>(nextPage, oldData, callback, reverse, by));
             // return yield resolveApiCall(action, () => this.next<T, M>(nextPage, oldData, callback));
         }
     }
 
-    public next = async <T, M extends PaginatedBaseMeta = {}>(
+    public next = async <T, M extends PaginatedBaseMeta = Record<string, any>>(
         nextPage: number,
         oldData: Paginated<T, M>,
         callback: () => Promise<CallbackType<T, M>>,
@@ -111,7 +111,7 @@ class Pagination {
         return currentItems >= this.getPageSize() && totalPages >= nextPage;
     };
 
-    public merge = <T, M extends PaginatedBaseMeta = {}>(
+    public merge = <T, M extends PaginatedBaseMeta = Record<string, unknown>>(
         oldData: Paginated<T, M>,
         newData: Paginated<T, M>,
         reverse = false,
@@ -130,7 +130,9 @@ class Pagination {
         };
     };
 
-    public reset = <T, M extends PaginatedBaseMeta = {}>(data: Paginated<T, M>): Paginated<T, M> => {
+    public reset = <T, M extends PaginatedBaseMeta = Record<string, unknown>>(
+        data: Paginated<T, M>,
+    ): Paginated<T, M> => {
         const newMeta = { ...data.meta, updatedAt: 0 } as any;
 
         return { ...data, meta: newMeta };

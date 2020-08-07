@@ -7,7 +7,7 @@ import classNames from 'classnames';
  */
 interface Props {
     error?: string;
-    style?: {};
+    style?: AnyObject;
 }
 
 /**

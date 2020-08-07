@@ -8,8 +8,8 @@ import { ReactNode } from 'react';
  * TextArea props
  */
 export interface TextAreaComponentProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-    inputStyle?: object | string;
-    inputErrorStyle?: object | string;
+    inputStyle?: AnyObject | string;
+    inputErrorStyle?: AnyObject | string;
     wrapperConfig?: FieldWrapperConfig;
     children?: ReactNode;
 }

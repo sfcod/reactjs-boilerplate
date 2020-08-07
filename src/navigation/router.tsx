@@ -1,7 +1,7 @@
 import lodash from 'lodash';
 
 class Router {
-    public static generate(route: string, params: object = {}): string {
+    public static generate(route: string, params: AnyObject = {}): string {
         const urlSearchParams = new URLSearchParams();
 
         lodash.forEach(params, (value: any, key: string) => {
