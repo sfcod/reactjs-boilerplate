@@ -2,7 +2,12 @@ import { SubmissionError } from 'redux-form';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { failureType, handleError, requestType, successType } from 'src/services/api-handlers/api-resolver';
 import routes from '../../navigation/routes';
-import { AuthLoginAction, AuthLogoutAction } from '../actions/auth-actions';
+import {
+    AuthLoginAction,
+    AuthLogoutAction, AuthResetPasswordRequestAction,
+    AuthUpdatePasswordAction,
+    AuthValidateRecoveryCodeAction,
+} from '../actions/auth-actions';
 import { AuthActions } from '../constants';
 import UserAuthService from '../../services/user-auth';
 import { push } from 'connected-react-router';
@@ -212,11 +217,135 @@ function* handleUserLogout(action: AuthLogoutAction): Iterable<any> {
 //     );
 // }
 
+function* handleRecoveryPasswordRequest(action: AuthResetPasswordRequestAction): Iterable<any> {
+    const {
+        type,
+        payload: { data, callbacks },
+        payload,
+    } = action;
+    yield put({ type: requestType(type) });
+
+    try {
+        const result: any = yield AuthApi.resetPasswordRequest(data)
+            .catch(({ response }) => {
+                return response;
+            })
+            .then((response) => {
+                if (response.status < 200 || response.status >= 300) {
+                    throw new Error('Unknown email address');
+                }
+
+                return response.data;
+            });
+
+        yield put({
+            type: successType(type),
+            payload: result,
+            sagaPayload: payload,
+        });
+
+        yield call(callbacks.resolve);
+    } catch (error) {
+        yield put({
+            type: failureType(type),
+            error,
+            sagaPayload: payload,
+        });
+
+        yield call(
+            callbacks.reject,
+            new SubmissionError({
+                _error: error.message ?? 'Incorrect response',
+            }),
+        );
+    }
+}
+
+function* handleValidateRecoveryCode(action: AuthValidateRecoveryCodeAction): Iterable<any> {
+    const {
+        type,
+        payload: { data, callbacks },
+        payload,
+    } = action;
+    yield put({ type: requestType(type) });
+
+    try {
+        const result: any = yield AuthApi.validateResetPasswordToken(data)
+            .catch(({ response }) => {
+                return response;
+            })
+            .then((response) => {
+                if (response.status < 200 || response.status >= 300) {
+                    throw new Error('Invalid code');
+                }
+
+                return response.data;
+            });
+
+        yield UserAuthService.login(result.token);
+
+        yield put({
+            type: successType(type),
+            payload: result,
+            sagaPayload: payload,
+        });
+
+        yield call(callbacks.resolve);
+    } catch (error) {
+        yield put({
+            type: failureType(type),
+            error,
+            sagaPayload: payload,
+        });
+
+        yield call(
+            callbacks.reject,
+            new SubmissionError({
+                _error: error.message ?? 'Incorrect response',
+            }),
+        );
+    }
+}
+
+function* handleUpdatePassword(action: AuthUpdatePasswordAction): Iterable<any> {
+    const {
+        type,
+        payload: { data, callbacks },
+        payload,
+    } = action;
+    yield put({ type: requestType(type) });
+
+    try {
+        const result: any = yield AuthApi.updatePassword(data);
+
+        yield put({
+            type: successType(type),
+            payload: result,
+            sagaPayload: payload,
+        });
+
+        yield call(callbacks.resolve);
+    } catch (error) {
+        yield put({
+            type: failureType(type),
+            error,
+            sagaPayload: payload,
+        });
+
+        yield call(
+            callbacks.reject,
+            new SubmissionError({
+                _error: error.message ?? 'Incorrect response',
+            }),
+        );
+    }
+}
+
 export default function* () {
     yield takeLatest(AuthActions.AUTH_LOGIN, handleLogin);
     // yield takeLatest(AuthActions.AUTH_CHECK, handleAuthCheck);
     yield takeLatest(AuthActions.AUTH_LOGOUT, handleUserLogout);
-    // yield takeLatest(AuthActions.AUTH_REQUEST_PASSWORD_RESET, handleRequestPasswordReset);
-    // yield takeLatest(AuthActions.AUTH_UPDATE_PASSWORD, handleUpdatePassword);
-    // yield takeLatest(AuthActions.AUTH_CHECK_RESET_CODE, handleCheckResetCode);
+    yield takeLatest(AuthActions.AUTH_REQUEST_PASSWORD_RESET, handleRecoveryPasswordRequest);
+    yield takeLatest(AuthActions.AUTH_CHECK_RESET_CODE, handleValidateRecoveryCode);
+    yield takeLatest(AuthActions.AUTH_UPDATE_PASSWORD, handleUpdatePassword);
 }

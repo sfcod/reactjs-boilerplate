@@ -2,6 +2,9 @@ import { Dispatch } from 'redux';
 import { ResolverApi, ResolverApiFailure, ResolverApiSuccess } from 'src/services/api-handlers/api-resolver';
 import { AuthActions } from '../constants';
 import { LoginFormData as CustomerLoginFormData } from '../../screens/Auth/screens/Login/components/LoginForm';
+import { ResetPasswordFormData } from '../../screens/Auth/screens/PasswordRecovery/components/ResetPasswordForm';
+import { ValidateCodeFormData } from '../../screens/Auth/screens/PasswordRecovery/components/ValidateCodeForm';
+import { RecoveryRequestFormData } from '../../screens/Auth/screens/PasswordRecovery/components/RecoveryRequestForm';
 
 export interface SagaPromise<T> {
     resolve: (value?: T | PromiseLike<T>) => void;
@@ -61,9 +64,90 @@ export const asyncAuthCustomerLogin = (data: CustomerLoginFormData, dispatch: Di
     });
 };
 
+export interface AuthResetPasswordRequestAction {
+    type: typeof AuthActions.AUTH_REQUEST_PASSWORD_RESET;
+    payload: {
+        data: RecoveryRequestFormData;
+        callbacks: SagaPromise<any>;
+    };
+}
+
+export function authResetPasswordRequest(
+    data: RecoveryRequestFormData,
+    callbacks: SagaPromise<any>,
+): AuthResetPasswordRequestAction {
+    return {
+        type: AuthActions.AUTH_REQUEST_PASSWORD_RESET,
+        payload: {
+            data,
+            callbacks,
+        },
+    };
+}
+
+export const asyncAuthResetPasswordRequest = (data: RecoveryRequestFormData, dispatch: Dispatch): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        dispatch(authResetPasswordRequest(data, { resolve, reject }));
+    });
+};
+
+export interface AuthValidateRecoveryCodeAction {
+    type: typeof AuthActions.AUTH_CHECK_RESET_CODE;
+    payload: {
+        data: ValidateCodeFormData;
+        callbacks: SagaPromise<any>;
+    };
+}
+
+export function authValidateRecoveryCode(
+    data: ValidateCodeFormData,
+    callbacks: SagaPromise<any>,
+): AuthValidateRecoveryCodeAction {
+    return {
+        type: AuthActions.AUTH_CHECK_RESET_CODE,
+        payload: {
+            data,
+            callbacks,
+        },
+    };
+}
+
+export const asyncAuthValidateRecoveryCode = (data: ValidateCodeFormData, dispatch: Dispatch): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        dispatch(authValidateRecoveryCode(data, { resolve, reject }));
+    });
+};
+
+export interface AuthUpdatePasswordAction {
+    type: typeof AuthActions.AUTH_UPDATE_PASSWORD;
+    payload: {
+        data: ResetPasswordFormData;
+        callbacks: SagaPromise<any>;
+    };
+}
+
+export function authUpdatePassword(data: ResetPasswordFormData, callbacks: SagaPromise<any>): AuthUpdatePasswordAction {
+    return {
+        type: AuthActions.AUTH_UPDATE_PASSWORD,
+        payload: {
+            data,
+            callbacks,
+        },
+    };
+}
+
+export const asyncAuthUpdatePassword = (data: ResetPasswordFormData, dispatch: Dispatch): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        dispatch(authUpdatePassword(data, { resolve, reject }));
+    });
+};
+
 export type Actions =
     | AuthLoginAction
     | AuthLogoutAction
     | AuthCheckAction
+    | AuthResetPasswordRequestAction
+    | AuthValidateRecoveryCodeAction
+    | AuthUpdatePasswordAction
     | (ResolverApi & ResolverApiFailure)
     | (ResolverApi & ResolverApiSuccess);

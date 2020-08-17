@@ -1,40 +1,17 @@
 import { Route } from 'react-router';
-// import ForgotPassword from '../../screens/auth/screens/forgot-password';
-// import ValidateToken from '../../screens/auth/screens/validate-token';
-// import ResetPassword from '../../screens/auth/screens/reset-password';
 import React from 'react';
 import routes from '../routes';
 import LogoutScreen from '../../screens/Auth/screens/Logout';
+import PasswordRecoveryScreen from '../../screens/Auth/screens/PasswordRecovery';
 
 const authRoutes = [
     <Route exact key={routes.LOGOUT} path={routes.LOGOUT} component={LogoutScreen} />,
-    // <Route
-    //     exact
-    //     path="/forgot-password"
-    //     render={() => (
-    //         <NotAuthenticated>
-    //             <ForgotPassword />
-    //         </NotAuthenticated>
-    //     )}
-    // />,
-    // <Route
-    //     exact
-    //     path="/forgot-password/validate-token"
-    //     render={() => (
-    //         <NotAuthenticated>
-    //             <ValidateToken />
-    //         </NotAuthenticated>
-    //     )}
-    // />,
-    // <Route
-    //     exact
-    //     path="/reset-password"
-    //     render={() => (
-    //         <NotAuthenticated>
-    //             <ResetPassword />
-    //         </NotAuthenticated>
-    //     )}
-    // />,
+    <Route
+        exact
+        key={routes.PASSWORD_RECOVERY}
+        path={routes.PASSWORD_RECOVERY}
+        component={PasswordRecoveryScreen}
+    />,
 ];
 
 export default authRoutes;
