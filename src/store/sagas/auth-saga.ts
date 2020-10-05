@@ -4,7 +4,8 @@ import { failureType, handleError, requestType, successType } from 'src/services
 import routes from '../../navigation/routes';
 import {
     AuthLoginAction,
-    AuthLogoutAction, AuthResetPasswordRequestAction,
+    AuthLogoutAction,
+    AuthResetPasswordRequestAction,
     AuthUpdatePasswordAction,
     AuthValidateRecoveryCodeAction,
 } from '../actions/auth-actions';

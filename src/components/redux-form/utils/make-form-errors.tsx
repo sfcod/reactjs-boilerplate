@@ -5,32 +5,29 @@ import isArray from 'lodash/isArray';
  * Error from server
  */
 interface Error<T> {
-    property: keyof T;
-    constraints: { [key: string]: string };
+    detail: string;
+    title: string;
+    violations: ErrorItem<T>[];
 }
 
-/**
- * Error from server
- */
-interface ErrorMessage {
-    errorMessage: string;
+interface ErrorItem<T> {
+    propertyPath: keyof T;
+    message: string;
 }
 
 /**
  * Apply common errors to form fields
  */
-export function makeFormErrors<T>(errors: Error<T>[] | ErrorMessage): FormErrors<T> {
+export function makeFormErrors<T>(errors: Error<T>): FormErrors<T> {
     const result: FormErrors<T> | any = {};
 
-    if (isArray(errors)) {
-        errors.forEach((error: Error<T>) => {
-            const firstError = Object.keys(error.constraints)[0];
-
-            result[error.property] = error.constraints[firstError];
+    if (isArray(errors.violations)) {
+        errors.violations.forEach((error: ErrorItem<T>) => {
+            result[error.propertyPath] = error.message;
         });
     }
-    if ((errors as ErrorMessage).errorMessage) {
-        result['_error'] = (errors as ErrorMessage).errorMessage;
+    if (errors.title) {
+        result['_error'] = errors.title;
     }
 
     return result;

@@ -1,7 +1,6 @@
 import React, { ReactElement } from 'react';
 import styles from './assets/password-recovery-screen.module.scss';
 import classNames from 'classnames';
-import { WithTranslation, withTranslation } from 'react-i18next';
 import RecoveryRequestForm from './components/RecoveryRequestForm';
 import ValidateCodeForm from './components/ValidateCodeForm';
 import ResetPasswordForm from './components/ResetPasswordForm';
@@ -20,7 +19,7 @@ interface State {
     step: number;
 }
 
-class PasswordRecoveryScreen extends React.Component<Props & WithTranslation & RouteComponentProps, State> {
+class PasswordRecoveryScreen extends React.Component<Props & RouteComponentProps, State> {
     state: State = {
         step: 1,
     };
@@ -46,4 +45,4 @@ class PasswordRecoveryScreen extends React.Component<Props & WithTranslation & R
     };
 }
 
-export default withRouter(withTranslation()(PasswordRecoveryScreen));
+export default withRouter(PasswordRecoveryScreen);

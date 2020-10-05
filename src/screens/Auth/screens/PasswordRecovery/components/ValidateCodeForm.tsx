@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react';
 import { InjectedFormProps, reduxForm } from 'redux-form';
-import { FormAlertError } from '../../../../../components/redux-form/FormAlertError';
+import { SummaryError } from '../../../../../components/redux-form/SummaryError';
 import { FieldInput } from '../../../../../components/redux-form/fields/FieldInput';
 import classNames from 'classnames';
 import styles from '../assets/validate-code-form.module.scss';
-import { useTranslation } from 'react-i18next';
 import { required, Validators } from '../../../../../components/redux-form/utils/validators';
 import { asyncAuthValidateRecoveryCode } from '../../../../../store/actions/auth-actions';
 
@@ -21,7 +20,6 @@ const ValidateCodeForm: React.FunctionComponent<InjectedProps & ValidateCodeForm
     submitting,
     error,
 }: InjectedProps & ValidateCodeFormProps) => {
-    const { t } = useTranslation();
     const validators: Validators<ValidateCodeFormData> = useMemo(
         () => ({
             token: [required()],
@@ -32,21 +30,21 @@ const ValidateCodeForm: React.FunctionComponent<InjectedProps & ValidateCodeForm
     return (
         <form onSubmit={handleSubmit} className={classNames(styles.form)}>
             <div>
-                <h3 className={classNames('text-center', 'mb-5')}>{t('Forgot your password?')}</h3>
-                <h4 className={classNames('text-center')}>{t('Enter the verification code from your mailbox:')}</h4>
-                <FormAlertError error={error} />
+                <h3 className={classNames('text-center', 'mb-5')}>{'Forgot your password?'}</h3>
+                <h4 className={classNames('text-center')}>{'Enter the verification code from your mailbox:'}</h4>
+                <SummaryError error={error} />
                 <FieldInput
                     name="token"
                     type="text"
                     validate={validators.token}
                     wrapperConfig={{
-                        label: t('Code'),
+                        label: 'Code',
                     }}
                 />
             </div>
             <div className={classNames('text-center')}>
                 <button type="submit" className={classNames('btn', 'btn-primary', 'text-uppercase', 'w-100')}>
-                    {submitting ? <span className={classNames('spinner-border')} /> : t('Confirm')}
+                    {submitting ? <span className={classNames('spinner-border')} /> : 'Confirm'}
                 </button>
             </div>
         </form>

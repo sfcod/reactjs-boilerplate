@@ -1,13 +1,11 @@
 import React, { useMemo } from 'react';
 import { FormErrors, InjectedFormProps, reduxForm } from 'redux-form';
-import { FormAlertError } from '../../../../../components/redux-form/FormAlertError';
 import classNames from 'classnames';
 import styles from '../assets/reset-password-form.module.scss';
-import { useTranslation } from 'react-i18next';
-import { required, Validators } from '../../../../../components/redux-form/utils/validators';
-import { FieldCodeInput } from '../../../../../components/redux-form/fields/FieldCodeInput';
-import i18next from 'i18next';
-import { asyncAuthUpdatePassword } from '../../../../../store/actions/auth-actions';
+import { required, Validators } from 'src/components/redux-form/utils/validators';
+import { asyncAuthUpdatePassword } from 'src/store/actions/auth-actions';
+import { SummaryError } from 'src/components/redux-form/SummaryError';
+import { FieldInput } from 'src/components/redux-form/fields/FieldInput';
 
 export interface ResetPasswordFormData {
     password: string;
@@ -23,7 +21,6 @@ const ResetPasswordForm: React.FunctionComponent<InjectedProps & ResetPasswordFo
     submitting,
     error,
 }: InjectedProps & ResetPasswordFormProps) => {
-    const { t } = useTranslation();
     const validators: Validators<ResetPasswordFormData> = useMemo(
         () => ({
             password: [required()],
@@ -35,37 +32,29 @@ const ResetPasswordForm: React.FunctionComponent<InjectedProps & ResetPasswordFo
     return (
         <form onSubmit={handleSubmit} className={classNames(styles.form)}>
             <div>
-                <h3 className={classNames('text-center', 'mb-5')}>{t('Forgot your password?')}</h3>
-                <h4 className={classNames('text-center')}>{t('Enter your new PIN:')}</h4>
-                <FormAlertError error={error} />
-                <FieldCodeInput
+                <h3 className={classNames('text-center', 'mb-5')}>{'Forgot your password?'}</h3>
+                <h4 className={classNames('text-center')}>{'Enter your new PIN:'}</h4>
+                <SummaryError error={error} />
+                <FieldInput
                     name="password"
-                    fields={6}
                     type="password"
-                    mode="numeric"
                     validate={validators.password}
-                    filterChars={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']}
-                    filterCharsIsWhitelist={true}
                     wrapperConfig={{
-                        label: t('PIN'),
+                        label: 'Password',
                     }}
                 />
-                <FieldCodeInput
+                <FieldInput
                     name="passwordRepeat"
-                    fields={6}
                     type="password"
-                    mode="numeric"
                     validate={validators.passwordRepeat}
-                    filterChars={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']}
-                    filterCharsIsWhitelist={true}
                     wrapperConfig={{
-                        label: t('PIN Confirmation'),
+                        label: 'PIN Confirmation',
                     }}
                 />
             </div>
             <div className={classNames('text-center')}>
                 <button type="submit" className={classNames('btn', 'btn-primary', 'text-uppercase', 'w-100')}>
-                    {submitting ? <span className={classNames('spinner-border')} /> : t('Confirm')}
+                    {submitting ? <span className={classNames('spinner-border')} /> : 'Confirm'}
                 </button>
             </div>
         </form>
@@ -78,7 +67,7 @@ export default reduxForm<ResetPasswordFormData, ResetPasswordFormProps>({
         const errors: FormErrors<ResetPasswordFormData> = {};
 
         if (values.passwordRepeat && values.password !== values.passwordRepeat) {
-            errors.passwordRepeat = i18next.t('PIN must match');
+            errors.passwordRepeat = 'PIN must match';
         }
 
         return errors;
