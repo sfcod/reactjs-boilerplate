@@ -19,7 +19,9 @@ export interface Paginated<T, M extends PaginatedBaseMeta = Record<string, unkno
     list: ListType<T>;
     page: number;
     meta?: M;
+    pageSize?: number;
     totalPages?: number;
+    totalCount?: number;
 }
 
 class Pagination {
@@ -31,15 +33,14 @@ class Pagination {
 
     public *resolveApiCall<T, M extends PaginatedBaseMeta = Record<string, any>>(
         action: ResolverApi,
-        nextPage: number,
+        nextPage = 1,
         oldData: Paginated<T, M>,
         callback: () => Promise<CallbackType<T, M>>,
         reverse = false,
         by = 'id',
     ): any {
-        if (this.hasNext(nextPage, oldData.totalPages, oldData.list.length)) {
+        if (this.hasNext(nextPage, oldData.totalPages)) {
             return yield resolveApiCall(action, () => this.next<T>(nextPage, oldData, callback, reverse, by));
-            // return yield resolveApiCall(action, () => this.next<T, M>(nextPage, oldData, callback));
         }
     }
 
@@ -50,65 +51,65 @@ class Pagination {
         reverse = false,
         by = 'id',
     ): Promise<Paginated<T, M>> => {
-        let totalPages = oldData.totalPages || -1;
-        // let response: Paginated<T, M>;
-        let list: ListType<T>;
-        let meta: M = {} as M;
+        const list: ListType<T> = [];
+        const newData = {
+            list: list,
+            meta: {},
+            page: nextPage,
+            totalPages: oldData.totalPages || -1,
+            totalCount: oldData.totalCount || -1,
+        } as Paginated<T, M>;
 
         if (nextPage <= 0) {
             throw new Error('Next page should be lg then "0"');
         }
-        if (totalPages === -1 || totalPages >= nextPage) {
+        if (newData.totalPages === undefined || newData.totalPages === -1 || newData.totalPages >= nextPage) {
             const result: CallbackType<T, M> = await callback();
 
             if (result.hasOwnProperty('data')) {
-                list = (result as ListTypeMeta<T, M>).data;
-                meta = (result as ListTypeMeta<T, M>).meta || {};
+                newData.list = (result as ListTypeMeta<T, M>).data;
+                newData.meta = (result as ListTypeMeta<T, M>).meta || {};
             } else {
-                list = result as ListType<T>;
+                newData.list = result as ListType<T>;
             }
 
             if (result.hasOwnProperty('headers')) {
                 const headers = (result as AxiosResponse<ListType<T>>).headers;
 
+                if (headers['x-per-page']) {
+                    // this.pageSize = parseInt(headers['x-per-page'], 10);
+                    newData.pageSize = parseInt(headers['x-per-page'], 10);
+                }
+
                 if (headers['x-page-count']) {
-                    totalPages = parseInt(headers['x-page-count'], 10);
+                    newData.totalPages = parseInt(headers['x-page-count'], 10);
+                }
+
+                if (headers['x-total-count']) {
+                    newData.totalCount = parseInt(headers['x-total-count'], 10);
                 }
             }
 
-            meta.updatedAt = Date.now();
+            if (newData.meta) {
+                newData.meta.updatedAt = Date.now();
+            }
 
             if (!this.infinity || nextPage === 1) {
-                return {
-                    list,
-                    meta,
-                    page: nextPage,
-                    totalPages,
-                } as Paginated<T, M>;
+                return newData;
             } else {
-                return this.merge<T, M>(
-                    oldData,
-                    {
-                        list,
-                        meta,
-                        page: nextPage,
-                        totalPages,
-                    },
-                    reverse,
-                    by,
-                );
+                return this.merge<T, M>(oldData, newData, reverse, by);
             }
         }
 
         return oldData;
     };
 
-    public hasNext = (nextPage: number, totalPages = -1, currentItems = 0): boolean => {
+    public hasNext = (nextPage: number, totalPages = -1): boolean => {
         if (nextPage === 1 || totalPages === -1) {
             return true;
         }
 
-        return currentItems >= this.getPageSize() && totalPages >= nextPage;
+        return totalPages >= nextPage;
     };
 
     public merge = <T, M extends PaginatedBaseMeta = Record<string, unknown>>(
@@ -123,10 +124,8 @@ class Pagination {
         );
 
         return {
+            ...newData,
             list,
-            page: newData.page,
-            meta: newData.meta,
-            totalPages: newData.totalPages,
         };
     };
 
@@ -151,15 +150,15 @@ class Pagination {
         return (update && update(data)) || false;
     };
 
-    public getPageSize = (): number => {
-        return this.pageSize;
-    };
+    // public getPageSize = (): number => {
+    //     return this.pageSize;
+    // };
 
-    public setPageSize = (value: number): Pagination => {
-        this.pageSize = value;
-
-        return this;
-    };
+    // public setPageSize = (value: number): Pagination => {
+    //     this.pageSize = value;
+    //
+    //     return this;
+    // };
 
     public getInfinity = (): boolean => {
         return this.infinity;
