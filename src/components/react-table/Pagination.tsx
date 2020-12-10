@@ -20,8 +20,14 @@ function Pagination<T extends Record<string, unknown>>({ table, marginPagesDispl
         state: { pageIndex },
     } = table as any;
     const currentPage = pageIndex + 1;
+
+    let pageDiff = pageCount - currentPage;
+    if (pageDiff < 0) {
+        pageDiff = 0;
+        previousPage();
+    }
     const pagesBefore = Array.from(Array(pageIndex), (value: any, index: number) => index);
-    const pagesAfter = Array.from(Array(pageCount - currentPage), (value: any, index: number) => index + currentPage);
+    const pagesAfter = Array.from(Array(pageDiff), (value: any, index: number) => index + currentPage);
     const pagesRangeDisplayed = marginPagesDisplayed * 2 + 1;
 
     return (
