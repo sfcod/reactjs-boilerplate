@@ -1,4 +1,4 @@
-import { applyMiddleware, createStore } from 'redux';
+import { applyMiddleware, createStore, Store } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 import { rootReducer, StoreState } from './reducers';
@@ -6,7 +6,7 @@ import rootSaga from './sagas';
 import { routerMiddleware } from 'connected-react-router';
 import history from '../navigation/history';
 
-export function configureStore(initialState?: Partial<StoreState>) {
+export function configureStore(initialState?: Partial<StoreState>): Store<StoreState> {
     // Create saga middleware
     // const sagaMonitor = Reactotron.createSagaMonitor();
     const sagaMiddleware = createSagaMiddleware();

@@ -33,6 +33,7 @@ class ErrorHandler {
         this.handleCallback(callback);
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public handle401Error = (result: ResolverApiFailure, callback?: () => void): void => {
         console.info('ErrorHandler - handle401Error', result);
     };

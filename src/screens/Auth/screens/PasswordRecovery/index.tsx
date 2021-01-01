@@ -4,6 +4,7 @@ import { StoreState } from '../../../../store/reducers';
 import { Dispatch } from 'redux';
 import { appRedirectToDefault } from 'src/store/actions/app-actions';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function mapStateToProps(state: StoreState): StateProps {
     return {};
 }

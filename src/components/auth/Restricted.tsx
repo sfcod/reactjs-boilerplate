@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import securityService from '../../security/security';
 import NoMatch from 'src/screens/NoMatch';
 
-const Restricted = ({
+const Restricted: any = ({
     children,
     authParams,
     redirectTo,

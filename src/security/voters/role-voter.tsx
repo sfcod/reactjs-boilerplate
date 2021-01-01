@@ -2,11 +2,13 @@ import { Voter } from '../voter.interface';
 import user from '../../services/user-auth';
 
 class RoleVoter implements Voter {
-    vote(action: string, subject: any): boolean {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    vote(action: string, subject: AnyObject): boolean {
         return user.isLoggedIn() && user.getRoles().includes(action);
     }
 
-    supports(action: string, subject: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    supports(action: string, subject: AnyObject): boolean {
         return -1 !== action.indexOf('ROLE_');
     }
 }

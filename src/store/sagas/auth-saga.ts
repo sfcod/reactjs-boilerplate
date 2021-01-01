@@ -139,6 +139,7 @@ function* handleRecoveryPasswordRequest(action: AuthResetPasswordRequestAction):
     yield resolveApiCall(
         action,
         () => AuthApi.resetPasswordRequest(data),
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         function* (data: ResolverApiSuccess) {
             yield call(callbacks.resolve);
         },
@@ -280,6 +281,7 @@ function* handleUpdatePassword(action: AuthUpdatePasswordAction): Iterable<any> 
     yield resolveApiCall(
         action,
         () => AuthApi.updatePassword(data),
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         function* (data: ResolverApiSuccess) {
             // const result = data.payload;
 
@@ -328,7 +330,7 @@ function* handleUpdatePassword(action: AuthUpdatePasswordAction): Iterable<any> 
     // }
 }
 
-export default function* () {
+export default function* (): Generator {
     yield takeLatest(AuthActions.AUTH_LOGIN, handleLogin);
     // yield takeLatest(AuthActions.AUTH_CHECK, handleAuthCheck);
     yield takeLatest(AuthActions.AUTH_LOGOUT, handleUserLogout);

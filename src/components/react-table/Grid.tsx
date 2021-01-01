@@ -116,10 +116,12 @@ function Grid<T extends Record<string, unknown>>(props: Props<T>): ReactElement 
                     {data.list.length > 0 ? (
                         rows.map((row, i) => {
                             prepareRow(row);
+                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
                             const { key, ...rest } = row.getRowProps();
                             return (
                                 <tr key={i} {...rest}>
                                     {row.cells.map((cell, i: number) => {
+                                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                         const { key, ...rest } = cell.getCellProps();
                                         return (
                                             <td key={i} {...rest}>

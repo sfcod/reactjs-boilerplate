@@ -30,6 +30,7 @@ class CookieStorage implements Storage {
         return '';
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     key(index: number): string | null {
         throw Error('Not supported.');
     }

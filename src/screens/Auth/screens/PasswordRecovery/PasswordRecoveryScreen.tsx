@@ -7,18 +7,15 @@ import ResetPasswordForm from './components/UpdatePasswordForm';
 import { RouteComponentProps, withRouter } from 'react-router';
 import MainLayout from '../../../../components/layout/MainLayout';
 
-export interface StateProps {
-}
+export interface StateProps {}
 
 export interface DispatchProps {
     redirectToDefault: () => void;
 }
 
-export interface OwnProps {
-}
+export interface OwnProps {}
 
-export interface Props extends StateProps, DispatchProps, OwnProps {
-}
+export interface Props extends StateProps, DispatchProps, OwnProps {}
 
 interface State {
     step: number;

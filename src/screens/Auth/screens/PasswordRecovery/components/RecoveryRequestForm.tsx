@@ -24,8 +24,8 @@ const validationSchema = object().shape({
 });
 
 const RecoveryRequestForm: React.FunctionComponent<RecoveryRequestFormProps> = ({
-                                                                                    onSubmitSuccess,
-                                                                                }: RecoveryRequestFormProps) => {
+    onSubmitSuccess,
+}: RecoveryRequestFormProps) => {
     const dispatch = useDispatch();
     const {
         register,
@@ -55,8 +55,8 @@ const RecoveryRequestForm: React.FunctionComponent<RecoveryRequestFormProps> = (
                 <SummaryError error={(errors as GlobalError)._error?.message} />
                 <FieldInput
                     register={register}
-                    name='username'
-                    type='text'
+                    name="username"
+                    type="text"
                     wrapperProps={{
                         label: 'Email address',
                     }}
@@ -64,7 +64,7 @@ const RecoveryRequestForm: React.FunctionComponent<RecoveryRequestFormProps> = (
                 />
             </div>
             <div className={classNames('text-center')}>
-                <button type='submit' className={classNames('btn', 'btn-primary', 'text-uppercase', 'w-50')}>
+                <button type="submit" className={classNames('btn', 'btn-primary', 'text-uppercase', 'w-50')}>
                     {isSubmitting ? <span className={classNames('spinner-border')} /> : 'Restore'}
                 </button>
             </div>

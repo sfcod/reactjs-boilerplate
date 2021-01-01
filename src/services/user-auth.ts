@@ -14,7 +14,7 @@ export class UserAuth {
         this.storage = storage;
     }
 
-    public login(token: string, remember = false) {
+    public login(token: string, remember = false): void {
         this.setLoggedIn(true);
         this.setToken(token, remember ? 365 : 1);
 
@@ -24,7 +24,7 @@ export class UserAuth {
         this.setRoles(decoded.roles);
     }
 
-    public logout() {
+    public logout(): Promise<void> {
         this.setLoggedIn(false);
 
         this.storage.removeItem(TOKEN_KEY);

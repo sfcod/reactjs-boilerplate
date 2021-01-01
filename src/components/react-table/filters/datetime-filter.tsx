@@ -8,7 +8,7 @@ moment.locale('en');
 momentLocalizer();
 
 function dateTimeFilter<T extends Record<string, unknown>>(): React.FunctionComponent<FilterProps<T>> {
-    return React.memo(({ column: { filterValue, setFilter } }: FilterProps<T>) => {
+    return React.memo(({ column: { setFilter } }: FilterProps<T>) => {
         const handleChange = (date?: Date) => {
             if (date) {
                 setFilter(moment(date).format());

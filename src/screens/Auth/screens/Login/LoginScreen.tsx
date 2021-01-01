@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import styles from './assets/login-screen.module.scss';
 import LoginForm from './components/LoginForm';
 import classNames from 'classnames';
@@ -8,23 +8,16 @@ import { Link } from 'react-router-dom';
 import Router from '../../../../navigation/router';
 import { routes } from '../../../../navigation';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface StateProps {
-}
+export interface StateProps {}
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DispatchProps {
-}
+export interface DispatchProps {}
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface OwnProps {
-}
+export interface OwnProps {}
 
-export interface Props extends StateProps, DispatchProps, OwnProps {
-}
+export interface Props extends StateProps, DispatchProps, OwnProps {}
 
 class LoginScreen extends React.Component<Props> {
-    render() {
+    render(): ReactElement {
         if (UserAuthService.isLoggedIn()) {
             return (
                 <MainLayout>
@@ -36,8 +29,10 @@ class LoginScreen extends React.Component<Props> {
                                         You are logged as {UserAuthService.getData()?.username}
                                     </div>
                                     <div className={classNames('mb-4')}>
-                                        <Link to={Router.generate(routes.LOGOUT)}
-                                              className={classNames('btn', 'btn-primary')}>
+                                        <Link
+                                            to={Router.generate(routes.LOGOUT)}
+                                            className={classNames('btn', 'btn-primary')}
+                                        >
                                             {'Sign Out'}
                                         </Link>
                                     </div>

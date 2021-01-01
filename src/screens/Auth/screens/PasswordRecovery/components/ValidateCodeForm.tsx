@@ -51,7 +51,9 @@ const ValidateCodeForm: React.FunctionComponent<ValidateCodeFormProps> = ({
     return (
         <form onSubmit={handleSubmit(onSubmit)} className={classNames(styles.form)}>
             <div className={classNames(styles.content, styles.blueBorder)}>
-                <h4 className={classNames('text-center', 'mb-3')}>{'Enter the verification code from your mailbox:'}</h4>
+                <h4 className={classNames('text-center', 'mb-3')}>
+                    {'Enter the verification code from your mailbox:'}
+                </h4>
                 <SummaryError error={(errors as GlobalError)._error?.message} />
                 <FieldInput
                     register={register}
@@ -63,7 +65,7 @@ const ValidateCodeForm: React.FunctionComponent<ValidateCodeFormProps> = ({
                 />
             </div>
             <div className={classNames('text-center')}>
-                <button type='submit' className={classNames('btn', 'btn-primary', 'text-uppercase', 'w-50')}>
+                <button type="submit" className={classNames('btn', 'btn-primary', 'text-uppercase', 'w-50')}>
                     {isSubmitting ? <span className={classNames('spinner-border')} /> : 'Confirm'}
                 </button>
             </div>

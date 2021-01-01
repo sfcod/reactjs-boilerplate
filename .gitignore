@@ -1,6 +1,7 @@
 ###> other ###
 .idea
 /.env
+/.eslintcache
 env.js
 .cache
 .config

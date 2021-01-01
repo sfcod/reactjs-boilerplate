@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import classNames from 'classnames';
 import { TableInstance } from 'react-table';
 import PageItem from './PageItem';
@@ -9,7 +9,7 @@ interface Props<T extends Record<string, unknown>> {
     marginPagesDisplayed?: number;
 }
 
-function Pagination<T extends Record<string, unknown>>({ table, marginPagesDisplayed = 2 }: Props<T>) {
+function Pagination<T extends Record<string, unknown>>({ table, marginPagesDisplayed = 2 }: Props<T>): ReactElement {
     const {
         canPreviousPage,
         canNextPage,

@@ -40,6 +40,7 @@ class Axios {
         return axios.delete(endPoint, this.addHeaders(config));
     }
 
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     public delay(time: number, args?: any): AxiosPromise {
         return new Promise((resolve) => {
             setTimeout(resolve.bind(null, args), time);

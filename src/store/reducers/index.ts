@@ -20,6 +20,7 @@ const appReducer = combineReducers<StoreState>({
     router: connectRouter(history),
 });
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const rootReducer = (state: any, action: any): StoreState => {
     if (action.type === AppActions.APP_RESET) {
         state = undefined;

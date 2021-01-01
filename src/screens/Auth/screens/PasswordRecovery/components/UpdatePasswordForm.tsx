@@ -78,7 +78,7 @@ const UpdatePasswordForm: React.FunctionComponent<ResetPasswordFormProps> = ({
                 />
             </div>
             <div className={classNames('text-center')}>
-                <button type='submit' className={classNames('btn', 'btn-primary', 'text-uppercase', 'w-50')}>
+                <button type="submit" className={classNames('btn', 'btn-primary', 'text-uppercase', 'w-50')}>
                     {isSubmitting ? <span className={classNames('spinner-border')} /> : 'Confirm'}
                 </button>
             </div>

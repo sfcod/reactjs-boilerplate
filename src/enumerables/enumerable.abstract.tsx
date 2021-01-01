@@ -11,6 +11,7 @@ export interface SelectableItem {
  *
  * @param x
  */
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function isSelectableItem(x: any): x is SelectableItem {
     return typeof x === 'object' && Object.keys(x).length === 2 && 'name' in x && 'value' in x;
 }

@@ -58,7 +58,7 @@ export function authLogin(data: CustomerLoginFormData, callbacks: SagaPromise<an
     };
 }
 
-export const asyncAuthLogin = (data: CustomerLoginFormData, dispatch: Dispatch) => {
+export const asyncAuthLogin = (data: CustomerLoginFormData, dispatch: Dispatch): Promise<any> => {
     return new Promise((resolve, reject) => {
         dispatch(authLogin(data, { resolve, reject }));
     });

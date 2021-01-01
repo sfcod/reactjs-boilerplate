@@ -55,23 +55,24 @@ export function handleError(result: ResolverApiFailure): any {
     console.info('handleError', result);
 }
 
-export function requestType(type: string) {
+export function requestType(type: string): string {
     return `${type}_${TYPES_REQUEST}`;
 }
 
-export function successType(type: string) {
+export function successType(type: string): string {
     return `${type}_${TYPES_SUCCESS}`;
 }
 
-export function failureType(type: string) {
+export function failureType(type: string): string {
     return `${type}_${TYPES_FAILURE}`;
 }
 
-export function offlineRequestType(type: string) {
+export function offlineRequestType(type: string): string {
     return `${type}_${TYPES_OFFLINE_REQUEST}`;
 }
 
-export function isPromise(obj: any) {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export function isPromise(obj: any): boolean {
     return !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.next === 'function';
 }
 
