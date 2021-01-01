@@ -1,31 +1,36 @@
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
-import styles from '../assets/validate-code-form.module.scss';
-import { asyncAuthValidateRecoveryCode } from 'src/store/actions/auth-actions';
+import styles from '../assets/reset-password-form.module.scss';
+import { asyncAuthUpdatePassword } from 'src/store/actions/auth-actions';
+import { object, ref, string } from 'yup';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { GlobalError, withErrors } from 'src/components/react-hook-form/utils/make-form-errors';
-import { object, string } from 'yup';
-import FieldInput from 'src/components/react-hook-form/fields/FieldInput';
 import lodash from 'lodash';
+import FieldInput from '../../../../../components/react-hook-form/fields/FieldInput';
 import SummaryError from '../../../../../components/react-hook-form/SummaryError';
 
-export interface ValidateCodeFormData {
-    token: string;
+export interface ResetPasswordFormData {
+    password: string;
+    passwordRepeat: string;
 }
 
-interface ValidateCodeFormProps {
+interface ResetPasswordFormProps {
     onSubmitSuccess: () => void;
 }
 
 const validationSchema = object().shape({
-    token: string().required(),
+    password: string().required().min(6).max(6),
+    passwordRepeat: string()
+        .required()
+        .min(6)
+        .equals([ref('password')], () => 'Password must match'),
 });
 
-const ValidateCodeForm: React.FunctionComponent<ValidateCodeFormProps> = ({
+const UpdatePasswordForm: React.FunctionComponent<ResetPasswordFormProps> = ({
     onSubmitSuccess,
-}: ValidateCodeFormProps) => {
+}: ResetPasswordFormProps) => {
     const dispatch = useDispatch();
     const {
         register,
@@ -33,12 +38,12 @@ const ValidateCodeForm: React.FunctionComponent<ValidateCodeFormProps> = ({
         errors,
         setError,
         formState: { isSubmitting, isSubmitted, submitCount },
-    } = useForm<ValidateCodeFormData>({
+    } = useForm<ResetPasswordFormData>({
         resolver: yupResolver(validationSchema) as any,
     });
 
-    const onSubmit = async (data: ValidateCodeFormData) => {
-        await withErrors<ValidateCodeFormData>(asyncAuthValidateRecoveryCode(data, dispatch), setError);
+    const onSubmit = async (data: ResetPasswordFormData) => {
+        await withErrors<ResetPasswordFormData>(asyncAuthUpdatePassword(data, dispatch), setError);
     };
 
     useEffect(() => {
@@ -51,14 +56,24 @@ const ValidateCodeForm: React.FunctionComponent<ValidateCodeFormProps> = ({
     return (
         <form onSubmit={handleSubmit(onSubmit)} className={classNames(styles.form)}>
             <div className={classNames(styles.content, styles.blueBorder)}>
-                <h4 className={classNames('text-center', 'mb-3')}>{'Enter the verification code from your mailbox:'}</h4>
+                <h4 className={classNames('text-center', 'mb-3')}>{'Enter your new password:'}</h4>
                 <SummaryError error={(errors as GlobalError)._error?.message} />
                 <FieldInput
                     register={register}
-                    name="token"
-                    type="text"
+                    name="password"
+                    type="password"
+                    error={errors.password?.message}
                     wrapperProps={{
-                        label: 'Code',
+                        label: 'Password',
+                    }}
+                />
+                <FieldInput
+                    register={register}
+                    name="passwordRepeat"
+                    type="password"
+                    error={errors.passwordRepeat?.message}
+                    wrapperProps={{
+                        label: 'Password confirmation',
                     }}
                 />
             </div>
@@ -71,4 +86,4 @@ const ValidateCodeForm: React.FunctionComponent<ValidateCodeFormProps> = ({
     );
 };
 
-export default ValidateCodeForm;
+export default UpdatePasswordForm;

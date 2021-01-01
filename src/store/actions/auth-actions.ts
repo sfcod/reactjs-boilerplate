@@ -1,10 +1,10 @@
 import { Dispatch } from 'redux';
 import { ResolverApi, ResolverApiFailure, ResolverApiSuccess } from 'src/services/api-handlers/api-resolver';
 import { AuthActions } from '../constants';
-import { LoginFormData as CustomerLoginFormData } from '../../screens/Auth/screens/Login/components/LoginForm';
-import { ResetPasswordFormData } from '../../screens/Auth/screens/PasswordRecovery/components/ResetPasswordForm';
-import { ValidateCodeFormData } from '../../screens/Auth/screens/PasswordRecovery/components/ValidateCodeForm';
-import { RecoveryRequestFormData } from '../../screens/Auth/screens/PasswordRecovery/components/RecoveryRequestForm';
+import { LoginFormData as CustomerLoginFormData } from 'src/screens/Auth/screens/Login/components/LoginForm';
+import { ResetPasswordFormData } from 'src/screens/Auth/screens/PasswordRecovery/components/UpdatePasswordForm';
+import { ValidateCodeFormData } from 'src/screens/Auth/screens/PasswordRecovery/components/ValidateCodeForm';
+import { RecoveryRequestFormData } from 'src/screens/Auth/screens/PasswordRecovery/components/RecoveryRequestForm';
 
 export interface SagaPromise<T> {
     resolve: (value?: T | PromiseLike<T>) => void;
@@ -48,7 +48,7 @@ export function authLogout(): AuthLogoutAction {
     };
 }
 
-export function authCustomerLogin(data: CustomerLoginFormData, callbacks: SagaPromise<any>): AuthLoginAction {
+export function authLogin(data: CustomerLoginFormData, callbacks: SagaPromise<any>): AuthLoginAction {
     return {
         type: AuthActions.AUTH_LOGIN,
         payload: {
@@ -58,9 +58,9 @@ export function authCustomerLogin(data: CustomerLoginFormData, callbacks: SagaPr
     };
 }
 
-export const asyncAuthCustomerLogin = (data: CustomerLoginFormData, dispatch: Dispatch) => {
+export const asyncAuthLogin = (data: CustomerLoginFormData, dispatch: Dispatch) => {
     return new Promise((resolve, reject) => {
-        dispatch(authCustomerLogin(data, { resolve, reject }));
+        dispatch(authLogin(data, { resolve, reject }));
     });
 };
 

@@ -2,13 +2,16 @@ import PasswordRecoveryScreen, { DispatchProps, StateProps } from './PasswordRec
 import { connect } from 'react-redux';
 import { StoreState } from '../../../../store/reducers';
 import { Dispatch } from 'redux';
+import { appRedirectToDefault } from 'src/store/actions/app-actions';
 
 function mapStateToProps(state: StoreState): StateProps {
     return {};
 }
 
 function mapDispatchToProps(dispatch: Dispatch): DispatchProps {
-    return {};
+    return {
+        redirectToDefault: () => dispatch(appRedirectToDefault()),
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PasswordRecoveryScreen);

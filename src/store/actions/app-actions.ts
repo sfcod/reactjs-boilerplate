@@ -12,4 +12,16 @@ export function appMount(): AppMountAction {
     };
 }
 
-export type Actions = AppMountAction;
+export interface AppRedirectToDefaultAction {
+    type: typeof AppActions.APP_REDIRECT;
+    payload: AnyObject;
+}
+
+export function appRedirectToDefault(): AppRedirectToDefaultAction {
+    return {
+        type: AppActions.APP_REDIRECT,
+        payload: {},
+    };
+}
+
+export type Actions = AppMountAction | AppRedirectToDefaultAction;

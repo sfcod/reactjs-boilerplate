@@ -1,4 +1,5 @@
 import { isSelectableItem } from '../../../enumerables/enumerable.abstract';
+import lodash from 'lodash';
 
 /**
  * Append value to form status
@@ -34,10 +35,12 @@ const recursiveAppend = (values: { [key: string]: any }, formData: FormData, key
                     appendToFormData(formData, `${fullKey}[${fileKey}]`, file as Blob);
                     // formData.append(`${fullKey}[${fileKey}]`, file as Blob);
                 });
-            } else if (value[0].constructor === File) {
+            } else if ((value as FileList).length > 0 && value[0].constructor === File) {
                 appendToFormData(formData, `${fullKey}`, value[0]);
                 // formData.append(`${fullKey}`, value[0]);
             }
+        } else if (value.constructor === File) {
+            appendToFormData(formData, `${fullKey}`, value);
         } else if (Array.isArray(value)) {
             value.forEach((entry, i) => {
                 if (Array.isArray(entry) || (!isSelectableItem(entry) && entry === Object(entry))) {
@@ -72,4 +75,29 @@ export const convertValuesToFormData = (values: { [key: string]: any }, formName
     }
 
     return recursiveAppend(formName ? { [formName]: values } : values, new FormData());
+};
+
+/**
+ * Convert redux form values into object
+ *
+ * @param values
+ */
+export const convertValuesToObject = (values: { [key: string]: any }): AnyObject | null => {
+    if (!values) {
+        return null;
+    }
+
+    const result: AnyObject = {};
+
+    lodash.forEach(values, (value: any, key: string) => {
+        if (isSelectableItem(value)) {
+            result[key] = value.value;
+        } else if (lodash.isObject(value)) {
+            result[key] = convertValuesToObject(value);
+        } else {
+            result[key] = value;
+        }
+    });
+
+    return result;
 };

@@ -116,11 +116,13 @@ function Grid<T extends Record<string, unknown>>(props: Props<T>): ReactElement 
                     {data.list.length > 0 ? (
                         rows.map((row, i) => {
                             prepareRow(row);
+                            const { key, ...rest } = row.getRowProps();
                             return (
-                                <tr key={i} {...row.getRowProps()}>
+                                <tr key={i} {...rest}>
                                     {row.cells.map((cell, i: number) => {
+                                        const { key, ...rest } = cell.getCellProps();
                                         return (
-                                            <td key={i} {...cell.getCellProps()}>
+                                            <td key={i} {...rest}>
                                                 {cell.render('Cell')}
                                             </td>
                                         );

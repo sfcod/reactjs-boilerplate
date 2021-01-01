@@ -1,7 +1,6 @@
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { DispatchProps, OwnProps, StateProps } from './LoginScreen';
-import Login from './LoginScreen';
+import Login, { DispatchProps, OwnProps, StateProps } from './LoginScreen';
 import { StoreState } from 'src/store/reducers';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
