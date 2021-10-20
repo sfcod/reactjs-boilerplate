@@ -2,8 +2,8 @@ import React, { PropsWithChildren } from 'react';
 import FieldWrapper, { FieldWrapperProps } from './FieldWrapper';
 import { Controller } from 'react-hook-form';
 import { Control } from 'react-hook-form/dist/types/form';
-import { SelectList } from 'react-widgets';
 import { CommonFieldProps } from '../types/common';
+import SelectList from 'react-widgets/lib/SelectList';
 
 interface Props extends CommonFieldProps {
     control: Control;

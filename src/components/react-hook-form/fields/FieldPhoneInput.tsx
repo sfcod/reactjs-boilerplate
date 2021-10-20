@@ -1,5 +1,4 @@
 import React from 'react';
-import { ClassValue } from 'classnames/types';
 import FieldWrapper, { FieldWrapperProps } from './FieldWrapper';
 import { Controller } from 'react-hook-form';
 import { Control } from 'react-hook-form/dist/types/form';
@@ -10,8 +9,8 @@ import PhoneInput from 'react-phone-input-2';
 interface Props extends CommonFieldProps {
     control: Control;
     wrapperProps?: FieldWrapperProps;
-    inputClassName?: ClassValue;
-    invalidInputClassName?: ClassValue;
+    inputClassName?: any;
+    invalidInputClassName?: any;
     country?: string;
     disabled?: boolean;
 }

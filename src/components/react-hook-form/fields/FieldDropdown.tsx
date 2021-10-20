@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { ClassValue } from 'classnames/types';
+import { Value } from 'classnames';
 import FieldWrapper, { FieldWrapperProps } from './FieldWrapper';
 import { Controller } from 'react-hook-form';
 import { Control } from 'react-hook-form/dist/types/form';
@@ -17,10 +17,11 @@ interface Props extends CommonFieldProps {
     valueField?: string;
     placeholder?: string;
     busy?: boolean;
-    filter?: false | 'startsWith' | 'endsWith' | 'contains' | ((dataItem: any, searchTerm: string) => boolean);
+    // filter?: false | 'startsWith' | 'endsWith' | 'contains' | ((dataItem: any, searchTerm: string) => boolean);
+    filter?: any;
     wrapperProps?: FieldWrapperProps;
-    inputClassName?: ClassValue;
-    invalidInputClassName?: ClassValue;
+    inputClassName?: Value;
+    invalidInputClassName?: Value;
     groupBy?: string | ((dataItem: any) => any);
 }
 
@@ -63,7 +64,9 @@ const FieldDropdown: React.FunctionComponent<Props> = ({
                         data={data}
                         disabled={disabled}
                         textField={textField}
-                        valueField={valueField}
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        valueField={valueField as any}
                         groupBy={groupBy}
                     />
                     {children}

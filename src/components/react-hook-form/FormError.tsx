@@ -1,13 +1,12 @@
 import React from 'react';
 import styles from './assets/form-error.module.scss';
 import classNames from 'classnames';
-import { ClassValue } from 'classnames/types';
 
 interface Props {
     error?: string;
     classNames?: {
-        errorContainer?: ClassValue;
-        errorMessage?: ClassValue;
+        errorContainer?: any;
+        errorMessage?: any;
     };
 }
 

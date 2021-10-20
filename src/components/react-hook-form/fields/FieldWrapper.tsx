@@ -1,17 +1,16 @@
 import React, { PropsWithChildren, ReactNode } from 'react';
 import classNames from 'classnames';
-import { ClassValue } from 'classnames/types';
 import styles from '../assets/wrapper-input.module.scss';
 import FormError from '../FormError';
 
 export interface FieldWrapperProps {
     classNames?: {
-        wrapperContainer?: ClassValue;
-        labelContainer?: ClassValue;
-        labelContainerError?: ClassValue;
-        errorContainer?: ClassValue;
-        errorMessage?: ClassValue;
-        inputContainer?: ClassValue;
+        wrapperContainer?: any;
+        labelContainer?: any;
+        labelContainerError?: any;
+        errorContainer?: any;
+        errorMessage?: any;
+        inputContainer?: any;
     };
     label?: ReactNode;
 }
