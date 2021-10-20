@@ -3,7 +3,7 @@ import { Value } from 'classnames';
 import FieldWrapper, { FieldWrapperProps } from './FieldWrapper';
 import { Controller } from 'react-hook-form';
 import { Control } from 'react-hook-form/dist/types/form';
-import { DropdownList } from 'react-widgets';
+import DropdownList from 'react-widgets/lib/DropdownList';
 import classNames from 'classnames';
 import { CommonFieldProps } from '../types/common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,18 +11,17 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 interface Props extends CommonFieldProps {
     control: Control;
-    data: AnyObject[];
+    data: AnyObject[] | any[] | undefined;
     disabled?: boolean | AnyObject[];
-    textField?: string;
-    valueField?: string;
-    placeholder?: string;
-    busy?: boolean;
-    // filter?: false | 'startsWith' | 'endsWith' | 'contains' | ((dataItem: any, searchTerm: string) => boolean);
-    filter?: any;
+    textField?: string | ((dataItem: any) => string) | undefined;
+    valueField?: string | undefined;
+    placeholder?: string | undefined;
+    busy?: boolean | undefined;
+    filter?: false | 'startsWith' | 'contains' | 'endsWith' | ((dataItem: any, str: string) => boolean) | undefined;
     wrapperProps?: FieldWrapperProps;
     inputClassName?: Value;
     invalidInputClassName?: Value;
-    groupBy?: string | ((dataItem: any) => any);
+    groupBy?: string | ((dataItem: any) => any) | undefined;
 }
 
 const FieldDropdown: React.FunctionComponent<Props> = ({
@@ -47,7 +46,6 @@ const FieldDropdown: React.FunctionComponent<Props> = ({
         control={control}
         defaultValue={null}
         render={(controlledProps) => {
-            // @types lacks "selectIcon" property
             controlledProps = {
                 ...controlledProps,
                 selectIcon: <FontAwesomeIcon className={classNames(error && 'text-danger')} icon={faChevronDown} />,
@@ -64,9 +62,7 @@ const FieldDropdown: React.FunctionComponent<Props> = ({
                         data={data}
                         disabled={disabled}
                         textField={textField}
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-ignore
-                        valueField={valueField as any}
+                        valueField={valueField}
                         groupBy={groupBy}
                     />
                     {children}

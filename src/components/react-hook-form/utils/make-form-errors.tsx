@@ -18,13 +18,13 @@ interface Violation<T> {
     message: string;
 }
 
-interface ErrorResponse<T> {
-    detail: string;
-    title: string;
-    violations: Violation<T>[];
-}
+// interface ErrorResponse<T> {
+//     detail: string;
+//     title: string;
+//     violations: Violation<T>[];
+// }
 
-export function makeFormErrorsFromResponse<T>(response: ErrorResponse<T>): FormErrors<T> {
+export function makeFormErrorsFromResponse<T>(response: any): FormErrors<T> {
     const result: FormErrors<T> = [];
 
     if (isArray(response.violations)) {

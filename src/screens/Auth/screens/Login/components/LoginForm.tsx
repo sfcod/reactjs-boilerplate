@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styles from '../assets/login-form.module.scss';
 import classNames from 'classnames';
-import { object, string } from 'yup';
 import { useForm } from 'react-hook-form';
 import FieldInput from '../../../../../components/react-hook-form/fields/FieldInput';
 import { asyncAuthLogin } from 'src/store/actions/auth-actions';
@@ -12,6 +11,8 @@ import { Link } from 'react-router-dom';
 import Router from '../../../../../navigation/router';
 import { routes } from '../../../../../navigation';
 import SummaryError from '../../../../../components/react-hook-form/SummaryError';
+import { loginSchema } from '../../../../../schema/LoginFormSchema';
+import { Controller } from 'react-hook-form';
 
 export interface LoginFormData {
     username: string;
@@ -20,21 +21,15 @@ export interface LoginFormData {
 
 export interface LoginFormProps {}
 
-const validationSchema = object().shape({
-    username: string().required().email().max(180),
-    password: string().required(),
-});
-
 const LoginForm: React.FunctionComponent<LoginFormProps> = () => {
     const dispatch = useDispatch();
     const {
-        register,
+        control,
         handleSubmit,
-        errors,
         setError,
-        formState: { isSubmitting },
+        formState: { isSubmitting, errors },
     } = useForm<LoginFormData>({
-        resolver: yupResolver(validationSchema) as any,
+        resolver: yupResolver(loginSchema),
     });
 
     const onSubmit = async (data: LoginFormData) => {
@@ -44,20 +39,31 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = () => {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className={classNames(styles.content, styles.blueBorder)}>
-                <SummaryError error={(errors as GlobalError)._error?.message} />
-                <FieldInput
+                <SummaryError error={(errors as GlobalError)?._error?.message} />
+                <Controller
+                    control={control}
                     name="username"
-                    type="email"
-                    register={register}
-                    error={errors.username?.message}
-                    wrapperProps={{ label: 'Email address' }}
+                    render={(field) => (
+                        <FieldInput
+                            {...field}
+                            type="email"
+                            error={errors?.username?.message}
+                            wrapperProps={{ label: 'Email address' }}
+                        />
+                    )}
                 />
-                <FieldInput
-                    register={register}
+
+                <Controller
+                    control={control}
                     name="password"
-                    type="password"
-                    error={errors.password?.message}
-                    wrapperProps={{ label: 'Password' }}
+                    render={(field) => (
+                        <FieldInput
+                            {...field}
+                            type="password"
+                            error={errors?.password?.message}
+                            wrapperProps={{ label: 'Password' }}
+                        />
+                    )}
                 />
                 <div className={classNames('text-center', 'my-3')}>
                     <Link to={Router.generate(routes.PASSWORD_RECOVERY)} className={classNames('small')}>

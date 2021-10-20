@@ -12,8 +12,8 @@ interface FieldInputProps extends CommonFieldProps {
 }
 
 type Props = FieldInputProps & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
-
-const FieldInput: React.FunctionComponent<Props> = ({
+//@TODO Fix props
+const FieldInput: React.FunctionComponent<any> = ({
     wrapperProps,
     className = 'form-control',
     errorClassName = 'border-danger text-danger',
