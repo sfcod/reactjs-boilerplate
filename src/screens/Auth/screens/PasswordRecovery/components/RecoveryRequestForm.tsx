@@ -3,13 +3,13 @@ import classNames from 'classnames';
 import styles from '../assets/recovery-request-form.module.scss';
 import { asyncAuthResetPasswordRequest } from 'src/store/actions/auth-actions';
 import { useDispatch } from 'react-redux';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { GlobalError, withErrors } from 'src/components/react-hook-form/utils/make-form-errors';
 import FieldInput from 'src/components/react-hook-form/fields/FieldInput';
 import lodash from 'lodash';
 import SummaryError from '../../../../../components/react-hook-form/SummaryError';
-import { recoveryRequestFormSchema } from '../../../../../schema/RecoveryRequestFormSchema';
+import { recoveryRequest } from '../schema/recovery-request';
 
 export interface RecoveryRequestFormData {
     username: string;
@@ -28,8 +28,8 @@ const RecoveryRequestForm: React.FunctionComponent<RecoveryRequestFormProps> = (
         handleSubmit,
         setError,
         formState: { isSubmitting, isSubmitted, submitCount, errors },
-    } = useForm<RecoveryRequestFormData>({
-        resolver: yupResolver(recoveryRequestFormSchema),
+    } = useForm({
+        resolver: yupResolver(recoveryRequest),
     });
 
     const onSubmit = async (data: RecoveryRequestFormData) => {
@@ -47,19 +47,14 @@ const RecoveryRequestForm: React.FunctionComponent<RecoveryRequestFormProps> = (
             <div className={classNames(styles.content, styles.blueBorder)}>
                 <h4 className={classNames('text-center', 'mb-3')}>{'To restore it, enter your email:'}</h4>
                 <SummaryError error={(errors as GlobalError)._error?.message} />
-                <Controller
+                <FieldInput
                     control={control}
-                    name="username"
-                    render={(field) => (
-                        <FieldInput
-                            {...field}
-                            type="text"
-                            wrapperProps={{
-                                label: 'Email address',
-                            }}
-                            error={errors.username?.message}
-                        />
-                    )}
+                    name={'username'}
+                    type="text"
+                    wrapperProps={{
+                        label: 'Email address',
+                    }}
+                    error={errors.username?.message}
                 />
             </div>
             <div className={classNames('text-center')}>

@@ -293,7 +293,7 @@ function* handleUpdatePassword(action: AuthUpdatePasswordAction): Iterable<any> 
                 error: { response },
             } = data;
 
-            yield call(callbacks.reject, makeFormErrorsFromResponse<ResetPasswordFormData>(response?.data));
+            yield call(callbacks.reject, makeFormErrorsFromResponse<ResetPasswordFormData>(response?.data as any));
         },
     );
 

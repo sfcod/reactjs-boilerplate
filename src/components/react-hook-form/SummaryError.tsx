@@ -1,12 +1,12 @@
 import React from 'react';
 import styles from './assets/summary-error.module.scss';
-import classNames from 'classnames';
+import classNames, { Argument as ClassValue } from 'classnames';
 
 interface Props {
     error?: string;
     classNames?: {
-        errorContainer?: any;
-        errorMessage?: any;
+        errorContainer?: ClassValue;
+        errorMessage?: ClassValue;
     };
 }
 

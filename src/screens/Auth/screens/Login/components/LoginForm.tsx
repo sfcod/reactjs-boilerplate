@@ -11,8 +11,7 @@ import { Link } from 'react-router-dom';
 import Router from '../../../../../navigation/router';
 import { routes } from '../../../../../navigation';
 import SummaryError from '../../../../../components/react-hook-form/SummaryError';
-import { loginSchema } from '../../../../../schema/LoginFormSchema';
-import { Controller } from 'react-hook-form';
+import { loginSchema } from '../schema/login';
 
 export interface LoginFormData {
     username: string;
@@ -28,7 +27,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = () => {
         handleSubmit,
         setError,
         formState: { isSubmitting, errors },
-    } = useForm<LoginFormData>({
+    } = useForm({
         resolver: yupResolver(loginSchema),
     });
 
@@ -40,30 +39,20 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className={classNames(styles.content, styles.blueBorder)}>
                 <SummaryError error={(errors as GlobalError)?._error?.message} />
-                <Controller
-                    control={control}
-                    name="username"
-                    render={(field) => (
-                        <FieldInput
-                            {...field}
-                            type="email"
-                            error={errors?.username?.message}
-                            wrapperProps={{ label: 'Email address' }}
-                        />
-                    )}
-                />
 
-                <Controller
+                <FieldInput
+                    name={'username'}
                     control={control}
-                    name="password"
-                    render={(field) => (
-                        <FieldInput
-                            {...field}
-                            type="password"
-                            error={errors?.password?.message}
-                            wrapperProps={{ label: 'Password' }}
-                        />
-                    )}
+                    type="email"
+                    error={errors?.password?.message}
+                    wrapperProps={{ label: 'Password' }}
+                />
+                <FieldInput
+                    name={'password'}
+                    control={control}
+                    type="password"
+                    error={errors?.password?.message}
+                    wrapperProps={{ label: 'Password' }}
                 />
                 <div className={classNames('text-center', 'my-3')}>
                     <Link to={Router.generate(routes.PASSWORD_RECOVERY)} className={classNames('small')}>

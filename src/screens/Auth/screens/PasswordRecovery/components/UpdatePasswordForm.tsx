@@ -3,13 +3,13 @@ import classNames from 'classnames';
 import styles from '../assets/reset-password-form.module.scss';
 import { asyncAuthUpdatePassword } from 'src/store/actions/auth-actions';
 import { useDispatch } from 'react-redux';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { GlobalError, withErrors } from 'src/components/react-hook-form/utils/make-form-errors';
 import lodash from 'lodash';
 import FieldInput from '../../../../../components/react-hook-form/fields/FieldInput';
 import SummaryError from '../../../../../components/react-hook-form/SummaryError';
-import { updatePasswordFormSchema } from '../../../../../schema/UpdatePasswordFormSchema';
+import { passwordUpdate } from '../schema/password-update';
 
 export interface ResetPasswordFormData {
     password: string;
@@ -29,8 +29,8 @@ const UpdatePasswordForm: React.FunctionComponent<ResetPasswordFormProps> = ({
         handleSubmit,
         setError,
         formState: { isSubmitting, isSubmitted, submitCount, errors },
-    } = useForm<ResetPasswordFormData>({
-        resolver: yupResolver(updatePasswordFormSchema),
+    } = useForm({
+        resolver: yupResolver(passwordUpdate),
     });
 
     const onSubmit = async (data: ResetPasswordFormData) => {
@@ -48,33 +48,23 @@ const UpdatePasswordForm: React.FunctionComponent<ResetPasswordFormProps> = ({
             <div className={classNames(styles.content, styles.blueBorder)}>
                 <h4 className={classNames('text-center', 'mb-3')}>{'Enter your new password:'}</h4>
                 <SummaryError error={(errors as GlobalError)._error?.message} />
-                <Controller
+                <FieldInput
                     control={control}
-                    name="password"
-                    render={(field) => (
-                        <FieldInput
-                            {...field}
-                            type="text"
-                            wrapperProps={{
-                                label: 'Password',
-                            }}
-                            error={errors.password?.message}
-                        />
-                    )}
+                    name={'password'}
+                    type="password"
+                    wrapperProps={{
+                        label: 'Password',
+                    }}
+                    error={errors.password?.message}
                 />
-                <Controller
+                <FieldInput
                     control={control}
-                    name="passwordRepeat"
-                    render={(field) => (
-                        <FieldInput
-                            {...field}
-                            type="text"
-                            wrapperProps={{
-                                label: 'Password confirmation',
-                            }}
-                            error={errors.passwordRepeat?.message}
-                        />
-                    )}
+                    name={'passwordRepeat'}
+                    type="text"
+                    wrapperProps={{
+                        label: 'Password confirmation',
+                    }}
+                    error={errors.password?.message}
                 />
             </div>
             <div className={classNames('text-center')}>

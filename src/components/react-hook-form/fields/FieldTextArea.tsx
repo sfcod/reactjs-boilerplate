@@ -1,6 +1,6 @@
 import React, { DetailedHTMLProps, TextareaHTMLAttributes, PropsWithChildren } from 'react';
 import { CommonFieldProps } from '../types/common';
-import classNames from 'classnames';
+import classNames, { Argument as ClassValue } from 'classnames';
 import styles from '../assets/field-input.module.scss';
 import FieldWrapper, { FieldWrapperProps } from './FieldWrapper';
 import { Ref } from 'react-hook-form';
@@ -8,7 +8,7 @@ import { Ref } from 'react-hook-form';
 interface FieldTextAreaProps extends CommonFieldProps {
     register: (ref: Ref | null) => void;
     wrapperProps?: FieldWrapperProps;
-    errorClassName?: any;
+    errorClassName?: ClassValue;
 }
 
 type Props = FieldTextAreaProps & DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>;

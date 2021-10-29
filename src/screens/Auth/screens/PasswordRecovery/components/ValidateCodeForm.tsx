@@ -3,13 +3,13 @@ import classNames from 'classnames';
 import styles from '../assets/validate-code-form.module.scss';
 import { asyncAuthValidateRecoveryCode } from 'src/store/actions/auth-actions';
 import { useDispatch } from 'react-redux';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { GlobalError, withErrors } from 'src/components/react-hook-form/utils/make-form-errors';
 import FieldInput from 'src/components/react-hook-form/fields/FieldInput';
 import lodash from 'lodash';
 import SummaryError from '../../../../../components/react-hook-form/SummaryError';
-import { validateCodeFormSchema } from '../../../../../schema/ValidateCodeFormSchema';
+import { validateCode } from '../schema/validate-code';
 
 export interface ValidateCodeFormData {
     token: string;
@@ -28,8 +28,8 @@ const ValidateCodeForm: React.FunctionComponent<ValidateCodeFormProps> = ({
         handleSubmit,
         setError,
         formState: { isSubmitting, isSubmitted, submitCount, errors },
-    } = useForm<ValidateCodeFormData>({
-        resolver: yupResolver(validateCodeFormSchema),
+    } = useForm({
+        resolver: yupResolver(validateCode),
     });
 
     const onSubmit = async (data: ValidateCodeFormData) => {
@@ -49,19 +49,14 @@ const ValidateCodeForm: React.FunctionComponent<ValidateCodeFormProps> = ({
                     {'Enter the verification code from your mailbox:'}
                 </h4>
                 <SummaryError error={(errors as GlobalError)._error?.message} />
-                <Controller
+                <FieldInput
                     control={control}
-                    name="token"
-                    render={(field) => (
-                        <FieldInput
-                            {...field}
-                            type="text"
-                            wrapperProps={{
-                                label: 'Code',
-                            }}
-                            error={errors.token?.message}
-                        />
-                    )}
+                    type="text"
+                    name={'token'}
+                    wrapperProps={{
+                        label: 'Code',
+                    }}
+                    error={errors.token?.message}
                 />
             </div>
             <div className={classNames('text-center')}>

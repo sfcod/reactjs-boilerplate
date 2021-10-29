@@ -1,4 +1,4 @@
 export interface CommonFieldProps {
-    name: any;
+    name: string;
     error?: string;
 }

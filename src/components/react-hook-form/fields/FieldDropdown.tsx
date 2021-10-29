@@ -1,27 +1,26 @@
 import React, { PropsWithChildren } from 'react';
-import { Value } from 'classnames';
 import FieldWrapper, { FieldWrapperProps } from './FieldWrapper';
 import { Controller } from 'react-hook-form';
 import { Control } from 'react-hook-form/dist/types/form';
 import DropdownList from 'react-widgets/lib/DropdownList';
-import classNames from 'classnames';
+import classNames, { Argument as ClassValue } from 'classnames';
 import { CommonFieldProps } from '../types/common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 interface Props extends CommonFieldProps {
     control: Control;
-    data: AnyObject[] | any[] | undefined;
+    data: AnyObject[] | any[];
     disabled?: boolean | AnyObject[];
-    textField?: string | ((dataItem: any) => string) | undefined;
-    valueField?: string | undefined;
-    placeholder?: string | undefined;
-    busy?: boolean | undefined;
-    filter?: false | 'startsWith' | 'contains' | 'endsWith' | ((dataItem: any, str: string) => boolean) | undefined;
+    textField?: string | ((dataItem: any) => string);
+    valueField?: string;
+    placeholder?: string;
+    busy?: boolean;
+    filter?: false | 'startsWith' | 'contains' | 'endsWith' | ((dataItem: any, str: string) => boolean);
     wrapperProps?: FieldWrapperProps;
-    inputClassName?: Value;
-    invalidInputClassName?: Value;
-    groupBy?: string | ((dataItem: any) => any) | undefined;
+    inputClassName?: ClassValue;
+    invalidInputClassName?: ClassValue;
+    groupBy?: string | ((dataItem: any) => any);
 }
 
 const FieldDropdown: React.FunctionComponent<Props> = ({
@@ -42,7 +41,7 @@ const FieldDropdown: React.FunctionComponent<Props> = ({
     children,
 }: PropsWithChildren<Props>) => (
     <Controller
-        name={name}
+        name={name as `${string}`}
         control={control}
         defaultValue={null}
         render={(controlledProps) => {

@@ -30,7 +30,7 @@ const FieldSelectList: React.FunctionComponent<Props> = ({
     children,
 }: PropsWithChildren<Props>) => (
     <Controller
-        name={name}
+        name={name as `${string}`}
         control={control}
         defaultValue={[]}
         render={(controlledProps) => (

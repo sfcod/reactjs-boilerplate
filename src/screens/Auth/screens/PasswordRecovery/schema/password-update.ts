@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-export const updatePasswordFormSchema = yup.object().shape({
+export const passwordUpdate = yup.object().shape({
     password: yup.string().min(6).max(6).required(),
     passwordRepeat: yup
         .string()
