@@ -28,7 +28,7 @@ const FieldInput: React.FunctionComponent<PropsWithChildren<Props>> = ({
     ...props
 }: PropsWithChildren<Props>) => (
     <Controller
-        name={props.name as `${string}`}
+        name={props.name}
         control={control}
         defaultValue=""
         render={(controlledProps) => (
