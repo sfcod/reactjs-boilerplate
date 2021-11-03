@@ -1,5 +1,5 @@
 Based on:  
-React, Redux, Redux-Saga, React Hook Form
+React, Redux Toolkit (thunk), React Hook Form
 ## Dev environment
 
 - Setup config
