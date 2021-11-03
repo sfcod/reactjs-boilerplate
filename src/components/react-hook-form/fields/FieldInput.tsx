@@ -6,9 +6,9 @@ import { CommonFieldProps } from '../types/common';
 import FieldWrapper, { FieldWrapperProps } from './FieldWrapper';
 import { Control } from 'react-hook-form/dist/types/form';
 
-interface FieldInputProps extends CommonFieldProps {
+interface FieldInputProps<Control> extends CommonFieldProps {
     wrapperProps?: FieldWrapperProps;
-    errorClassName?: any;
+    errorClassName?: ClassValue;
     control: Control;
     inputClassName?: ClassValue;
     invalidInputClassName?: ClassValue;
@@ -16,9 +16,9 @@ interface FieldInputProps extends CommonFieldProps {
     disabled?: boolean;
 }
 
-type Props = FieldInputProps & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+type Props<C> = FieldInputProps<C> & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 
-const FieldInput: React.FunctionComponent<PropsWithChildren<Props>> = ({
+const FieldInput = <C extends Control<any>>({
     control,
     wrapperProps,
     className = 'form-control',
@@ -26,17 +26,17 @@ const FieldInput: React.FunctionComponent<PropsWithChildren<Props>> = ({
     error,
     children,
     ...props
-}: PropsWithChildren<Props>) => (
+}: PropsWithChildren<Props<C>>) => (
     <Controller
         name={props.name}
         control={control}
         defaultValue=""
-        render={(controlledProps) => (
+        render={({ field }) => (
             <FieldWrapper {...wrapperProps} classNames={wrapperProps?.classNames} name={props.name} error={error}>
                 <input
                     id={props.id || props.name}
                     {...props}
-                    {...controlledProps}
+                    {...field}
                     className={classNames(styles.input, className, error && errorClassName)}
                     placeholder={props.placeholder}
                 />

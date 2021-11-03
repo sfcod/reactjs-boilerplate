@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import styles from '../assets/recovery-request-form.module.scss';
-import { asyncAuthResetPasswordRequest } from 'src/store/actions/auth-actions';
-import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { GlobalError, withErrors } from 'src/components/react-hook-form/utils/make-form-errors';
@@ -10,6 +8,8 @@ import FieldInput from 'src/components/react-hook-form/fields/FieldInput';
 import lodash from 'lodash';
 import SummaryError from '../../../../../components/react-hook-form/SummaryError';
 import { recoveryRequest } from '../schema/recovery-request';
+import { useDispatch } from 'src/hooks/dispatch';
+import { resetPasswordRequest } from 'src/store/thunks/auth-thunks';
 
 export interface RecoveryRequestFormData {
     username: string;
@@ -33,7 +33,7 @@ const RecoveryRequestForm: React.FunctionComponent<RecoveryRequestFormProps> = (
     });
 
     const onSubmit = async (data: RecoveryRequestFormData) => {
-        await withErrors<RecoveryRequestFormData>(asyncAuthResetPasswordRequest(data, dispatch), setError);
+        await withErrors<RecoveryRequestFormData>(dispatch(resetPasswordRequest(data)).unwrap(), setError);
     };
 
     useEffect(() => {

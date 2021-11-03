@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import styles from '../assets/validate-code-form.module.scss';
-import { asyncAuthValidateRecoveryCode } from 'src/store/actions/auth-actions';
-import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { GlobalError, withErrors } from 'src/components/react-hook-form/utils/make-form-errors';
@@ -10,6 +8,8 @@ import FieldInput from 'src/components/react-hook-form/fields/FieldInput';
 import lodash from 'lodash';
 import SummaryError from '../../../../../components/react-hook-form/SummaryError';
 import { validateCode } from '../schema/validate-code';
+import { useDispatch } from 'src/hooks/dispatch';
+import { validateRecoveryCode } from 'src/store/thunks/auth-thunks';
 
 export interface ValidateCodeFormData {
     token: string;
@@ -33,7 +33,7 @@ const ValidateCodeForm: React.FunctionComponent<ValidateCodeFormProps> = ({
     });
 
     const onSubmit = async (data: ValidateCodeFormData) => {
-        await withErrors<ValidateCodeFormData>(asyncAuthValidateRecoveryCode(data, dispatch), setError);
+        await withErrors<ValidateCodeFormData>(dispatch(validateRecoveryCode(data)).unwrap(), setError);
     };
 
     useEffect(() => {

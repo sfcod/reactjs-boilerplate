@@ -3,8 +3,6 @@ import styles from '../assets/login-form.module.scss';
 import classNames from 'classnames';
 import { useForm } from 'react-hook-form';
 import FieldInput from '../../../../../components/react-hook-form/fields/FieldInput';
-import { asyncAuthLogin } from 'src/store/actions/auth-actions';
-import { useDispatch } from 'react-redux';
 import { GlobalError, withErrors } from '../../../../../components/react-hook-form/utils/make-form-errors';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Link } from 'react-router-dom';
@@ -12,6 +10,8 @@ import Router from '../../../../../navigation/router';
 import { routes } from '../../../../../navigation';
 import SummaryError from '../../../../../components/react-hook-form/SummaryError';
 import { loginSchema } from '../schema/login';
+import { useDispatch } from 'src/hooks/dispatch';
+import { login } from 'src/store/thunks/auth-thunks';
 
 export interface LoginFormData {
     username: string;
@@ -27,12 +27,12 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = () => {
         handleSubmit,
         setError,
         formState: { isSubmitting, errors },
-    } = useForm({
+    } = useForm<LoginFormData>({
         resolver: yupResolver(loginSchema),
     });
 
     const onSubmit = async (data: LoginFormData) => {
-        await withErrors<LoginFormData>(asyncAuthLogin(data, dispatch), setError);
+        await withErrors<LoginFormData>(dispatch(login(data)).unwrap(), setError);
     };
 
     return (
@@ -44,15 +44,15 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = () => {
                     name={'username'}
                     control={control}
                     type="email"
-                    error={errors?.password?.message}
-                    wrapperProps={{ label: 'Password' }}
+                    error={errors?.username?.message}
+                    wrapperProps={{ label: loginSchema.fields.username.spec.label }}
                 />
                 <FieldInput
                     name={'password'}
                     control={control}
                     type="password"
                     error={errors?.password?.message}
-                    wrapperProps={{ label: 'Password' }}
+                    wrapperProps={{ label: loginSchema.fields.password.spec.label }}
                 />
                 <div className={classNames('text-center', 'my-3')}>
                     <Link to={Router.generate(routes.PASSWORD_RECOVERY)} className={classNames('small')}>

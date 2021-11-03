@@ -7,7 +7,7 @@ import NoMatch from 'src/screens/NoMatch';
 import history from './navigation/history';
 import { ConnectedRouter } from 'connected-react-router';
 import { ToastContainer } from 'react-toastify';
-import { appMount } from './store/actions/app-actions';
+import { appMount } from 'src/store/reducers/app-reducer';
 
 function App(): React.ReactElement {
     useEffect(() => {

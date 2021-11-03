@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import Login, { DispatchProps, OwnProps, StateProps } from './LoginScreen';
-import { StoreState } from 'src/store/reducers';
+import { StoreState } from 'src/store/configure-store';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function mapStateToProps(state: StoreState, ownProps: OwnProps): StateProps {

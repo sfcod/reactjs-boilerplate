@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import styles from '../assets/reset-password-form.module.scss';
-import { asyncAuthUpdatePassword } from 'src/store/actions/auth-actions';
-import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { GlobalError, withErrors } from 'src/components/react-hook-form/utils/make-form-errors';
@@ -10,6 +8,8 @@ import lodash from 'lodash';
 import FieldInput from '../../../../../components/react-hook-form/fields/FieldInput';
 import SummaryError from '../../../../../components/react-hook-form/SummaryError';
 import { passwordUpdate } from '../schema/password-update';
+import { useDispatch } from 'src/hooks/dispatch';
+import { updatePassword } from 'src/store/thunks/auth-thunks';
 
 export interface ResetPasswordFormData {
     password: string;
@@ -34,7 +34,7 @@ const UpdatePasswordForm: React.FunctionComponent<ResetPasswordFormProps> = ({
     });
 
     const onSubmit = async (data: ResetPasswordFormData) => {
-        await withErrors<ResetPasswordFormData>(asyncAuthUpdatePassword(data, dispatch), setError);
+        await withErrors<ResetPasswordFormData>(dispatch(updatePassword(data)).unwrap(), setError);
     };
 
     useEffect(() => {

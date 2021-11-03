@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { resolveApiCall, ResolverApi } from './api-resolver';
+import { ResolverApi } from './api-resolver';
 import lodash from 'lodash';
 
 export interface PaginatedBaseMeta {
@@ -40,7 +40,8 @@ class Pagination {
         by = 'id',
     ): any {
         if (this.hasNext(nextPage, oldData.totalPages)) {
-            return yield resolveApiCall(action, () => this.next<T>(nextPage, oldData, callback, reverse, by));
+            // @TODO: fix this
+            // return yield resolveApiCall(action, () => this.next<T>(nextPage, oldData, callback, reverse, by));
         }
     }
 

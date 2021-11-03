@@ -1,15 +1,8 @@
-import { AxiosError, AxiosResponse } from 'axios';
-import { isFunction } from 'lodash';
-import { call, put } from 'redux-saga/effects';
+import { AxiosError } from 'axios';
 import ErrorHandlerService from 'src/services/api-handlers/error-handler';
-import { Paginated } from 'src/services/api-handlers/pagination';
-
-export const TYPES_REQUEST = 'REQUEST';
-export const TYPES_OFFLINE_REQUEST = 'OFFLINE_REQUEST';
-export const TYPES_OFFLINE_COMMIT = 'OFFLINE_COMMIT';
-export const TYPES_OFFLINE_ROLLBACK = 'OFFLINE_ROLLBACK';
-export const TYPES_SUCCESS = 'SUCCESS';
-export const TYPES_FAILURE = 'FAILURE';
+import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
+import { AppDispatch, ReducerState, StoreState } from 'src/store/configure-store';
+import { Dispatch } from 'redux';
 
 export interface ResolverApi {
     type: string;
@@ -23,7 +16,6 @@ export interface ResolverApiSuccess {
 
 export interface ResolverApiFailure {
     error: AxiosError;
-    sagaPayload: any;
 }
 
 export interface ResolverActionSuccess extends ResolverApiSuccess {
@@ -55,93 +47,27 @@ export function handleError(result: ResolverApiFailure): any {
     console.info('handleError', result);
 }
 
-export function requestType(type: string): string {
-    return `${type}_${TYPES_REQUEST}`;
-}
-
-export function successType(type: string): string {
-    return `${type}_${TYPES_SUCCESS}`;
-}
-
-export function failureType(type: string): string {
-    return `${type}_${TYPES_FAILURE}`;
-}
-
-export function offlineRequestType(type: string): string {
-    return `${type}_${TYPES_OFFLINE_REQUEST}`;
-}
-
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function isPromise(obj: any): boolean {
     return !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.next === 'function';
 }
 
-export function* asyncCall<T>(promise: () => Promise<AxiosResponse> | Promise<T[]>): any {
-    // Resolve array of promises calls
-    // if (isPromise(promise)) {
-    //     result = yield promise;
-    //
-    // } else if (isFunction(promise)) {
-    const response: AxiosResponse = yield call(promise);
-    // Parse server response claims and return it
-    return response.data || response;
-    // } else {
-    //     throw new Error('Type mismatch');
-    // }
-}
-
-export function* resolveApiCall<T>(
-    action: ResolverApi,
-    promise: () => Promise<AxiosResponse> | Promise<T[] | Paginated<T>>,
-    handleSuccess: ((data: ResolverApiSuccess) => void) | null = null,
-    handleFailure: ((data: ResolverApiFailure) => void) | null = handleError,
-    throwError = false,
-): Generator {
-    const { type, payload } = action;
-
-    // Notify application that API call was started
-    yield put({
-        type: requestType(type),
-        sagaPayload: payload,
-    });
-    let result: any = {};
+export const takeLatestApiCall = async <T extends BaseThunkAPI<StoreState, any, Dispatch, any>, K extends ReducerState>(
+    thunkApi: T,
+    state: K,
+    executor: () => Promise<any>,
+    onError?: (err: any) => Promise<any>,
+) => {
+    const { requestId, rejectWithValue } = thunkApi;
+    const { loading, requestId: currentRequestId } = state;
+    if (loading !== 'loading' || requestId !== currentRequestId) {
+        return;
+    }
 
     try {
-        result = yield call(asyncCall, promise as any);
-
-        // Store results to the Redux
-        yield put({
-            type: successType(type),
-            payload: result,
-            sagaPayload: payload,
-        });
-
-        if (handleSuccess && isFunction(handleSuccess)) {
-            yield call(handleSuccess, {
-                payload: result,
-                sagaPayload: payload,
-            });
-        }
-
-        return result;
-    } catch (error) {
-        // Store request error to the Redux
-        yield put({
-            type: failureType(type),
-            error,
-            sagaPayload: payload,
-        });
-
-        if (handleFailure && isFunction(handleFailure)) {
-            yield call(handleFailure, {
-                error,
-                sagaPayload: payload,
-            });
-        }
-
-        if (throwError) {
-            // @todo Add check if dev or production. For production should be connected service log errors.
-            throw error;
-        }
+        return await executor();
+    } catch (error: any) {
+        handleError({ error });
+        return rejectWithValue(onError ? await onError(error) : error);
     }
-}
+};
