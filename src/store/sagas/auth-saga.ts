@@ -119,13 +119,13 @@ function* handleUserLogout(action: AuthLogoutAction): Iterable<any> {
             sagaPayload: {},
         });
     } catch (error: any) {
-        if (error && error?.isAxiosError) {
-            yield put({
-                type: failureType(type),
-                error,
-                sagaPayload: {},
-            });
+        yield put({
+            type: failureType(type),
+            error,
+            sagaPayload: {},
+        });
 
+        if (error?.isAxiosError) {
             yield handleError({
                 error: error as AxiosError,
                 sagaPayload: {},
