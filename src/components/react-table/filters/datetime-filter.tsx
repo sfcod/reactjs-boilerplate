@@ -9,7 +9,7 @@ momentLocalizer();
 
 function dateTimeFilter<T extends Record<string, unknown>>(): React.FunctionComponent<FilterProps<T>> {
     return React.memo(({ column: { setFilter } }: FilterProps<T>) => {
-        const handleChange = (date?: Date) => {
+        const handleChange = (date?: Date | null) => {
             if (date) {
                 setFilter(moment(date).format());
             } else {
@@ -17,7 +17,7 @@ function dateTimeFilter<T extends Record<string, unknown>>(): React.FunctionComp
             }
         };
 
-        return <DateTimePicker onChange={handleChange} time={false} format="LLL" />;
+        return <DateTimePicker onChange={handleChange} includeTime={false} valueFormat="LLL" />;
     });
 }
 

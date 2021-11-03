@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styles from '../assets/login-form.module.scss';
 import classNames from 'classnames';
-import { object, string } from 'yup';
 import { useForm } from 'react-hook-form';
 import FieldInput from '../../../../../components/react-hook-form/fields/FieldInput';
 import { asyncAuthLogin } from 'src/store/actions/auth-actions';
@@ -12,6 +11,7 @@ import { Link } from 'react-router-dom';
 import Router from '../../../../../navigation/router';
 import { routes } from '../../../../../navigation';
 import SummaryError from '../../../../../components/react-hook-form/SummaryError';
+import { loginSchema } from '../schema/login';
 
 export interface LoginFormData {
     username: string;
@@ -20,21 +20,15 @@ export interface LoginFormData {
 
 export interface LoginFormProps {}
 
-const validationSchema = object().shape({
-    username: string().required().email().max(180),
-    password: string().required(),
-});
-
 const LoginForm: React.FunctionComponent<LoginFormProps> = () => {
     const dispatch = useDispatch();
     const {
-        register,
+        control,
         handleSubmit,
-        errors,
         setError,
-        formState: { isSubmitting },
-    } = useForm<LoginFormData>({
-        resolver: yupResolver(validationSchema) as any,
+        formState: { isSubmitting, errors },
+    } = useForm({
+        resolver: yupResolver(loginSchema),
     });
 
     const onSubmit = async (data: LoginFormData) => {
@@ -44,19 +38,20 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = () => {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className={classNames(styles.content, styles.blueBorder)}>
-                <SummaryError error={(errors as GlobalError)._error?.message} />
+                <SummaryError error={(errors as GlobalError)?._error?.message} />
+
                 <FieldInput
-                    name="username"
+                    name={'username'}
+                    control={control}
                     type="email"
-                    register={register}
-                    error={errors.username?.message}
-                    wrapperProps={{ label: 'Email address' }}
+                    error={errors?.password?.message}
+                    wrapperProps={{ label: 'Password' }}
                 />
                 <FieldInput
-                    register={register}
-                    name="password"
+                    name={'password'}
+                    control={control}
                     type="password"
-                    error={errors.password?.message}
+                    error={errors?.password?.message}
                     wrapperProps={{ label: 'Password' }}
                 />
                 <div className={classNames('text-center', 'my-3')}>

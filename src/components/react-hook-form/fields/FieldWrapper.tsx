@@ -1,6 +1,5 @@
 import React, { PropsWithChildren, ReactNode } from 'react';
-import classNames from 'classnames';
-import { ClassValue } from 'classnames/types';
+import classNames, { Argument as ClassValue } from 'classnames';
 import styles from '../assets/wrapper-input.module.scss';
 import FormError from '../FormError';
 

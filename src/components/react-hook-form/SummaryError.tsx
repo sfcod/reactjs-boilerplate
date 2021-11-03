@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from './assets/summary-error.module.scss';
-import classNames from 'classnames';
-import { ClassValue } from 'classnames/types';
+import classNames, { Argument as ClassValue } from 'classnames';
 
 interface Props {
     error?: string;
