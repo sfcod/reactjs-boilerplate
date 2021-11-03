@@ -26,6 +26,7 @@ import { LoginFormData } from '../../screens/Auth/screens/Login/components/Login
 import { RecoveryRequestFormData } from '../../screens/Auth/screens/PasswordRecovery/components/RecoveryRequestForm';
 import { ValidateCodeFormData } from '../../screens/Auth/screens/PasswordRecovery/components/ValidateCodeForm';
 import { ResetPasswordFormData } from '../../screens/Auth/screens/PasswordRecovery/components/UpdatePasswordForm';
+import { AxiosError } from 'axios';
 
 function* handleLogin(action: AuthLoginAction): Iterable<any> {
     const {
@@ -117,7 +118,9 @@ function* handleUserLogout(action: AuthLogoutAction): Iterable<any> {
             payload: {},
             sagaPayload: {},
         });
-    } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+    } catch (error: AxiosError) {
         yield put({
             type: failureType(type),
             error,
