@@ -118,19 +118,19 @@ function* handleUserLogout(action: AuthLogoutAction): Iterable<any> {
             payload: {},
             sagaPayload: {},
         });
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-    } catch (error: AxiosError) {
-        yield put({
-            type: failureType(type),
-            error,
-            sagaPayload: {},
-        });
+    } catch (error: any) {
+        if (error && error?.isAxiosError) {
+            yield put({
+                type: failureType(type),
+                error,
+                sagaPayload: {},
+            });
 
-        yield handleError({
-            error,
-            sagaPayload: {},
-        });
+            yield handleError({
+                error: error as AxiosError,
+                sagaPayload: {},
+            });
+        }
     }
 }
 
