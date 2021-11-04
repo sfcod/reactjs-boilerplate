@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 export interface BaseConfig {}
 
@@ -15,10 +15,10 @@ export const slice = createSlice({
     name: 'app',
     initialState,
     reducers: {
-        appMount: (state) => {
+        appMount: () => {
             console.log('App mounted');
         },
-        appRedirectToDefault: (state) => {
+        appRedirectToDefault: () => {
             console.log('User logged');
         },
     },

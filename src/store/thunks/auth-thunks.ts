@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { LoginFormData } from 'src/screens/Auth/screens/Login/components/LoginForm';
 import { ThunkConfig } from 'src/store/configure-store';
-import { takeLatestApiCall } from 'src/services/api-handlers/api-resolver';
+import { resolveApiCall } from 'src/services/api-handlers/api-resolver';
 import { AuthApi } from 'src/services/end-points';
 import UserAuthService from 'src/services/user-auth';
 import { push } from 'connected-react-router';
@@ -16,7 +16,7 @@ export const login = createAsyncThunk<void, LoginFormData, ThunkConfig>('auth/lo
     const { dispatch, getState } = thunkAPI;
     const { auth } = getState();
 
-    return takeLatestApiCall(
+    return resolveApiCall(
         thunkAPI,
         auth,
         async () => {
@@ -34,13 +34,10 @@ export const login = createAsyncThunk<void, LoginFormData, ThunkConfig>('auth/lo
 });
 
 export const logout = createAsyncThunk<void, void, ThunkConfig>('auth/logout', async (payload, thunkAPI) => {
-    const { dispatch, getState } = thunkAPI;
-    const { auth } = getState();
+    const { dispatch } = thunkAPI;
 
-    return takeLatestApiCall(thunkAPI, auth, async () => {
-        await UserAuthService.logout();
-        dispatch(push(Router.generate(routes.HOME)));
-    });
+    await UserAuthService.logout();
+    dispatch(push(Router.generate(routes.HOME)));
 });
 
 export const resetPasswordRequest = createAsyncThunk<void, RecoveryRequestFormData, ThunkConfig>(
@@ -49,7 +46,7 @@ export const resetPasswordRequest = createAsyncThunk<void, RecoveryRequestFormDa
         const { getState } = thunkAPI;
         const { auth } = getState();
 
-        return takeLatestApiCall(
+        return resolveApiCall(
             thunkAPI,
             auth,
             async () => AuthApi.resetPasswordRequest(payload),
@@ -70,7 +67,7 @@ export const validateRecoveryCode = createAsyncThunk<void, ValidateCodeFormData,
         const { getState } = thunkAPI;
         const { auth } = getState();
 
-        return takeLatestApiCall(
+        return resolveApiCall(
             thunkAPI,
             auth,
             async () => {
@@ -94,7 +91,7 @@ export const updatePassword = createAsyncThunk<void, ResetPasswordFormData, Thun
         const { getState } = thunkAPI;
         const { auth } = getState();
 
-        return takeLatestApiCall(
+        return resolveApiCall(
             thunkAPI,
             auth,
             async () => AuthApi.updatePassword(payload),

@@ -14,7 +14,7 @@ export const store = configureStore({
 export type StoreState = ReturnType<typeof store.getState>;
 export type ReducerState = {
     loading: 'loading' | 'loaded' | 'none';
-    requestId: string | null;
+    requestIds: string[];
     error: string;
 };
 export type AppDispatch = typeof store.dispatch;

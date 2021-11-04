@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import ErrorHandlerService from 'src/services/api-handlers/error-handler';
 import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
-import { AppDispatch, ReducerState, StoreState } from 'src/store/configure-store';
+import { ReducerState, StoreState } from 'src/store/configure-store';
 import { Dispatch } from 'redux';
 
 export interface ResolverApi {
@@ -52,20 +52,22 @@ export function isPromise(obj: any): boolean {
     return !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.next === 'function';
 }
 
-export const takeLatestApiCall = async <T extends BaseThunkAPI<StoreState, any, Dispatch, any>, K extends ReducerState>(
+export const resolveApiCall = async <T extends BaseThunkAPI<StoreState, any, Dispatch, any>, K extends ReducerState>(
     thunkApi: T,
     state: K,
     executor: () => Promise<any>,
     onError?: (err: any) => Promise<any>,
 ) => {
-    const { requestId, rejectWithValue } = thunkApi;
-    const { loading, requestId: currentRequestId } = state;
-    if (loading !== 'loading' || requestId !== currentRequestId) {
+    const { requestId, rejectWithValue, signal } = thunkApi;
+    const { loading, requestIds } = state;
+    if (loading !== 'loading' || !requestIds.includes(requestId)) {
         return;
     }
 
     try {
-        return await executor();
+        if (!signal.aborted) {
+            return await executor();
+        }
     } catch (error: any) {
         handleError({ error });
         return rejectWithValue(onError ? await onError(error) : error);

@@ -1,6 +1,9 @@
 import { AxiosResponse } from 'axios';
-import { ResolverApi } from './api-resolver';
+import { resolveApiCall } from './api-resolver';
 import lodash from 'lodash';
+import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
+import { ReducerState, StoreState } from 'src/store/configure-store';
+import { Dispatch } from 'redux';
 
 export interface PaginatedBaseMeta {
     updatedAt?: number;
@@ -25,23 +28,26 @@ export interface Paginated<T, M extends PaginatedBaseMeta = Record<string, unkno
 }
 
 class Pagination {
-    private pageSize = 20;
-
     private cacheDelay = 6000;
 
     private infinity = false;
 
-    public *resolveApiCall<T, M extends PaginatedBaseMeta = Record<string, any>>(
-        action: ResolverApi,
+    public async resolveApiCall<
+        ThunkAPI extends BaseThunkAPI<StoreState, any, Dispatch, any>,
+        State extends ReducerState,
+        DataType,
+        Meta extends PaginatedBaseMeta = Record<string, any>,
+    >(
+        thunkApi: ThunkAPI,
+        state: State,
+        callback: () => Promise<CallbackType<DataType, Meta>>,
         nextPage = 1,
-        oldData: Paginated<T, M>,
-        callback: () => Promise<CallbackType<T, M>>,
+        oldData: Paginated<DataType, Meta>,
         reverse = false,
         by = 'id',
-    ): any {
+    ) {
         if (this.hasNext(nextPage, oldData.totalPages)) {
-            // @TODO: fix this
-            // return yield resolveApiCall(action, () => this.next<T>(nextPage, oldData, callback, reverse, by));
+            return resolveApiCall(thunkApi, state, () => this.next<DataType>(nextPage, oldData, callback, reverse, by));
         }
     }
 
@@ -64,6 +70,7 @@ class Pagination {
         if (nextPage <= 0) {
             throw new Error('Next page should be lg then "0"');
         }
+
         if (newData.totalPages === undefined || newData.totalPages === -1 || newData.totalPages >= nextPage) {
             const result: CallbackType<T, M> = await callback();
 
@@ -75,19 +82,18 @@ class Pagination {
             }
 
             if (result.hasOwnProperty('headers')) {
-                const headers = (result as AxiosResponse<ListType<T>>).headers;
+                const parsed = Pagination.parseHeaders((result as AxiosResponse<ListType<T>>).headers);
 
-                if (headers['x-per-page']) {
-                    // this.pageSize = parseInt(headers['x-per-page'], 10);
-                    newData.pageSize = parseInt(headers['x-per-page'], 10);
+                if (parsed.pageSize) {
+                    newData.pageSize = parsed.pageSize;
                 }
 
-                if (headers['x-page-count']) {
-                    newData.totalPages = parseInt(headers['x-page-count'], 10);
+                if (parsed.totalPages) {
+                    newData.totalPages = parsed.totalPages;
                 }
 
-                if (headers['x-total-count']) {
-                    newData.totalCount = parseInt(headers['x-total-count'], 10);
+                if (parsed.totalCount) {
+                    newData.totalCount = parsed.totalCount;
                 }
             }
 
@@ -176,6 +182,31 @@ class Pagination {
 
         return this;
     };
+
+    public static parseHeaders(
+        headers: any,
+    ): Record<'pageSize' | 'totalPages' | 'totalCount' | 'page', number | undefined> {
+        const result: Record<any, any> = {};
+
+        if (headers['x-per-page']) {
+            // this.pageSize = parseInt(headers['x-per-page'], 10);
+            result.pageSize = parseInt(headers['x-per-page'], 10);
+        }
+
+        if (headers['x-page-count']) {
+            result.totalPages = parseInt(headers['x-page-count'], 10);
+        }
+
+        if (headers['x-total-count']) {
+            result.totalCount = parseInt(headers['x-total-count'], 10);
+        }
+
+        if (headers['x-current-page']) {
+            result.page = parseInt(headers['x-current-page'], 10);
+        }
+
+        return result;
+    }
 }
 
 const PaginationService = new Pagination();

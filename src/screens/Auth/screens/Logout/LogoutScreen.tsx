@@ -7,10 +7,10 @@ import { logout } from 'src/store/thunks/auth-thunks';
 
 const LogoutScreen: React.FunctionComponent = () => {
     const dispatch = useDispatch();
-
+    console.log('logout screen');
     useEffect(() => {
         dispatch(logout());
-    });
+    }, []);
 
     return <Redirect to={Router.generate(routes.HOME)} />;
 };

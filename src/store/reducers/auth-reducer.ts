@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { login, logout, resetPasswordRequest, validateRecoveryCode } from 'src/store/thunks/auth-thunks';
 import { ReducerState } from 'src/store/configure-store';
-import { fulfilledActionCase, pendingActionCase, rejectedActionCase } from 'src/helpers/store';
+import { takeOne } from 'src/helpers/store';
 
 export interface AuthState extends ReducerState {
     // inProgress: boolean;
@@ -12,7 +12,7 @@ export interface AuthState extends ReducerState {
 const initialState: AuthState = {
     error: '',
     loading: 'none',
-    requestId: null,
+    requestIds: [],
     // inProgress: false,
     // authorized: false,
     // error: {},
@@ -24,18 +24,18 @@ export const slice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(login.pending, pendingActionCase)
-            .addCase(login.fulfilled, fulfilledActionCase)
-            .addCase(login.rejected, rejectedActionCase)
-            .addCase(logout.pending, pendingActionCase)
-            .addCase(logout.fulfilled, fulfilledActionCase)
-            .addCase(logout.rejected, rejectedActionCase)
-            .addCase(resetPasswordRequest.pending, pendingActionCase)
-            .addCase(resetPasswordRequest.fulfilled, fulfilledActionCase)
-            .addCase(resetPasswordRequest.rejected, rejectedActionCase)
-            .addCase(validateRecoveryCode.pending, pendingActionCase)
-            .addCase(validateRecoveryCode.fulfilled, fulfilledActionCase)
-            .addCase(validateRecoveryCode.rejected, rejectedActionCase);
+            .addCase(login.pending, takeOne.pendingActionCase)
+            .addCase(login.fulfilled, takeOne.fulfilledActionCase)
+            .addCase(login.rejected, takeOne.rejectedActionCase)
+            .addCase(logout.pending, takeOne.pendingActionCase)
+            .addCase(logout.fulfilled, takeOne.fulfilledActionCase)
+            .addCase(logout.rejected, takeOne.rejectedActionCase)
+            .addCase(resetPasswordRequest.pending, takeOne.pendingActionCase)
+            .addCase(resetPasswordRequest.fulfilled, takeOne.fulfilledActionCase)
+            .addCase(resetPasswordRequest.rejected, takeOne.rejectedActionCase)
+            .addCase(validateRecoveryCode.pending, takeOne.pendingActionCase)
+            .addCase(validateRecoveryCode.fulfilled, takeOne.fulfilledActionCase)
+            .addCase(validateRecoveryCode.rejected, takeOne.rejectedActionCase);
     },
 });
 
