@@ -1,19 +1,7 @@
 @import '../../themes/theme';
 
 .button {
-    background: $main-color linear-gradient(#0d5762, #01181d);
-    color: #fff;
-    border-radius: 100px;
-    border: none;
-    padding: 10px 20px;
 
-    &:focus {
-        outline: none;
-    }
-
-    &:hover {
-        background: #0d5762 linear-gradient(#0d5762, #01181d);
-    }
 }
 
 .disabled {

@@ -30,7 +30,7 @@ const FieldInput = <C extends Control<any>>({
     <Controller
         name={props.name}
         control={control}
-        defaultValue=""
+        defaultValue={props.defaultValue || ''}
         render={({ field }) => (
             <FieldWrapper {...wrapperProps} classNames={wrapperProps?.classNames} name={props.name} error={error}>
                 <input

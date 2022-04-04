@@ -2,28 +2,29 @@ import React, { PropsWithChildren } from 'react';
 import FieldWrapper, { FieldWrapperProps } from './FieldWrapper';
 import { Controller } from 'react-hook-form';
 import { Control } from 'react-hook-form/dist/types/form';
-import DropdownList from 'react-widgets/lib/DropdownList';
+import { DropdownList } from 'react-widgets';
 import classNames, { Argument as ClassValue } from 'classnames';
 import { CommonFieldProps } from '../types/common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
-interface Props extends CommonFieldProps {
-    control: Control;
-    data: AnyObject[] | any[];
-    disabled?: boolean | AnyObject[];
+export interface Props<T extends any = any> extends CommonFieldProps {
+    control: Control<any>;
+    data: T[];
+    disabled?: boolean | T[];
     textField?: string | ((dataItem: any) => string);
     valueField?: string;
     placeholder?: string;
+    defaultValue?: string;
     busy?: boolean;
-    filter?: false | 'startsWith' | 'contains' | 'endsWith' | ((dataItem: any, str: string) => boolean);
+    filter?: false | 'startsWith' | 'contains' | ((dataItem: any, str: string) => boolean);
     wrapperProps?: FieldWrapperProps;
     inputClassName?: ClassValue;
     invalidInputClassName?: ClassValue;
     groupBy?: string | ((dataItem: any) => any);
 }
 
-const FieldDropdown: React.FunctionComponent<Props> = ({
+const FieldDropdown: React.FunctionComponent<Props> = <T extends any = any>({
     control,
     wrapperProps,
     error,
@@ -34,35 +35,36 @@ const FieldDropdown: React.FunctionComponent<Props> = ({
     filter = 'contains',
     busy = false,
     data,
+    defaultValue,
     disabled,
     textField = 'name',
     valueField = 'value',
     groupBy,
     children,
-}: PropsWithChildren<Props>) => (
+}: PropsWithChildren<Props<T>>) => (
     <Controller
         name={name as `${string}`}
         control={control}
-        defaultValue={null}
-        render={(controlledProps) => {
-            controlledProps = {
-                ...controlledProps,
+        defaultValue={defaultValue}
+        render={({ field }) => {
+            field = {
+                ...field,
                 selectIcon: <FontAwesomeIcon className={classNames(error && 'text-danger')} icon={faChevronDown} />,
             } as any;
 
             return (
                 <FieldWrapper {...wrapperProps} name={name} error={error}>
                     <DropdownList
-                        {...controlledProps}
                         containerClassName={classNames(inputClassName, error && invalidInputClassName)}
                         placeholder={placeholder}
-                        filter={filter}
                         busy={busy}
                         data={data}
                         disabled={disabled}
-                        textField={textField}
-                        valueField={valueField}
                         groupBy={groupBy}
+                        dataKey={valueField}
+                        textField={textField}
+                        filter={filter}
+                        {...field}
                     />
                     {children}
                 </FieldWrapper>

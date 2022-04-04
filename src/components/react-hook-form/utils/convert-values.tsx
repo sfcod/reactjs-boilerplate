@@ -1,5 +1,6 @@
-import { isSelectableItem } from '../../../enumerables/enumerable.abstract';
+import { isSelectableItem } from 'src/enumerables/enumerable.abstract';
 import lodash from 'lodash';
+import moment from 'moment';
 
 /**
  * Append value to form status
@@ -77,6 +78,20 @@ export const convertValuesToFormData = (values: { [key: string]: any }, formName
     return recursiveAppend(formName ? { [formName]: values } : values, new FormData());
 };
 
+const convertValue = (value: any): any => {
+    if (isSelectableItem(value)) {
+        return value.value;
+    } else if (value instanceof Date) {
+        return moment(value).format('YYYY-MM-DD[T]HH:mm:ss.SSS');
+    } else if (value instanceof Array) {
+        return value.map((element) => convertValue(element));
+    } else if (lodash.isObject(value)) {
+        return convertValuesToObject(value);
+    } else {
+        return value;
+    }
+};
+
 /**
  * Convert redux form values into object
  *
@@ -90,13 +105,7 @@ export const convertValuesToObject = (values: { [key: string]: any }): AnyObject
     const result: AnyObject = {};
 
     lodash.forEach(values, (value: any, key: string) => {
-        if (isSelectableItem(value)) {
-            result[key] = value.value;
-        } else if (lodash.isObject(value)) {
-            result[key] = convertValuesToObject(value);
-        } else {
-            result[key] = value;
-        }
+        result[key] = convertValue(value);
     });
 
     return result;

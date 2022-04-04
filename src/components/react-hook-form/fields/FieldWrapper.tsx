@@ -13,6 +13,7 @@ export interface FieldWrapperProps {
         inputContainer?: ClassValue;
     };
     label?: ReactNode;
+    noWrapper?: boolean;
 }
 
 interface Props extends FieldWrapperProps {
@@ -26,30 +27,34 @@ const FieldWrapper: React.FunctionComponent<Props> = ({
     name,
     error,
     classNames: classes,
-}: PropsWithChildren<Props>) => (
-    <div className={classNames(styles.wrapperContainer, 'form-group', classes?.wrapperContainer)}>
-        {label && (
-            <label
-                htmlFor={name}
-                className={classNames(
-                    classes?.labelContainer ?? 'form-label',
-                    error && (classes?.labelContainerError ?? 'text-danger'),
-                )}
-            >
-                {label}
-            </label>
-        )}
-        <div className={classNames(styles.inputContainer, classes?.inputContainer)}>{children}</div>
-        {error && (
-            <FormError
-                classNames={{
-                    errorMessage: classes?.errorMessage,
-                    errorContainer: classes?.errorContainer,
-                }}
-                error={error}
-            />
-        )}
-    </div>
-);
+    noWrapper,
+}: PropsWithChildren<Props>) =>
+    noWrapper ? (
+        <>{children}</>
+    ) : (
+        <div className={classNames(styles.wrapperContainer, 'form-group', classes?.wrapperContainer)}>
+            {label && (
+                <label
+                    htmlFor={name}
+                    className={classNames(
+                        classes?.labelContainer ?? 'form-label',
+                        error && (classes?.labelContainerError ?? 'text-danger'),
+                    )}
+                >
+                    {label}
+                </label>
+            )}
+            <div className={classNames(styles.inputContainer, classes?.inputContainer)}>{children}</div>
+            {error && (
+                <FormError
+                    classNames={{
+                        errorMessage: classes?.errorMessage,
+                        errorContainer: classes?.errorContainer,
+                    }}
+                    error={error}
+                />
+            )}
+        </div>
+    );
 
 export default FieldWrapper;
