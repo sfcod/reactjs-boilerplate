@@ -34,6 +34,8 @@ export interface Props<T extends Record<any, any>> {
     defaultSorting?: Partial<{ [x in keyof T]: SortDirection }>;
     renderRow?: (data: { row: Row<T>; renderedCells: ReactNode; index: number }) => ReactNode;
     renderCell?: (cell: Cell<T>) => ReactNode;
+    pageSize?: number;
+    noneText?: string;
 }
 
 const defaultColumn = {
@@ -50,6 +52,8 @@ function Grid<T extends Record<any, any>>(props: Props<T>): ReactElement {
         defaultSorting = {},
         renderRow,
         renderCell,
+        pageSize: itemsPerPage = 20,
+        noneText = 'No results',
         scrollableByXAxis = false,
     } = props;
     const instance = useTable<T>(
@@ -63,7 +67,7 @@ function Grid<T extends Record<any, any>>(props: Props<T>): ReactElement {
             pageCount: Math.max(1, data.totalPages ?? 1),
             initialState: {
                 pageIndex: data.page - 1,
-                pageSize: 20,
+                pageSize: itemsPerPage,
                 sortBy: defaultSorting
                     ? Object.entries(defaultSorting).map(([id, order]) => ({ id, desc: order === 'DESC' }))
                     : undefined,
@@ -179,7 +183,7 @@ function Grid<T extends Record<any, any>>(props: Props<T>): ReactElement {
                         ) : (
                             <tr>
                                 <td colSpan={100} className={classNames(styles.empty, 'text-center', 'py-4')}>
-                                    No results
+                                    {noneText}
                                 </td>
                             </tr>
                         )}
@@ -187,18 +191,20 @@ function Grid<T extends Record<any, any>>(props: Props<T>): ReactElement {
                 </table>
                 {/*</div>*/}
             </div>
-            <div className={classNames('card-footer')}>
-                <div className={classNames('row')}>
-                    <div className={classNames('col-sm-12', 'col-md-5')}>
-                        {!!data.list.length && (
-                            <GridInfo page={pageIndex + 1} pageSize={pageSize} totalCount={data.totalCount} />
-                        )}
-                    </div>
-                    <div className={classNames('col-sm-12', 'col-md-7')}>
-                        {!!data.list.length && <Pagination<T> table={instance} />}
+            {data.list.length && (
+                <div className={classNames('card-footer')}>
+                    <div className={classNames('row')}>
+                        <div className={classNames('col-sm-12', 'col-md-5')}>
+                            {!!data.list.length && (
+                                <GridInfo page={pageIndex + 1} pageSize={pageSize} totalCount={data.totalCount} />
+                            )}
+                        </div>
+                        <div className={classNames('col-sm-12', 'col-md-7')}>
+                            {!!data.list.length && <Pagination<T> table={instance} />}
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }
