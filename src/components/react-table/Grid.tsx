@@ -191,7 +191,7 @@ function Grid<T extends Record<any, any>>(props: Props<T>): ReactElement {
                 </table>
                 {/*</div>*/}
             </div>
-            {data.list.length > 0 && (data.totalPages || 0) > 0 && (
+            {(data.totalPages || 0) > 0 && (
                 <div className={classNames('card-footer')}>
                     <div className={classNames('row')}>
                         <div className={classNames('col-sm-12', 'col-md-5')}>
