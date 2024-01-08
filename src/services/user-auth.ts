@@ -1,6 +1,6 @@
 import { CookieStorageService } from './storage/cookie-storage';
-import { Storage } from './storage/storage.interface';
-import decodeJwt from 'jwt-decode';
+import type { Storage } from './storage/storage.interface';
+import { jwtDecode } from 'jwt-decode';
 
 const LOGGED_KEY = 'logged';
 const TOKEN_KEY = 'token';
@@ -18,7 +18,7 @@ export class UserAuth {
         this.setLoggedIn(true);
         this.setToken(token, remember ? 365 : 1);
 
-        const decoded: { username: string; roles: string[] } = decodeJwt(token);
+        const decoded: { username: string; roles: string[] } = jwtDecode(token);
 
         this.setData({ username: decoded.username, roles: decoded.roles });
         this.setRoles(decoded.roles);

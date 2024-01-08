@@ -1,4 +1,4 @@
-import { Voter } from '../voter.interface';
+import type { Voter } from '../voter.interface';
 import user from '../../services/user-auth';
 
 class RoleVoter implements Voter {

@@ -1,7 +1,7 @@
 import * as React from 'react';
-import DropdownList from 'react-widgets/lib/DropdownList';
-import { SelectableItem } from '../../../enumerables/enumerable.abstract';
-import { FilterProps } from './types';
+import { DropdownList } from 'react-widgets';
+import type { SelectableItem } from '../../../enumerables/enumerable.abstract';
+import type { FilterProps } from './types';
 
 function dropdownFilter<T extends Record<string, unknown>>(
     data: SelectableItem[],
@@ -12,7 +12,7 @@ function dropdownFilter<T extends Record<string, unknown>>(
         };
 
         return (
-            <DropdownList data={data} textField="name" valueField="value" onChange={handleChange} value={filterValue} />
+            <DropdownList data={data} textField="name" dataKey="value" onChange={handleChange} value={filterValue} />
         );
     });
 }

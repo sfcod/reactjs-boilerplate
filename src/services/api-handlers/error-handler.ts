@@ -1,6 +1,6 @@
 // import NavigationService from "src/navigation/NavigationService";
 // import routes from "src/navigation/routes";
-import { ResolverApiFailure } from 'src/services/api-handlers/api-resolver';
+import type { ResolverApiFailure } from 'src/services/api-handlers/api-resolver';
 // import {ToastService} from "src/services/toast";
 // import {UserAuthService} from "src/services/user-auth";
 

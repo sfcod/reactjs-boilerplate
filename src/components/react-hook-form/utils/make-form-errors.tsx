@@ -1,10 +1,10 @@
 import isArray from 'lodash/isArray';
-import { ErrorOption, FieldErrors } from 'react-hook-form';
-import { FieldPath } from 'react-hook-form/dist/types/utils';
+import type { ErrorOption, FieldErrors, FieldValues } from 'react-hook-form';
+import type { FieldPath } from 'react-hook-form';
 
 export type GlobalError = FieldErrors<{ _error: string }>;
 
-export interface FormError<T> {
+export interface FormError<T extends FieldValues> {
     field: FieldPath<T>;
     error: {
         type: 'manual';
@@ -12,7 +12,7 @@ export interface FormError<T> {
     };
 }
 
-export type FormErrors<T> = FormError<T>[];
+export type FormErrors<T extends FieldValues> = FormError<T>[];
 
 interface Violation<T> {
     property: keyof T;
@@ -27,7 +27,7 @@ interface ErrorResponse<T> {
     statusCode: number;
 }
 
-export function makeFormErrorsFromResponse<T>({ error, message }: ErrorResponse<T>): FormErrors<T> {
+export function makeFormErrorsFromResponse<T extends FieldValues>({ error, message }: ErrorResponse<T>): FormErrors<T> {
     const result: FormErrors<T> = [];
 
     if (isArray(message)) {
@@ -56,7 +56,7 @@ export function makeFormErrorsFromResponse<T>({ error, message }: ErrorResponse<
     return result;
 }
 
-export function makeFormErrors<T>(
+export function makeFormErrors<T extends FieldValues>(
     errors: { [P in keyof T]: string } | { _error: string },
 ): FormErrors<T | { _error: string }> {
     const result: FormErrors<T | { _error: string }> = [];
@@ -74,12 +74,14 @@ export function makeFormErrors<T>(
     return result;
 }
 
-export function withErrors<T>(
+export function withErrors<T extends FieldValues>(
     promise: Promise<any>,
     setError: (name: FieldPath<T>, error: ErrorOption) => void,
 ): Promise<any> {
     return promise.catch((errors: FormErrors<T>) => {
-        errors.forEach((item) => setError(item.field, item.error));
+        if (errors instanceof Array) {
+            errors.forEach((item) => setError(item.field, item.error));
+        }
 
         return false;
     });

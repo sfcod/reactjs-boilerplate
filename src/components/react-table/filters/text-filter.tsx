@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { ChangeEvent, useEffect, useState } from 'react';
+import type { ChangeEvent } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { FilterProps } from './types';
+import type { FilterProps } from './types';
 
 let timeoutInstance: any = null;
 

@@ -1,9 +1,12 @@
-import { CommonFieldProps } from '../types/common';
-import FieldWrapper, { FieldWrapperProps } from './FieldWrapper';
-import { Control } from 'react-hook-form/dist/types/form';
+import type { CommonFieldProps } from '../types/common';
+import type { FieldWrapperProps } from './FieldWrapper';
+import FieldWrapper from './FieldWrapper';
+import type { Control } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
-import classNames, { Argument as ClassValue } from 'classnames';
-import React, { DetailedHTMLProps, InputHTMLAttributes, PropsWithChildren } from 'react';
+import type { Argument as ClassValue } from 'classnames';
+import classNames from 'classnames';
+import type { DetailedHTMLProps, InputHTMLAttributes, PropsWithChildren } from 'react';
+import React from 'react';
 
 interface FieldInputProps<Control> extends CommonFieldProps {
     wrapperProps?: FieldWrapperProps;

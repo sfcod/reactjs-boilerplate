@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { login, logout, resetPasswordRequest, validateRecoveryCode } from 'src/store/thunks/auth-thunks';
-import { ReducerState } from 'src/store/configure-store';
+import type { ReducerState } from 'src/store/configure-store';
 import { takeOne } from 'src/helpers/store';
 
 export interface AuthState extends ReducerState {
@@ -10,9 +10,9 @@ export interface AuthState extends ReducerState {
 }
 
 const initialState: AuthState = {
-    error: '',
+    errors: {},
     loading: 'none',
-    requestIds: [],
+    requestIds: {},
     // inProgress: false,
     // authorized: false,
     // error: {},

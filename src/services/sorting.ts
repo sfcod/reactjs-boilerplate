@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import { SortDirection } from '../types/grid';
+import type { SortDirection } from '../types/grid';
 
 class Sorting {
     public makeOrder(sorting?: { [T: string]: SortDirection }): { [T: string]: SortDirection } {

@@ -1,4 +1,4 @@
-import { AxiosPromise } from 'axios';
+import type { AxiosPromise } from 'axios';
 import { EndPointService } from 'src/services/api-handlers/axios';
 
 function login(username: string, password: string): AxiosPromise<any> {

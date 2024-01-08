@@ -3,7 +3,7 @@ import styles from './assets/header.module.scss';
 import classNames from 'classnames';
 import logo from './assets/images/logo.png';
 import { Link } from 'react-router-dom';
-import { routes } from '../../navigation';
+import routes from 'src/navigation/routes';
 import Router from '../../navigation/router';
 
 const Header: React.FunctionComponent = () => {

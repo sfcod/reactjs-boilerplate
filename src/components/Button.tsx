@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 import styles from './assets/button.module.scss';
 import classNames from 'classnames';
 
@@ -12,14 +13,14 @@ interface Props {
 }
 
 const Button: React.FunctionComponent<Props & React.HTMLProps<HTMLButtonElement>> = ({
-     children,
-     type,
-     onClick,
-     className,
-     disabled,
-     loading,
-     ...rest
- }: Props) => (
+    children,
+    type,
+    onClick,
+    className,
+    disabled,
+    loading,
+    ...rest
+}: Props) => (
     <button
         type={type}
         onClick={onClick}

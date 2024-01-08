@@ -1,9 +1,8 @@
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { resolveApiCall } from './api-resolver';
 import lodash from 'lodash';
-import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
-import { ReducerState, StoreState } from 'src/store/configure-store';
-import { Dispatch } from 'redux';
+import type { BaseThunkAPI, ReducerState, StoreState } from 'src/store/configure-store';
+import type { Dispatch } from 'redux';
 
 export interface PaginatedBaseMeta {
     updatedAt?: number;
@@ -16,7 +15,10 @@ export interface ListTypeMeta<T, M extends PaginatedBaseMeta> {
     meta: M;
 }
 
-export type CallbackType<T, M> = ListType<T> | ListTypeMeta<T, M> | AxiosResponse<ListType<T>>;
+export type CallbackType<T, M extends PaginatedBaseMeta> =
+    | ListType<T>
+    | ListTypeMeta<T, M>
+    | AxiosResponse<ListType<T>>;
 
 export interface Paginated<T, M extends PaginatedBaseMeta = Record<string, unknown>> {
     list: ListType<T>;
@@ -33,7 +35,7 @@ class Pagination {
     private infinity = false;
 
     public async resolveApiCall<
-        ThunkAPI extends BaseThunkAPI<StoreState, any, Dispatch, any>,
+        ThunkAPI extends BaseThunkAPI<StoreState, any, Dispatch>,
         State extends ReducerState,
         DataType,
         Meta extends PaginatedBaseMeta = Record<string, any>,
@@ -84,15 +86,15 @@ class Pagination {
             if (result.hasOwnProperty('headers')) {
                 const parsed = Pagination.parseHeaders((result as AxiosResponse<ListType<T>>).headers);
 
-                if (parsed.pageSize) {
+                if (typeof parsed.pageSize === 'number') {
                     newData.pageSize = parsed.pageSize;
                 }
 
-                if (parsed.totalPages) {
+                if (typeof parsed.totalPages === 'number') {
                     newData.totalPages = parsed.totalPages;
                 }
 
-                if (parsed.totalCount) {
+                if (typeof parsed.totalCount === 'number') {
                     newData.totalCount = parsed.totalCount;
                 }
             }

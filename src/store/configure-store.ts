@@ -1,12 +1,13 @@
 import rootReducer from './reducers';
-import { routerMiddleware } from 'connected-react-router';
-import history from '../navigation/history';
+import type { createAsyncThunk } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
 
 export const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) => {
-        return getDefaultMiddleware().concat(routerMiddleware(history));
+        return getDefaultMiddleware({
+            serializableCheck: false,
+        });
     },
     devTools: process.env.NODE_ENV === 'development',
 });
@@ -14,8 +15,8 @@ export const store = configureStore({
 export type StoreState = ReturnType<typeof store.getState>;
 export type ReducerState = {
     loading: 'loading' | 'loaded' | 'none';
-    requestIds: string[];
-    error: string;
+    requestIds: Record<string, string[]>;
+    errors: Record<string, string>;
 };
 export type AppDispatch = typeof store.dispatch;
 
@@ -23,3 +24,12 @@ export type ThunkConfig = {
     state: StoreState;
     rejectValue: any; // TODO: think about type here
 };
+
+type ThunkApiConfig<State, Extra, Dispatch> = {
+    state: State;
+    dispatch: Dispatch;
+    extra: Extra;
+};
+
+type CreateThunk<T> = typeof createAsyncThunk<T>;
+export type BaseThunkAPI<S, T, D> = Parameters<Parameters<CreateThunk<ThunkApiConfig<S, T, D>>>[1]>[1];

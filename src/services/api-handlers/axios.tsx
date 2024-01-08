@@ -1,6 +1,7 @@
-import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import UserAuthService from '../user-auth';
-import { API_URL } from '../../config/env';
+import { API_URL } from 'src/config/env';
 
 // Set default params and headers for axios
 axios.defaults.baseURL = API_URL;

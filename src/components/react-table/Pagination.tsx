@@ -1,6 +1,7 @@
-import React, { ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import React from 'react';
 import classNames from 'classnames';
-import { TableInstance } from 'react-table';
+import type { TableInstance } from 'react-table';
 import PageItem from './PageItem';
 import styles from './assets/pagination.module.scss';
 

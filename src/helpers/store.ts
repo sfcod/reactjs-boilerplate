@@ -1,11 +1,16 @@
-import {
-    AsyncThunkFulfilledActionCreator,
-    AsyncThunkPendingActionCreator,
-    AsyncThunkRejectedActionCreator,
-} from '@reduxjs/toolkit/dist/createAsyncThunk';
-import { ReducerState, ThunkConfig } from 'src/store/configure-store';
-import { Paginated } from 'src/services/api-handlers/pagination';
-import { PayloadAction } from '@reduxjs/toolkit';
+import type { AsyncThunk } from '@reduxjs/toolkit';
+import type { ReducerState, StoreState, ThunkConfig } from 'src/store/configure-store';
+import type { Paginated } from 'src/services/api-handlers/pagination';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSelector } from '@reduxjs/toolkit';
+
+type AsyncThunkPendingActionCreator<A, C extends ThunkConfig> = AsyncThunk<any, A, C>['pending'];
+type AsyncThunkRejectedActionCreator<A, C extends ThunkConfig> = AsyncThunk<any, A, C>['rejected'];
+type AsyncThunkFulfilledActionCreator<R, A, C extends ThunkConfig> = AsyncThunk<R, A, C>['fulfilled'];
+
+const getActionType = (type: string) => {
+    return type.replace(/\/(fulfilled|rejected|pending)$/, '');
+};
 
 const onePendingActionCase = <
     S extends ReducerState,
@@ -15,13 +20,11 @@ const onePendingActionCase = <
     action: A,
     callback?: (state: S, action: A) => void,
 ) => {
-    if (state.loading !== 'loading') {
-        // remove all other request ids from state
-        state.requestIds = [action.meta.requestId];
-        state.loading = 'loading';
-        state.error = '';
-        callback && callback(state, action);
-    }
+    // remove all other request ids from state
+    state.requestIds[getActionType(action.type)] = [action.meta.requestId];
+    state.loading = 'loading';
+    state.errors[getActionType(action.type)] = '';
+    callback && callback(state, action);
 };
 
 const everyPendingActionCase = <
@@ -32,13 +35,12 @@ const everyPendingActionCase = <
     action: A,
     callback?: (state: S, action: A) => void,
 ) => {
-    // remove all other request ids from state
-    state.requestIds.push(action.meta.requestId);
-    if (state.loading !== 'loading') {
-        state.loading = 'loading';
-        state.error = '';
-        callback && callback(state, action);
-    }
+    // push to existing request ids in state
+    state.requestIds[getActionType(action.type)] = state.requestIds[getActionType(action.type)] || [];
+    state.requestIds[getActionType(action.type)].push(action.meta.requestId);
+    state.loading = 'loading';
+    state.errors[getActionType(action.type)] = '';
+    callback && callback(state, action);
 };
 
 const fulfilledActionCase = <
@@ -49,12 +51,18 @@ const fulfilledActionCase = <
     action: A,
     callback?: (state: S, action: A) => void,
 ) => {
-    if (state.loading === 'loading' && state.requestIds.includes(action.meta.requestId)) {
-        state.loading = state.requestIds.length > 1 ? state.loading : 'loaded';
+    const requestIds = state.requestIds[getActionType(action.type)] || [];
+    if (requestIds.includes(action.meta.requestId)) {
+        const allRequestIds = Object.values(state.requestIds).reduce((prev, cur) => {
+            prev.push(...cur);
+            return prev;
+        }, []);
+
+        state.loading = allRequestIds.length > 1 ? state.loading : 'loaded';
         callback && callback(state, action);
     }
 
-    state.requestIds = state.requestIds.filter((rid) => rid !== action.meta.requestId);
+    state.requestIds[getActionType(action.type)] = requestIds.filter((rid) => rid !== action.meta.requestId);
 };
 
 const rejectedActionCase = <
@@ -65,13 +73,19 @@ const rejectedActionCase = <
     action: A,
     callback?: (state: S, action: A) => void,
 ) => {
-    if (state.loading === 'loading' && state.requestIds.includes(action.meta.requestId)) {
-        state.error = action.payload?.message || '';
-        state.loading = state.requestIds.length > 1 ? state.loading : 'loaded';
+    const requestIds = state.requestIds[getActionType(action.type)] || [];
+    if (requestIds.includes(action.meta.requestId)) {
+        const allRequestIds = Object.values(state.requestIds).reduce((prev, cur) => {
+            prev.push(...cur);
+            return prev;
+        }, []);
+
+        state.errors[getActionType(action.type)] = action.payload?.message || '';
+        state.loading = allRequestIds.length > 1 ? state.loading : 'loaded';
         callback && callback(state, action);
     }
 
-    state.requestIds = state.requestIds.filter((rid) => rid !== action.meta.requestId);
+    state.requestIds[getActionType(action.type)] = requestIds.filter((rid) => rid !== action.meta.requestId);
 };
 
 export const takeOne = {
@@ -162,4 +176,19 @@ export const crudHelpers = {
     afterCreate,
     afterUpdate,
     afterDelete,
+};
+
+export const createLoadingSelector = (stateSelector: (store: StoreState) => ReducerState) => {
+    const selector = createSelector(
+        [stateSelector, (state: any, action?: AsyncThunk<any, any, any>) => action],
+        (state, action) => {
+            if (action) {
+                return state.requestIds[getActionType(action.typePrefix)]?.length > 0;
+            }
+
+            return state.loading === 'loading';
+        },
+    );
+
+    return (action: AsyncThunk<any, any, any>) => (state: StoreState) => selector(state, action);
 };

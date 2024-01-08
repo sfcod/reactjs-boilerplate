@@ -1,18 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { listUsers } from 'src/store/thunks/user-thunks';
-import { ReducerState } from 'src/store/configure-store';
+import type { ReducerState } from 'src/store/configure-store';
 import { takeOne } from 'src/helpers/store';
-import { Paginated } from 'src/services/api-handlers/pagination';
-import { User } from 'src/types/user';
+import type { Paginated } from 'src/services/api-handlers/pagination';
+import type { User } from 'src/types/user';
 
 export interface UserState extends ReducerState {
     data: Paginated<User>;
 }
 
 const initialState: UserState = {
-    error: '',
+    errors: {},
     loading: 'none',
-    requestIds: [],
+    requestIds: {},
     data: {
         list: [],
         page: 1,

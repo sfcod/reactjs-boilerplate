@@ -1,43 +1,42 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { LoginFormData } from 'src/screens/Auth/screens/Login/components/LoginForm';
-import { ThunkConfig } from 'src/store/configure-store';
+import type { ThunkConfig } from 'src/store/configure-store';
 import { resolveApiCall } from 'src/services/api-handlers/api-resolver';
 import { AuthApi } from 'src/services/end-points';
 import UserAuthService from 'src/services/user-auth';
-import { push } from 'connected-react-router';
-import Router from 'src/navigation/router';
-import routes from 'src/navigation/routes';
 import { makeFormErrors } from 'src/components/react-hook-form/utils/make-form-errors';
-import { RecoveryRequestFormData } from 'src/screens/Auth/screens/PasswordRecovery/components/RecoveryRequestForm';
-import { ValidateCodeFormData } from 'src/screens/Auth/screens/PasswordRecovery/components/ValidateCodeForm';
-import { ResetPasswordFormData } from 'src/screens/Auth/screens/PasswordRecovery/components/UpdatePasswordForm';
+import { AxiosError } from 'axios';
+import type {
+    LoginData,
+    RecoveryRequestFormData,
+    ResetPasswordFormData,
+    ValidateCodeFormData,
+} from '../../types/auth.ts';
 
-export const login = createAsyncThunk<void, LoginFormData, ThunkConfig>('auth/login', async (payload, thunkAPI) => {
-    const { dispatch, getState } = thunkAPI;
-    const { auth } = getState();
-
-    return resolveApiCall(
-        thunkAPI,
-        auth,
-        async () => {
-            const { data } = await AuthApi.login(payload.username, payload.password);
-            await UserAuthService.login(data.token);
-            dispatch(push(Router.generate(routes.HOME)));
-        },
-        async (err) => {
-            const { response } = err;
-            return makeFormErrors<LoginFormData>({
-                _error: response?.status < 500 ? 'Incorrect email or password' : 'Something went wrong',
-            });
-        },
-    );
+export const login = createAsyncThunk<void, LoginData, ThunkConfig>('auth/login', async (payload, thunkAPI) => {
+    try {
+        const { data } = await AuthApi.login(payload.username, payload.password);
+        await UserAuthService.login(data.token, data.refreshToken);
+    } catch (err) {
+        const { response } = err as any;
+        const error = (() => {
+            if ((err as any)?.code == AxiosError.ERR_NETWORK) {
+                return 'No internet connection. Check your network and try again';
+            }
+            if (response?.status < 500) {
+                return response.data.message || 'Incorrect email or password';
+            }
+            return 'Something went wrong';
+        })();
+        return thunkAPI.rejectWithValue(
+            makeFormErrors<LoginData>({
+                _error: error,
+            }),
+        );
+    }
 });
 
-export const logout = createAsyncThunk<void, void, ThunkConfig>('auth/logout', async (payload, thunkAPI) => {
-    const { dispatch } = thunkAPI;
-
+export const logout = createAsyncThunk<void, void, ThunkConfig>('auth/logout', async () => {
     await UserAuthService.logout();
-    dispatch(push(Router.generate(routes.HOME)));
 });
 
 export const resetPasswordRequest = createAsyncThunk<void, RecoveryRequestFormData, ThunkConfig>(

@@ -1,6 +1,6 @@
-import { StoreState } from 'src/store/configure-store';
-import { Paginated } from 'src/services/api-handlers/pagination';
-import { User } from 'src/types/user';
+import type { StoreState } from 'src/store/configure-store';
+import type { Paginated } from 'src/services/api-handlers/pagination';
+import type { User } from 'src/types/user';
 
 export const usersSelector = (state: StoreState): Paginated<User> => state.user.data;
 // export const usersErrorSelector = (state: StoreState): string => state.user.error;

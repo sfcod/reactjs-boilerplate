@@ -1,5 +1,7 @@
-import React, { PropsWithChildren, ReactNode } from 'react';
-import classNames, { Argument as ClassValue } from 'classnames';
+import type { PropsWithChildren, ReactNode } from 'react';
+import React from 'react';
+import type { Argument as ClassValue } from 'classnames';
+import classNames from 'classnames';
 import styles from '../assets/wrapper-input.module.scss';
 import FormError from '../FormError';
 
@@ -21,14 +23,14 @@ interface Props extends FieldWrapperProps {
     error?: string;
 }
 
-const FieldWrapper: React.FunctionComponent<Props> = ({
+const FieldWrapper: React.FunctionComponent<PropsWithChildren<Props>> = ({
     label,
     children,
     name,
     error,
     classNames: classes,
     noWrapper,
-}: PropsWithChildren<Props>) =>
+}) =>
     noWrapper ? (
         <>{children}</>
     ) : (

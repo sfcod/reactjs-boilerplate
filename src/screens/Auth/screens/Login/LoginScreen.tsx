@@ -6,7 +6,7 @@ import MainLayout from 'src/components/layout/MainLayout';
 import UserAuthService from '../../../../services/user-auth';
 import { Link } from 'react-router-dom';
 import Router from '../../../../navigation/router';
-import { routes } from '../../../../navigation';
+import routes from 'src/navigation/routes';
 import { useDispatch } from 'src/hooks/dispatch';
 import { useSelector } from 'react-redux';
 import { usersSelector } from 'src/store/selectors/user-selectors';
@@ -39,7 +39,7 @@ const LoginScreen: React.FC<Props> = () => {
                     <div className={classNames('row')}>
                         <div className={classNames('col-lg-12', 'py-2')}>
                             <div className={classNames(styles.noteHeading, 'mb-4')}>
-                                You are logged as {UserAuthService.getData()?.username}
+                                You are logged as {String(UserAuthService.getData()?.username)}
                             </div>
                             <div className={classNames('mb-4')}>
                                 <Link to={Router.generate(routes.LOGOUT)} className={classNames('btn', 'btn-primary')}>

@@ -1,8 +1,7 @@
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import ErrorHandlerService from 'src/services/api-handlers/error-handler';
-import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
-import { ReducerState, StoreState } from 'src/store/configure-store';
-import { Dispatch } from 'redux';
+import type { BaseThunkAPI, ReducerState, StoreState } from 'src/store/configure-store';
+import type { Dispatch } from 'redux';
 
 export interface ResolverApi {
     type: string;
@@ -15,7 +14,7 @@ export interface ResolverApiSuccess {
 }
 
 export interface ResolverApiFailure {
-    error: AxiosError;
+    error: AxiosError<any>;
 }
 
 export interface ResolverActionSuccess extends ResolverApiSuccess {
@@ -52,24 +51,30 @@ export function isPromise(obj: any): boolean {
     return !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.next === 'function';
 }
 
-export const resolveApiCall = async <T extends BaseThunkAPI<StoreState, any, Dispatch, any>, K extends ReducerState>(
+export const resolveApiCall = async <T extends BaseThunkAPI<StoreState, any, Dispatch>, K extends ReducerState>(
     thunkApi: T,
     state: K,
     executor: () => Promise<any>,
     onError?: (err: any) => Promise<any>,
-) => {
+): Promise<any> => {
     const { requestId, rejectWithValue, signal } = thunkApi;
     const { loading, requestIds } = state;
-    if (loading !== 'loading' || !requestIds.includes(requestId)) {
+    const requestIdExists = Object.entries(requestIds).find(([, ids]) => {
+        return ids.includes(requestId);
+    });
+
+    if (loading !== 'loading' || !requestIdExists) {
         return;
     }
 
-    try {
-        if (!signal.aborted) {
-            return await executor();
+    return await new Promise(async (resolve, reject) => {
+        try {
+            if (!signal.aborted) {
+                resolve(await executor());
+            }
+        } catch (error: any) {
+            handleError({ error });
+            return reject(rejectWithValue(onError ? await onError(error) : error));
         }
-    } catch (error: any) {
-        handleError({ error });
-        return rejectWithValue(onError ? await onError(error) : error);
-    }
+    });
 };

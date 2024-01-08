@@ -1,9 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { ThunkConfig } from 'src/store/configure-store';
-import { Paginated, PaginationService } from 'src/services/api-handlers/pagination';
-import { QueryParams } from 'src/types/grid';
+import type { ThunkConfig } from 'src/store/configure-store';
+import type { Paginated } from 'src/services/api-handlers/pagination';
+import { PaginationService } from 'src/services/api-handlers/pagination';
+import type { QueryParams } from 'src/types/grid';
 import SortingService from '../../services/sorting';
-import { User } from 'src/types/user';
+import type { User } from 'src/types/user';
 import { UserApi } from 'src/services/end-points';
 
 export const listUsers = createAsyncThunk<Paginated<User>, QueryParams, ThunkConfig>(
