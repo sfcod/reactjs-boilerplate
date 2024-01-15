@@ -17,9 +17,14 @@ function updatePassword(payload: { password: string; passwordRepeat: string }): 
     return EndPointService.post('/users/reset-password', payload);
 }
 
+const refresh = (refreshToken: any): AxiosPromise<any> => {
+    return EndPointService.post(`/refresh`, { refreshToken });
+};
+
 export default {
     login,
     resetPasswordRequest,
     validateResetPasswordToken,
     updatePassword,
+    refresh,
 };

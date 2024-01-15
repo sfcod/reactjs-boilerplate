@@ -11,19 +11,46 @@ export interface SelectableItem {
  *
  * @param x
  */
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function isSelectableItem(x: any): x is SelectableItem {
-    return typeof x === 'object' && Object.keys(x).length === 2 && 'name' in x && 'value' in x;
+    return x && typeof x === 'object' && 'name' in x && 'value' in x;
 }
 
 /**
  * Abstract enumerable
  */
-export abstract class EnumerableAbstract {
+export abstract class EnumerableAbstract<T extends string | number = string | number> {
+    protected fetchedChoices: Record<any, any> = {};
+
     /**
-     * List status
+     * Name as it called on BE
      */
-    public abstract listData(): { [key: number]: any };
+    public abstract getName(): string;
+
+    /**
+     * Edit default choices (they may be overridden with choices fetched from BE)
+     */
+    protected abstract defaultChoices(): Record<T, string>;
+
+    /**
+     * Returns resulted choices
+     */
+    public choices(): Record<T, any> {
+        return {
+            ...this.defaultChoices(),
+            ...this.fetchedChoices,
+        };
+    }
+
+    /**
+     * Set choices fetched from BE
+     *
+     * @param choices
+     */
+    public setFetchedChoices(choices: SelectableItem[]): void {
+        choices.map(({ value, name }) => {
+            this.fetchedChoices[value] = name;
+        });
+    }
 
     /**
      * Get text using id
@@ -31,17 +58,17 @@ export abstract class EnumerableAbstract {
      * @returns {*}
      * @param key
      */
-    public getLabel(key: number): string {
-        const label = this.listData()[key];
+    public getLabel(key: T): string {
+        const label = this.choices()[key];
 
-        return label !== 'undefined' ? label : key;
+        return label !== 'undefined' ? label : String(key);
     }
 
     /**
      * Map status for dropdown/select
      */
-    public mapData(exclude: number[] = []): SelectableItem[] {
-        const data = this.listData();
+    public mapData(exclude: T[] = []): SelectableItem[] {
+        const data = this.choices();
         const result: SelectableItem[] = [];
 
         for (const key of exclude) {
@@ -51,7 +78,7 @@ export abstract class EnumerableAbstract {
         // eslint-disable-next-line
         Object.keys(data).map((key: any) => {
             result.push({
-                name: data[key],
+                name: data[key as T],
                 value: !isNaN(parseFloat(key)) && isFinite(key as any) ? parseFloat(key) : key,
             });
         });

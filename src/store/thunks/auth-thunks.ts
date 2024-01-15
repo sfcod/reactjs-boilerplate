@@ -71,7 +71,7 @@ export const validateRecoveryCode = createAsyncThunk<void, ValidateCodeFormData,
             auth,
             async () => {
                 const { data } = await AuthApi.validateResetPasswordToken(payload);
-                await UserAuthService.login(data.token);
+                await UserAuthService.login(data.token, data.refreshToken);
             },
             async (err) => {
                 const { response } = err;

@@ -1,6 +1,7 @@
 // import NavigationService from "src/navigation/NavigationService";
 // import routes from "src/navigation/routes";
 import type { ResolverApiFailure } from 'src/services/api-handlers/api-resolver';
+import { toast } from 'react-toastify';
 // import {ToastService} from "src/services/toast";
 // import {UserAuthService} from "src/services/user-auth";
 
@@ -38,6 +39,11 @@ class ErrorHandler {
         console.info('ErrorHandler - handle401Error', result);
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public handle400Error = (result: ResolverApiFailure, callback?: () => void): void => {
+        console.info('ErrorHandler - handle400Error', result);
+    };
+
     public handle5xxError = (result: ResolverApiFailure, callback?: () => void): void => {
         if (new Date().getTime() - this.last5xxError < ErrorHandler.DELAY_5XX) {
             return;
@@ -45,7 +51,7 @@ class ErrorHandler {
 
         this.last5xxError = new Date().getTime();
 
-        this.handleCallback(callback);
+        this.handleCallback(callback || (() => toast.error('Something went wrong')));
 
         if (process.env.NODE_ENV === 'development') {
             console.error('Something gone wrong', result.error);
