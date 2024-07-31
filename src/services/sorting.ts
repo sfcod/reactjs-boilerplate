@@ -1,18 +1,16 @@
 import lodash from 'lodash';
+import type { SortDirection } from '../types/grid';
 
 class Sorting {
-    public makeOrder(sorting?: AnyObject): string | null {
+    public makeOrder(sorting?: { [T: string]: SortDirection }): { [T: string]: SortDirection } {
+        const order: { [T: string]: SortDirection } = {};
+
         if (!sorting) {
-            return null;
+            return order;
         }
 
-        let order: string | null = null;
-        lodash.forEach(sorting, (value: any, key: string) => {
-            if (order === null) {
-                order = '';
-            }
-
-            order += `${value === 'asc' ? '+' : '-'}${key}`;
+        lodash.forEach(sorting, (value: SortDirection, key: string) => {
+            order[`sort[${key}]`] = value;
         });
 
         return order;

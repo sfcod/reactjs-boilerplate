@@ -1,6 +1,7 @@
-import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import UserAuthService from '../user-auth';
-import { API_URL } from '../../config/env';
+import { API_URL } from 'src/config/env';
 
 // Set default params and headers for axios
 axios.defaults.baseURL = API_URL;
@@ -20,34 +21,34 @@ class Axios {
     //     this.authorizationToken = '';
     // }
 
-    public get(endPoint: string, config: AnyObject = {}): AxiosPromise {
-        return axios.get(endPoint, this.addHeaders(config));
+    public get(endPoint: string, params: AnyObject = {}, config: AnyObject = {}): AxiosPromise<any> {
+        return axios.get(endPoint, this.addHeaders({ ...config, params }));
     }
 
-    public post(endPoint: string, params: AnyObject = {}, config: AnyObject = {}): AxiosPromise {
+    public post(endPoint: string, params: AnyObject = {}, config: AnyObject = {}): AxiosPromise<any> {
         return axios.post(endPoint, params, this.addHeaders(config));
     }
 
-    public put(endPoint: string, params: AnyObject = {}, config: AnyObject = {}): AxiosPromise {
+    public put(endPoint: string, params: AnyObject = {}, config: AnyObject = {}): AxiosPromise<any> {
         return axios.put(endPoint, params, this.addHeaders(config));
     }
 
-    public patch(endPoint: string, params: AnyObject = {}, config: AnyObject = {}): AxiosPromise {
+    public patch(endPoint: string, params: AnyObject = {}, config: AnyObject = {}): AxiosPromise<any> {
         return axios.patch(endPoint, params, this.addHeaders(config));
     }
 
-    public delete(endPoint: string, config: AnyObject = {}): AxiosPromise {
+    public delete(endPoint: string, config: AnyObject = {}): AxiosPromise<any> {
         return axios.delete(endPoint, this.addHeaders(config));
     }
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    public delay(time: number, args?: any): AxiosPromise {
+    public delay(time: number, args?: any): AxiosPromise<any> {
         return new Promise((resolve) => {
             setTimeout(resolve.bind(null, args), time);
         });
     }
 
-    public axios(config: AxiosRequestConfig): AxiosPromise {
+    public axios(config: AxiosRequestConfig): AxiosPromise<any> {
         const resultConfig = this.addHeaders(config);
 
         return axios(resultConfig);

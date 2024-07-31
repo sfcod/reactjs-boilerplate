@@ -1,4 +1,4 @@
-import { Actions } from 'src/store/actions/app-actions';
+import { createSlice } from '@reduxjs/toolkit';
 
 export interface BaseConfig {}
 
@@ -7,13 +7,23 @@ export interface AppState {
 }
 
 // Define initial state
-const initialState = {
+const initialState: AppState = {
     baseConfig: {},
 };
 
-export function app(state: AppState = initialState, action: Actions | any): AppState {
-    switch (action.type) {
-        default:
-            return state;
-    }
-}
+export const slice = createSlice({
+    name: 'app',
+    initialState,
+    reducers: {
+        appMount: () => {
+            console.log('App mounted');
+        },
+        appRedirectToDefault: () => {
+            console.log('User logged');
+        },
+    },
+});
+
+export const { appMount, appRedirectToDefault } = slice.actions;
+
+export default slice.reducer;

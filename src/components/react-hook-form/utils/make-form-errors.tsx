@@ -1,48 +1,54 @@
 import isArray from 'lodash/isArray';
-import { ErrorOption, FieldErrors, FieldName } from 'react-hook-form';
+import type { ErrorOption, FieldErrors, FieldValues } from 'react-hook-form';
+import type { FieldPath } from 'react-hook-form';
 
 export type GlobalError = FieldErrors<{ _error: string }>;
 
-export interface FormError<T> {
-    field: FieldName<T>;
+export interface FormError<T extends FieldValues> {
+    field: FieldPath<T>;
     error: {
         type: 'manual';
         message: string;
     };
 }
 
-export type FormErrors<T> = FormError<T>[];
+export type FormErrors<T extends FieldValues> = FormError<T>[];
 
 interface Violation<T> {
-    propertyPath: keyof T;
-    message: string;
+    property: keyof T;
+    constraints: {
+        [name: string]: string;
+    };
 }
 
 interface ErrorResponse<T> {
-    detail: string;
-    title: string;
-    violations: Violation<T>[];
+    error: string;
+    message: Violation<T>[];
+    statusCode: number;
 }
 
-export function makeFormErrorsFromResponse<T>(response: ErrorResponse<T>): FormErrors<T> {
+export function makeFormErrorsFromResponse<T extends FieldValues>({ error, message }: ErrorResponse<T>): FormErrors<T> {
     const result: FormErrors<T> = [];
 
-    if (isArray(response.violations)) {
-        response.violations.forEach((error: Violation<T>) => {
-            result.push({
-                field: error.propertyPath as FieldName<T>,
-                error: {
-                    type: 'manual',
-                    message: error.message,
-                },
-            });
+    if (isArray(message)) {
+        message.forEach((violation: Violation<T>) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            for (const [key, value] of Object.entries(violation.constraints)) {
+                result.push({
+                    field: violation.property as FieldPath<T>,
+                    error: {
+                        type: 'manual',
+                        message: value,
+                    },
+                });
+            }
         });
     } else {
         result.push({
-            field: '_error' as FieldName<T>,
+            field: '_error' as FieldPath<T>,
             error: {
                 type: 'manual',
-                message: response.detail ?? response.title,
+                message: message ?? error ?? 'Server error',
             },
         });
     }
@@ -50,7 +56,7 @@ export function makeFormErrorsFromResponse<T>(response: ErrorResponse<T>): FormE
     return result;
 }
 
-export function makeFormErrors<T>(
+export function makeFormErrors<T extends FieldValues>(
     errors: { [P in keyof T]: string } | { _error: string },
 ): FormErrors<T | { _error: string }> {
     const result: FormErrors<T | { _error: string }> = [];
@@ -68,11 +74,19 @@ export function makeFormErrors<T>(
     return result;
 }
 
-export function withErrors<T>(
+export function withErrors<T extends FieldValues>(
     promise: Promise<any>,
-    setError: (name: FieldName<T>, error: ErrorOption) => void,
+    setError: (name: FieldPath<T>, error: ErrorOption) => void,
 ): Promise<any> {
     return promise.catch((errors: FormErrors<T>) => {
-        errors.forEach((item) => setError(item.field, item.error));
+        if (errors instanceof Array) {
+            errors.forEach((item) => setError(item.field, item.error));
+        }
+
+        return false;
     });
+}
+
+export function extractFirstError(errors: FormErrors<any | { _error: string }>, defaultError = ''): string | null {
+    return errors[0]?.error?.message || defaultError;
 }

@@ -1,6 +1,13 @@
 import lodash from 'lodash';
 
 class Router {
+    public static isCurrentRoute(route: string, params: AnyObject = {}): any {
+        const generatedRoute = Router.generate(route, params);
+        const currentRoute = window.location.pathname.split('?').shift();
+
+        return generatedRoute === currentRoute;
+    }
+
     public static generate(route: string, params: AnyObject = {}): string {
         const urlSearchParams = new URLSearchParams();
 

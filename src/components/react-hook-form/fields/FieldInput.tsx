@@ -1,14 +1,17 @@
-import React, { DetailedHTMLProps, InputHTMLAttributes, PropsWithChildren } from 'react';
-import classNames, { Argument as ClassValue } from 'classnames';
+import type { DetailedHTMLProps, InputHTMLAttributes, PropsWithChildren } from 'react';
+import React from 'react';
+import type { Argument as ClassValue } from 'classnames';
+import classNames from 'classnames';
 import styles from '../assets/field-input.module.scss';
 import { Controller } from 'react-hook-form';
-import { CommonFieldProps } from '../types/common';
-import FieldWrapper, { FieldWrapperProps } from './FieldWrapper';
-import { Control } from 'react-hook-form/dist/types/form';
+import type { CommonFieldProps } from '../types/common';
+import type { FieldWrapperProps } from './FieldWrapper';
+import FieldWrapper from './FieldWrapper';
+import type { Control } from 'react-hook-form';
 
-interface FieldInputProps extends CommonFieldProps {
+interface FieldInputProps<Control> extends CommonFieldProps {
     wrapperProps?: FieldWrapperProps;
-    errorClassName?: any;
+    errorClassName?: ClassValue;
     control: Control;
     inputClassName?: ClassValue;
     invalidInputClassName?: ClassValue;
@@ -16,9 +19,9 @@ interface FieldInputProps extends CommonFieldProps {
     disabled?: boolean;
 }
 
-type Props = FieldInputProps & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+type Props<C> = FieldInputProps<C> & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 
-const FieldInput: React.FunctionComponent<PropsWithChildren<Props>> = ({
+const FieldInput = <C extends Control<any>>({
     control,
     wrapperProps,
     className = 'form-control',
@@ -26,17 +29,17 @@ const FieldInput: React.FunctionComponent<PropsWithChildren<Props>> = ({
     error,
     children,
     ...props
-}: PropsWithChildren<Props>) => (
+}: PropsWithChildren<Props<C>>) => (
     <Controller
         name={props.name}
         control={control}
-        defaultValue=""
-        render={(controlledProps) => (
+        defaultValue={props.defaultValue || ''}
+        render={({ field }) => (
             <FieldWrapper {...wrapperProps} classNames={wrapperProps?.classNames} name={props.name} error={error}>
                 <input
                     id={props.id || props.name}
                     {...props}
-                    {...controlledProps}
+                    {...field}
                     className={classNames(styles.input, className, error && errorClassName)}
                     placeholder={props.placeholder}
                 />

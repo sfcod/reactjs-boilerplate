@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { DateTimePicker } from 'react-widgets';
-import { FilterProps } from './types';
+import type { FilterProps } from './types';
 import moment from 'moment';
 import momentLocalizer from 'react-widgets-moment';
 

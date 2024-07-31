@@ -1,4 +1,4 @@
-import { Storage } from './storage.interface';
+import type { Storage } from './storage.interface';
 
 class KeyValueStorage implements Storage {
     public length = 0;

@@ -1,10 +1,7 @@
-import React, { ReactElement, ReactNode, useCallback, useEffect } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import classNames from 'classnames';
-import {
-    useTable,
-    usePagination,
-    useSortBy,
-    useFilters,
+import type {
     Column as ColumnType,
     TableOptions,
     UseSortByColumnOptions,
@@ -12,9 +9,10 @@ import {
     Cell,
     Row,
 } from 'react-table';
-import { Paginated, PaginatedBaseMeta } from 'src/services/api-handlers/pagination';
+import { useTable, usePagination, useSortBy, useFilters } from 'react-table';
+import type { Paginated, PaginatedBaseMeta } from 'src/services/api-handlers/pagination';
 import Pagination from './Pagination';
-import { QueryParams, SortDirection } from 'src/types/grid';
+import type { QueryParams, SortDirection } from 'src/types/grid';
 import styles from './assets/grid.module.scss';
 import textFilter from './filters/text-filter';
 import useMemoCompare from './hooks/memo-compare';

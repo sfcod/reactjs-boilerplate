@@ -1,7 +1,7 @@
 import moment from 'moment';
 import * as React from 'react';
 import { DateTimePicker } from 'react-widgets';
-import { FilterProps } from './types';
+import type { FilterProps } from './types';
 
 moment.locale('en');
 
