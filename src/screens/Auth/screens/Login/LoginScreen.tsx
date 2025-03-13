@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import styles from './assets/login-screen.module.scss';
 import LoginForm from './components/LoginForm';
 import classNames from 'classnames';
@@ -11,6 +11,16 @@ import { useDispatch } from 'src/hooks/dispatch';
 import { useSelector } from 'react-redux';
 import { usersSelector } from 'src/store/selectors/user-selectors';
 import { listUsers } from 'src/store/thunks/user-thunks';
+import Grid, { Column } from 'src/components/react-table/Grid';
+import { User } from 'src/types/user';
+import { QueryParams } from 'src/types/grid';
+import DateTimeColumn from 'src/components/react-table/columns/DateTimeColumn';
+import UserStatusColumn from './components/UserStatusColumn';
+import dropdownFilter from 'src/components/react-table/filters/dropdown-filter';
+import userStatus from 'src/enumerables/user-status';
+import textFilter from 'src/components/react-table/filters/text-filter';
+import dateFilter from 'src/components/react-table/filters/date-filter';
+import dateTimeFilter from 'src/components/react-table/filters/datetime-filter';
 
 export interface StateProps {}
 
@@ -25,12 +35,52 @@ const LoginScreen: React.FC<Props> = () => {
     const users = useSelector(usersSelector);
 
     useEffect(() => {
-        dispatch(listUsers({ page: 1, filters: { itemsPerPage: 5 } }));
-    }, []);
-
-    useEffect(() => {
         console.log(users);
     }, [users]);
+
+    const getData = useCallback((params: QueryParams) => {
+        dispatch(
+            listUsers({
+                ...params,
+                filters: { ...params.filters },
+            }),
+        );
+    }, []);
+
+    const defaultColumns: Column<User>[] = [
+        {
+            header: 'First Name',
+            accessorKey: 'firstName',
+        },
+        {
+            header: 'Last Name',
+            accessorKey: 'lastName',
+            enableColumnFilter: false,
+        },
+        {
+            header: 'Email',
+            accessorKey: 'email',
+            filter: textFilter('text', 2000), // Custom settings example
+            size: 200,
+        },
+        {
+            header: 'Status',
+            accessorKey: 'status',
+            cell: (props) => <UserStatusColumn value={props.row.original.status} />,
+            enableSorting: false,
+            filter: dropdownFilter<User>(userStatus.mapData()),
+            size: 200,
+        },
+        {
+            header: 'Created at',
+            accessorKey: 'createdAt',
+            cell: (props) => <DateTimeColumn value={props.row.original.createdAt} />,
+            size: 200,
+            // enableColumnFilter: false, // You can disable column filter
+            filter: dateFilter(),
+            // filter: dateTimeFilter(),
+        },
+    ];
 
     return UserAuthService.isLoggedIn() ? (
         <MainLayout>
@@ -46,6 +96,14 @@ const LoginScreen: React.FC<Props> = () => {
                                     {'Sign Out'}
                                 </Link>
                             </div>
+                            <Grid<User>
+                                columns={defaultColumns}
+                                data={users}
+                                title="User List"
+                                getData={getData}
+                                defaultSorting={{ updatedAt: 'DESC' }}
+                                pageSize={10}
+                            />
                         </div>
                     </div>
                 </div>

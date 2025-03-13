@@ -1,15 +1,20 @@
 import type { ReactElement, ReactNode } from 'react';
 import React, { useCallback, useEffect } from 'react';
 import classNames from 'classnames';
-import type {
-    Column as ColumnType,
-    TableOptions,
-    UseSortByColumnOptions,
-    UseFiltersColumnOptions,
-    Cell,
-    Row,
-} from 'react-table';
-import { useTable, usePagination, useSortBy, useFilters } from 'react-table';
+import {
+    useReactTable,
+    getCoreRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    getFilteredRowModel,
+    type ColumnDef,
+    type SortingState,
+    type FilterMeta,
+    type Table,
+    type Row,
+    type Cell,
+    flexRender,
+} from '@tanstack/react-table';
 import type { Paginated, PaginatedBaseMeta } from 'src/services/api-handlers/pagination';
 import Pagination from './Pagination';
 import type { QueryParams, SortDirection } from 'src/types/grid';
@@ -20,7 +25,22 @@ import GridInfo from './GridInfo';
 import { faSortAlphaUp, faSortAlphaDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export type Column<T extends Record<any, any>> = ColumnType<T> & UseSortByColumnOptions<T> & UseFiltersColumnOptions<T>;
+type CustomMeta = {
+    // Add any custom meta here if needed
+} & Record<string, any>;
+
+// From the docs:
+// https://tanstack.com/table/v8/docs/api/core/column-def#meta
+declare module '@tanstack/table-core' {
+    interface ColumnMeta<TData extends unknown, TValue> extends CustomMeta {}
+}
+
+export type Column<T extends Record<any, any>> = Omit<ColumnDef<T, any>, 'cell'> & {
+    cell?: ColumnDef<T, any>['cell'];
+    meta?: CustomMeta;
+    accessorKey?: keyof T;
+    filter?: React.FunctionComponent<any>;
+};
 
 export interface Props<T extends Record<any, any>> {
     title?: ReactNode | string;
@@ -31,14 +51,10 @@ export interface Props<T extends Record<any, any>> {
     className?: string;
     defaultSorting?: Partial<{ [x in keyof T]: SortDirection }>;
     renderRow?: (data: { row: Row<T>; renderedCells: ReactNode; index: number }) => ReactNode;
-    renderCell?: (cell: Cell<T>) => ReactNode;
+    renderCell?: (cell: Cell<T, any>) => ReactNode;
     pageSize?: number;
     noneText?: string;
 }
-
-const defaultColumn = {
-    Filter: textFilter(),
-};
 
 function Grid<T extends Record<any, any>>(props: Props<T>): ReactElement {
     const {
@@ -54,128 +70,171 @@ function Grid<T extends Record<any, any>>(props: Props<T>): ReactElement {
         noneText = 'No results',
         scrollableByXAxis = false,
     } = props;
-    const instance = useTable<T>(
-        {
-            columns,
-            defaultColumn,
-            data: data.list,
-            manualSortBy: true,
-            manualFilters: true,
-            manualPagination: true,
-            pageCount: Math.max(1, data.totalPages ?? 1),
-            initialState: {
+
+    const defaultColumn = {
+        meta: {
+            Filter: textFilter<T>(),
+        },
+    };
+
+    const [sorting, setSorting] = React.useState<SortingState>(() =>
+        Object.entries(defaultSorting).map(([id, order]) => ({ id, desc: order === 'DESC' })),
+    );
+
+    const [columnFilters, setColumnFilters] = React.useState<{ id: string; value: any }[]>([]);
+
+    const processedColumns = React.useMemo(
+        () =>
+            columns.map((col) => {
+                if (col.filter) {
+                    col.meta = {
+                        ...col.meta,
+                        Filter: col.filter,
+                    };
+                }
+
+                return {
+                    ...col,
+                    accessorFn: col.accessorKey ? (row: T) => row[col.accessorKey] : undefined,
+                };
+            }) as ColumnDef<T, any>[],
+        [columns],
+    );
+
+    const instance = useReactTable<T>({
+        data: data.list,
+        columns: processedColumns,
+        initialState: {
+            pagination: {
                 pageIndex: data.page - 1,
                 pageSize: itemsPerPage,
-                sortBy: defaultSorting
-                    ? Object.entries(defaultSorting).map(([id, order]) => ({ id, desc: order === 'DESC' }))
-                    : undefined,
             },
-        } as TableOptions<T>,
-        useFilters,
-        useSortBy,
-        usePagination,
-    );
-    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, state } = instance;
-    const { sortBy, filters, pageIndex, pageSize } = state as any;
+            sorting: defaultSorting
+                ? Object.entries(defaultSorting).map(([id, order]) => ({ id, desc: order === 'DESC' }))
+                : undefined,
+        },
+        state: {
+            sorting,
+            columnFilters,
+        },
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        manualPagination: true,
+        manualSorting: true,
+        manualFiltering: true,
+        pageCount: Math.max(1, data.totalPages ?? 1),
+        defaultColumn: defaultColumn,
+    });
+
     const getPreparedFilters = useCallback(() => {
         const result: any = {};
-        filters.forEach((filter: { id: string; value: any }) => {
+        columnFilters.forEach((filter) => {
             result[filter.id] = filter.value;
         });
-
         return result;
-    }, [filters]);
+    }, [columnFilters]);
+
     const getPreparedSorting = useCallback(() => {
         const result: any = {};
-        sortBy.forEach((sort: { id: string; desc: boolean }) => {
+        sorting.forEach((sort) => {
             result[sort.id] = sort.desc ? 'DESC' : 'ASC';
         });
-
         return result;
-    }, [sortBy]);
+    }, [sorting]);
+
     const updatedAt = useMemoCompare(Date.now(), () => {
         return data.meta?.updatedAt !== 0;
     });
 
     // explicitly move to first page if some filter applied
     useEffect(() => {
-        (instance as any).gotoPage(0);
-    }, [filters]);
+        instance.setPageIndex(0);
+    }, [JSON.stringify(columnFilters)]);
 
     useEffect(() => {
         getData({
-            page: pageIndex + 1,
-            limit: pageSize,
+            page: instance.getState().pagination.pageIndex + 1,
+            limit: instance.getState().pagination.pageSize,
             filters: getPreparedFilters(),
             sorting: getPreparedSorting(),
         });
-    }, [getData, sortBy, filters, pageIndex, pageSize, updatedAt]); // eslint-disable-line
+    }, [
+        getData,
+        sorting,
+        JSON.stringify(columnFilters),
+        instance.getState().pagination.pageIndex,
+        instance.getState().pagination.pageSize,
+        updatedAt,
+    ]);
 
     return (
         <div className={classNames('card', className)}>
             {title && <div className={classNames('card-header')}>{title}</div>}
             <div className={classNames('card-body', 'p-0', scrollableByXAxis && styles.scrollableAxis)}>
-                {/*<div className={classNames(styles.tableResponsive, 'table-responsive')}>*/}
-                <table className={classNames(styles.table, 'table', 'mb-0')} {...getTableProps()}>
+                <table className={classNames(styles.table, 'table', 'mb-0')}>
                     <thead>
-                        {headerGroups.map((headerGroup) => {
-                            const headerGroupProps = headerGroup.getHeaderGroupProps();
-
-                            return (
-                                <React.Fragment key={headerGroupProps.key}>
-                                    <tr {...headerGroupProps}>
-                                        {headerGroup.headers.map((column: any, i: number) => (
-                                            <th key={i} {...column.getHeaderProps()} width={column.width}>
-                                                {column.canSort ? (
-                                                    <span
-                                                        className={classNames(
-                                                            'd-flex',
-                                                            'justify-content-between',
-                                                            'align-items-center',
-                                                        )}
-                                                        {...column.getSortByToggleProps()}
-                                                    >
-                                                        {column.render('Header')}
-                                                        {column.isSorted &&
-                                                            (column.isSortedDesc ? (
-                                                                <FontAwesomeIcon icon={faSortAlphaDown} />
-                                                            ) : (
-                                                                <FontAwesomeIcon icon={faSortAlphaUp} />
-                                                            ))}
-                                                    </span>
-                                                ) : (
-                                                    <span>{column.render('Header')}</span>
-                                                )}
-                                            </th>
-                                        ))}
-                                    </tr>
-                                    <tr>
-                                        {headerGroup.headers.map((column: any, i: number) => (
-                                            <th key={i} {...{ width: column.width }}>
-                                                {column.canFilter ? column.render('Filter') : null}
-                                            </th>
-                                        ))}
-                                    </tr>
-                                </React.Fragment>
-                            );
-                        })}
+                        {instance.getHeaderGroups().map((headerGroup) => (
+                            <React.Fragment key={headerGroup.id}>
+                                <tr>
+                                    {headerGroup.headers.map((header) => (
+                                        <th key={header.id} style={{ width: header.column.columnDef.size }}>
+                                            {header.column.getCanSort() ? (
+                                                <span
+                                                    className={classNames(
+                                                        'd-flex',
+                                                        'justify-content-between',
+                                                        'align-items-center',
+                                                    )}
+                                                    onClick={header.column.getToggleSortingHandler()}
+                                                >
+                                                    {flexRender(header.column.columnDef.header, header.getContext())}
+                                                    {header.column.getIsSorted() &&
+                                                        (header.column.getIsSorted() === 'desc' ? (
+                                                            <FontAwesomeIcon icon={faSortAlphaDown} />
+                                                        ) : (
+                                                            <FontAwesomeIcon icon={faSortAlphaUp} />
+                                                        ))}
+                                                </span>
+                                            ) : (
+                                                flexRender(header.column.columnDef.header, header.getContext())
+                                            )}
+                                        </th>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    {headerGroup.headers.map((header) => (
+                                        <th key={header.id} style={{ width: header.column.columnDef.size }}>
+                                            {header?.column?.getCanFilter() &&
+                                                header?.column?.columnDef?.meta?.Filter?.({
+                                                    column: header.column,
+                                                })}
+                                        </th>
+                                    ))}
+                                </tr>
+                            </React.Fragment>
+                        ))}
                     </thead>
-                    <tbody {...getTableBodyProps()}>
+                    <tbody>
                         {data.list.length > 0 ? (
-                            rows.map((row, index) => {
-                                prepareRow(row);
-                                const cells = row.cells.map((cell) => {
+                            instance.getRowModel().rows.map((row, index) => {
+                                const cells = row.getVisibleCells().map((cell) => {
                                     return renderCell ? (
                                         renderCell(cell)
                                     ) : (
-                                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                        <td key={cell.id}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </td>
                                     );
                                 });
 
                                 return renderRow ? (
                                     renderRow({ row, renderedCells: cells, index })
                                 ) : (
-                                    <tr {...row.getRowProps()}>{cells}</tr>
+                                    <tr key={row.id}>{cells}</tr>
                                 );
                             })
                         ) : (
@@ -187,14 +246,17 @@ function Grid<T extends Record<any, any>>(props: Props<T>): ReactElement {
                         )}
                     </tbody>
                 </table>
-                {/*</div>*/}
             </div>
             {(data.totalPages || 0) > 0 && (
                 <div className={classNames('card-footer')}>
                     <div className={classNames('row')}>
                         <div className={classNames('col-sm-12', 'col-md-5')}>
                             {!!data.list.length && (
-                                <GridInfo page={pageIndex + 1} pageSize={pageSize} totalCount={data.totalCount} />
+                                <GridInfo
+                                    page={instance.getState().pagination.pageIndex + 1}
+                                    pageSize={instance.getState().pagination.pageSize}
+                                    totalCount={data.totalCount}
+                                />
                             )}
                         </div>
                         <div className={classNames('col-sm-12', 'col-md-7')}>

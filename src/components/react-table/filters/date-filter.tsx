@@ -1,20 +1,19 @@
 import moment from 'moment';
-import * as React from 'react';
 import { DateTimePicker } from 'react-widgets';
-import type { FilterProps } from './types';
+import { Column } from '@tanstack/react-table';
 
 moment.locale('en');
 
-function dateFilter<T extends Record<string, unknown>>(): React.FunctionComponent<FilterProps<T>> {
-    return React.memo(({ column: { setFilter } }: FilterProps<T>) => {
+function dateFilter<T extends Record<string, unknown>>() {
+    return ({ column }: { column: Column<T, unknown> }) => {
         const handleChange = (value: Date | undefined | null) => {
             if (value) {
-                setFilter((value.getTime() / 1000).toFixed(0));
+                column.setFilterValue((value.getTime() / 1000).toFixed(0));
             }
         };
 
         return <DateTimePicker valueFormat="YYYY-MM-DD" includeTime={false} onChange={handleChange} />;
-    });
+    };
 }
 
 export default dateFilter;

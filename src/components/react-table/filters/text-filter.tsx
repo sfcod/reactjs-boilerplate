@@ -2,16 +2,14 @@ import * as React from 'react';
 import type { ChangeEvent } from 'react';
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import type { FilterProps } from './types';
+import type { Column } from '@tanstack/react-table';
 
 let timeoutInstance: any = null;
 
-function textFilter<T extends Record<string, unknown>>(
-    type: 'text' | 'number' = 'text',
-    timeout = 500,
-): React.FunctionComponent<FilterProps<T>> {
-    return React.memo(({ column: { filterValue, setFilter } }: FilterProps<T>) => {
-        const [state, setState] = useState(filterValue);
+function textFilter<T extends Record<string, unknown>>(type: 'text' | 'number' = 'text', timeout = 500) {
+    return function TextFilter({ column }: { column: Column<T, unknown> }) {
+        const [state, setState] = useState(column.getFilterValue() as string);
+
         const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
             setState(event.target.value);
         };
@@ -23,20 +21,20 @@ function textFilter<T extends Record<string, unknown>>(
                 }
 
                 timeoutInstance = setTimeout(() => {
-                    setFilter(state);
+                    column.setFilterValue(state);
                 }, timeout);
             }
-        }, [state]); // eslint-disable-line
+        }, [state, column]);
 
         return (
             <input
                 type={type}
                 className={classNames('form-control', 'input-sm')}
                 onChange={handleChange}
-                value={state}
+                value={state ?? ''}
             />
         );
-    });
+    };
 }
 
 export default textFilter;
