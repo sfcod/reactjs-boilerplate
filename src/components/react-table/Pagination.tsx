@@ -2,77 +2,88 @@ import type { ReactElement } from 'react';
 import React from 'react';
 import classNames from 'classnames';
 import type { Table } from '@tanstack/react-table';
+import PageItem from './PageItem';
+import styles from './assets/pagination.module.scss';
 
 interface Props<T extends Record<any, any>> {
     table: Table<T>;
+    marginPagesDisplayed?: number;
 }
 
-function Pagination<T extends Record<any, any>>({ table }: Props<T>): ReactElement {
+function Pagination<T extends Record<any, any>>({ table, marginPagesDisplayed = 2 }: Props<T>): ReactElement {
     const { getCanPreviousPage, getCanNextPage, getPageCount, nextPage, previousPage, setPageIndex, getState } = table;
-
     const { pageIndex } = getState().pagination;
+    const totalPages = getPageCount();
+    const currentPage = pageIndex + 1;
+    const pagesRangeDisplayed = marginPagesDisplayed * 2 + 1;
 
     const pages = React.useMemo(() => {
-        const totalPages = getPageCount();
-        const currentPage = pageIndex + 1;
-        const visiblePages = 5;
-        const halfVisible = Math.floor(visiblePages / 2);
-
+        const halfVisible = Math.floor(pagesRangeDisplayed / 2);
         let startPage = currentPage - halfVisible;
         let endPage = currentPage + halfVisible;
 
         if (startPage < 1) {
             startPage = 1;
-            endPage = Math.min(totalPages, visiblePages);
+            endPage = Math.min(totalPages, pagesRangeDisplayed);
         }
 
         if (endPage > totalPages) {
             endPage = totalPages;
-            startPage = Math.max(1, totalPages - visiblePages + 1);
+            startPage = Math.max(1, totalPages - pagesRangeDisplayed + 1);
         }
 
-        return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-    }, [pageIndex, getPageCount()]);
+        const pageNumbers = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+
+        // Handle ellipsis logic
+        if (totalPages <= pagesRangeDisplayed) {
+            return Array.from({ length: totalPages }, (_, i) => i + 1);
+        }
+
+        return pageNumbers;
+    }, [pageIndex, getPageCount, pagesRangeDisplayed, totalPages]);
+
+    const showLeftEllipsis = pages[0] > 1;
+    const showRightEllipsis = pages[pages.length - 1] < totalPages;
 
     return (
-        <nav>
-            <ul className={classNames('pagination', 'justify-content-end', 'mb-0')}>
-                <li className={classNames('page-item', { disabled: !getCanPreviousPage() })}>
-                    <button
-                        type="button"
-                        className={classNames('page-link')}
-                        onClick={() => previousPage()}
-                        disabled={!getCanPreviousPage()}
-                    >
-                        Previous
-                    </button>
-                </li>
+        <nav className={classNames(styles.pagination)}>
+            <ul className={classNames('pagination', 'mb-0')}>
+                <PageItem
+                    pageIndex={pageIndex - 1}
+                    gotoPage={previousPage}
+                    text="Previous"
+                    className={!getCanPreviousPage() ? 'disabled' : ''}
+                />
+
+                {showLeftEllipsis && (
+                    <>
+                        <PageItem pageIndex={0} gotoPage={setPageIndex} />
+                        <PageItem pageIndex={0} text="..." className="disabled" />
+                    </>
+                )}
+
                 {pages.map((page) => (
-                    <li
+                    <PageItem
                         key={page}
-                        className={classNames('page-item', {
-                            active: page === pageIndex + 1,
-                        })}
-                    >
-                        <button
-                            type="button"
-                            className={classNames('page-link')}
-                            onClick={() => setPageIndex(page - 1)}
-                        >
-                            {page}
-                        </button>
-                    </li>
+                        pageIndex={page - 1}
+                        gotoPage={setPageIndex}
+                        className={page === currentPage ? 'active' : ''}
+                    />
                 ))}
-                <li className={classNames('page-item', { disabled: !getCanNextPage() })}>
-                    <button
-                        type="button"
-                        className={classNames('page-link')}
-                        onClick={() => nextPage()}
-                        disabled={!getCanNextPage()}
-                    >
-                        Next
-                    </button>
-                </li>
+
+                {showRightEllipsis && (
+                    <>
+                        <PageItem pageIndex={0} text="..." className="disabled" />
+                        <PageItem pageIndex={totalPages - 1} gotoPage={setPageIndex} />
+                    </>
+                )}
+
+                <PageItem
+                    pageIndex={pageIndex + 1}
+                    gotoPage={nextPage}
+                    text="Next"
+                    className={!getCanNextPage() ? 'disabled' : ''}
+                />
             </ul>
         </nav>
     );
