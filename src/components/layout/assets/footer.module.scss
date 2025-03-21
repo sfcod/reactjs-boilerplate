@@ -1,4 +1,4 @@
-@import 'src/themes/theme';
+@use '@/themes/theme' as *;
 
 .footer {
     background: #fff;

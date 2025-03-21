@@ -1,14 +1,17 @@
 Based on:  
 React, Redux Toolkit (thunk), React Hook Form  
 Node: 18+
+
 ## Dev environment
 
 - Setup config
-```bash 
+
+```bash
 cp src/config/environments/env.dev.js src/config/env.js
 ```
 
 - Install vendors
+
 ```bash
 npm install
 ```
@@ -45,4 +48,3 @@ The build is minified and the filenames include the hashes.<br />
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-

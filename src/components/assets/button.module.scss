@@ -1,9 +1,9 @@
-@import '../../themes/theme';
+@use '@/themes/theme' as *;
 
 .button {
-
+    background-color: $main-color;
 }
 
 .disabled {
-    opacity: .6;
+    opacity: 0.6;
 }
