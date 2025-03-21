@@ -40,7 +40,7 @@
         "redux-thunk": "^3.1.0",
         "reselect": "^5.0.1",
         "sass": "^1.69.5",
-        "yup": "^0.32.11"
+        "yup": "^1.6.1"
     },
     "scripts": {
         "start": "vite",
