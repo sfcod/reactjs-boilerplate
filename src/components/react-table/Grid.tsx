@@ -9,8 +9,6 @@ import {
     getFilteredRowModel,
     type ColumnDef,
     type SortingState,
-    type FilterMeta,
-    type Table,
     type Row,
     type Cell,
     flexRender,
