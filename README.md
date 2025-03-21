@@ -60,9 +60,3 @@ You can specify extensions:
 ```bash
 npx prettier --write "**/*.{js,jsx,ts,tsx}"
 ```
-
-## Use ESLint
-
-```bash
-npx eslint --fix "**/*.{js,jsx,ts,tsx}"
-```
