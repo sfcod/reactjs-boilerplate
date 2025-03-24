@@ -1,9 +1,9 @@
 /**
  * Mapped status item interface
  */
-export interface SelectableItem {
+export interface SelectableItem<T = any> {
     name: string;
-    value: any;
+    value: T;
 }
 
 /**
@@ -67,9 +67,9 @@ export abstract class EnumerableAbstract<T extends string | number = string | nu
     /**
      * Map status for dropdown/select
      */
-    public mapData(exclude: T[] = []): SelectableItem[] {
+    public mapData(exclude: T[] = []): SelectableItem<T>[] {
         const data = this.choices();
-        const result: SelectableItem[] = [];
+        const result: SelectableItem<T>[] = [];
 
         for (const key of exclude) {
             delete data[key];

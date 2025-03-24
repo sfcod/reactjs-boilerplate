@@ -1,82 +1,91 @@
 import type { ReactElement } from 'react';
 import React from 'react';
 import classNames from 'classnames';
-import type { TableInstance } from 'react-table';
+import type { Table } from '@tanstack/react-table';
 import PageItem from './PageItem';
 import styles from './assets/pagination.module.scss';
 
-interface Props<T extends Record<string, unknown>> {
-    table: TableInstance<T>;
+interface Props<T extends Record<any, any>> {
+    table: Table<T>;
     marginPagesDisplayed?: number;
 }
 
-function Pagination<T extends Record<string, unknown>>({ table, marginPagesDisplayed = 2 }: Props<T>): ReactElement {
-    const {
-        canPreviousPage,
-        canNextPage,
-        pageCount,
-        gotoPage,
-        nextPage,
-        previousPage,
-        state: { pageIndex },
-    } = table as any;
+function Pagination<T extends Record<any, any>>({ table, marginPagesDisplayed = 2 }: Props<T>): ReactElement {
+    const { getCanPreviousPage, getCanNextPage, getPageCount, nextPage, previousPage, setPageIndex, getState } = table;
+    const { pageIndex } = getState().pagination;
+    const totalPages = getPageCount();
     const currentPage = pageIndex + 1;
-    const pagesBefore = Array.from(Array(pageIndex), (value: any, index: number) => index);
-    const pagesAfter = Array.from(Array(pageCount - currentPage), (value: any, index: number) => index + currentPage);
     const pagesRangeDisplayed = marginPagesDisplayed * 2 + 1;
 
+    const pages = React.useMemo(() => {
+        const halfVisible = Math.floor(pagesRangeDisplayed / 2);
+        let startPage = currentPage - halfVisible;
+        let endPage = currentPage + halfVisible;
+
+        if (startPage < 1) {
+            startPage = 1;
+            endPage = Math.min(totalPages, pagesRangeDisplayed);
+        }
+
+        if (endPage > totalPages) {
+            endPage = totalPages;
+            startPage = Math.max(1, totalPages - pagesRangeDisplayed + 1);
+        }
+
+        const pageNumbers = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+
+        // Handle ellipsis logic
+        if (totalPages <= pagesRangeDisplayed) {
+            return Array.from({ length: totalPages }, (_, i) => i + 1);
+        }
+
+        return pageNumbers;
+    }, [pageIndex, getPageCount, pagesRangeDisplayed, totalPages]);
+
+    const showLeftEllipsis = pages[0] > 1;
+    const showRightEllipsis = pages[pages.length - 1] < totalPages;
+
     return (
-        <div className={classNames(styles.pagination)}>
-            <ul className={classNames('pagination')}>
+        <nav className={classNames(styles.pagination)}>
+            <ul className={classNames('pagination', 'mb-0')}>
                 <PageItem
                     pageIndex={pageIndex - 1}
                     gotoPage={previousPage}
                     text="Previous"
-                    className={!canPreviousPage ? 'disabled' : ''}
+                    className={!getCanPreviousPage() ? 'disabled' : ''}
                 />
-                {pagesBefore.length <= pagesRangeDisplayed ? (
+
+                {showLeftEllipsis && (
                     <>
-                        {pagesBefore.map((value: number) => (
-                            <PageItem key={value} pageIndex={value} gotoPage={gotoPage} />
-                        ))}
-                    </>
-                ) : (
-                    <>
-                        {pagesBefore.slice(0, marginPagesDisplayed).map((value: number) => (
-                            <PageItem key={value} pageIndex={value} gotoPage={gotoPage} />
-                        ))}
+                        <PageItem pageIndex={0} gotoPage={setPageIndex} />
                         <PageItem pageIndex={0} text="..." className="disabled" />
-                        {pagesBefore.slice(pageIndex - marginPagesDisplayed).map((value: number) => (
-                            <PageItem key={value} pageIndex={value} gotoPage={gotoPage} />
-                        ))}
                     </>
                 )}
-                <PageItem pageIndex={pageIndex} gotoPage={gotoPage} className="active" />
-                {pagesAfter.length <= pagesRangeDisplayed ? (
+
+                {pages.map((page) => (
+                    <PageItem
+                        key={page}
+                        pageIndex={page - 1}
+                        gotoPage={setPageIndex}
+                        className={page === currentPage ? 'active' : ''}
+                    />
+                ))}
+
+                {showRightEllipsis && (
                     <>
-                        {pagesAfter.map((value: number) => (
-                            <PageItem key={value} pageIndex={value} gotoPage={gotoPage} />
-                        ))}
-                    </>
-                ) : (
-                    <>
-                        {pagesAfter.slice(0, marginPagesDisplayed).map((value: number) => (
-                            <PageItem key={value} pageIndex={value} gotoPage={gotoPage} />
-                        ))}
                         <PageItem pageIndex={0} text="..." className="disabled" />
-                        {pagesAfter.slice(pagesAfter.length - marginPagesDisplayed).map((value: number) => (
-                            <PageItem key={value} pageIndex={value} gotoPage={gotoPage} />
-                        ))}
+                        <PageItem pageIndex={totalPages - 1} gotoPage={setPageIndex} />
                     </>
                 )}
+
                 <PageItem
                     pageIndex={pageIndex + 1}
                     gotoPage={nextPage}
                     text="Next"
-                    className={!canNextPage ? 'disabled' : ''}
+                    className={!getCanNextPage() ? 'disabled' : ''}
                 />
             </ul>
-        </div>
+        </nav>
     );
 }
 

@@ -1,7 +1,19 @@
 export interface User {
-    id: number;
-    username: string;
+    // id: number;
+    // username: string;
+    // email: string;
+    // roles: string[];
+    // createdAt: string;
+
+    id: string;
+    firstName: string;
+    lastName: string;
     email: string;
-    roles: string[];
+    status: number;
     createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+    dob: string;
+    phoneNumber: string;
+    gender: 'male' | 'female' | 'other';
 }
