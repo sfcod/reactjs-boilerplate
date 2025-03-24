@@ -1,14 +1,17 @@
 @use '@/themes/theme' as *;
 
 .login {
-    background: url('images/bg.jpg') center center;
-    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 .heading {
     color: $main-color;
     font-size: 40px;
     font-weight: bold;
+    text-align: center;
 
     @media (max-width: 768px) {
         text-align: center;

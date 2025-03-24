@@ -14,14 +14,16 @@ import { loginSchema } from '../schema/login';
 import { useDispatch } from 'src/hooks/dispatch';
 import { login } from 'src/store/thunks/auth-thunks';
 
-export interface LoginFormData {
+interface LoginFormData {
     username: string;
     password: string;
 }
 
-export interface LoginFormProps {}
+interface LoginFormProps {
+    onSuccess?: () => void;
+}
 
-const LoginForm: React.FunctionComponent<LoginFormProps> = () => {
+const LoginForm: React.FunctionComponent<LoginFormProps> = ({ onSuccess }) => {
     const dispatch = useDispatch();
     const {
         control,
@@ -33,7 +35,10 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = () => {
     });
 
     const onSubmit = async (data: LoginFormData) => {
-        await withErrors<LoginFormData>(dispatch(login(data)).unwrap(), setError);
+        const res = await withErrors<LoginFormData>(dispatch(login(data)).unwrap(), setError);
+        if (res !== false) {
+            onSuccess && onSuccess();
+        }
     };
 
     return (
@@ -45,6 +50,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = () => {
                     name={'username'}
                     control={control}
                     type="email"
+                    autoComplete="username"
                     error={errors?.username?.message}
                     wrapperProps={{ label: (loginSchema.fields.username as any).spec?.label }}
                 />
@@ -52,6 +58,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = () => {
                     name={'password'}
                     control={control}
                     type="password"
+                    autoComplete="current-password"
                     error={errors?.password?.message}
                     wrapperProps={{ label: (loginSchema.fields.password as any).spec?.label }}
                 />

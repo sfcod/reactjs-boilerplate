@@ -1,23 +1,19 @@
-import type { ReactNode } from 'react';
+import type { PropsWithChildren } from 'react';
 import React from 'react';
 import styles from './assets/base-layout.module.scss';
 import classNames from 'classnames';
-import Header from './header/Header';
-import Footer from './Footer';
 import Main from './Main';
 
-interface Props {
-    children?: ReactNode;
-}
+interface Props {}
 
-const MainLayout: React.FunctionComponent<Props> = ({ children }: Props) => (
+const AuthLayout: React.FunctionComponent<Props> = ({ children }: PropsWithChildren<Props>) => (
     <div className={classNames(styles.layout)}>
         <div className={classNames(styles.content)}>
-            <Header />
+            <header />
             <Main>{children}</Main>
         </div>
-        <Footer />
+        <footer />
     </div>
 );
 
-export default MainLayout;
+export default AuthLayout;
