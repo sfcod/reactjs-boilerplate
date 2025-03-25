@@ -46,7 +46,7 @@ export class UserAuth {
 
     public getData(): AnyObject | null {
         const stringData = this.storage.getItem(DATA_KEY);
-        return stringData ? JSON.parse(stringData) : stringData;
+        return stringData ? JSON.parse(stringData) : null;
     }
 
     public getRoles(): Array<string> {
