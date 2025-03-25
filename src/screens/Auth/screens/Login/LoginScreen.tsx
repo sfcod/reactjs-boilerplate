@@ -21,7 +21,7 @@ import routes from 'src/navigation/routes';
 // import userStatus from 'src/enumerables/user-status';
 // import textFilter from 'src/components/react-table/filters/text-filter';
 // import dateFilter from 'src/components/react-table/filters/date-filter';
-import AuthLayout from 'src/components/layout/AuthLayout';
+import MainLayout from 'src/components/layout/MainLayout';
 import { useNavigate } from 'react-router-dom';
 import NotAuthenticated from 'src/components/auth/NotAuthenticated';
 
@@ -53,7 +53,7 @@ const LoginScreen: React.FC<Props> = () => {
 
     return (
         <NotAuthenticated redirectTo={Router.generate(routes.DASHBOARD)}>
-            <AuthLayout>
+            <MainLayout>
                 <div className={classNames(styles.login)}>
                     <div className={classNames('container')}>
                         <div className={classNames('row')}>
@@ -66,7 +66,7 @@ const LoginScreen: React.FC<Props> = () => {
                         </div>
                     </div>
                 </div>
-            </AuthLayout>
+            </MainLayout>
         </NotAuthenticated>
     );
 };

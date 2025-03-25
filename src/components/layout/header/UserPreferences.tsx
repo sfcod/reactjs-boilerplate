@@ -6,19 +6,23 @@ import { faCog } from '@fortawesome/free-solid-svg-icons';
 import Router from '../../../navigation/router';
 import routes from '../../../navigation/routes';
 import { Link } from 'react-router-dom';
+import UserAuthService from 'src/services/user-auth';
 
 interface Props {}
 
-const UserPreferences: React.FunctionComponent<Props> = React.memo(({}: Props) => (
-    <ul className={classNames('navbar-nav', 'ml-auto')}>
-        <NavDropdown title={<FontAwesomeIcon icon={faCog} />} id="nav-dropdown" align="end">
-            <NavDropdown.Item as={Link} to={Router.generate(routes.PROFILE)}>
-                Profile
-            </NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item href={Router.generate(routes.LOGOUT)}>Logout</NavDropdown.Item>
-        </NavDropdown>
-    </ul>
-));
+const UserPreferences: React.FunctionComponent<Props> = React.memo(({}: Props) => {
+    if (!UserAuthService.isLoggedIn()) {
+        return null;
+    }
+
+    return (
+        <div className={classNames('d-flex', 'align-items-center', 'gap-3', 'text-white')}>
+            <span>{String(UserAuthService.getData()?.username)}</span>
+            <NavDropdown title={<FontAwesomeIcon icon={faCog} />} id="nav-dropdown" align="end">
+                <NavDropdown.Item href={Router.generate(routes.LOGOUT)}>Logout</NavDropdown.Item>
+            </NavDropdown>
+        </div>
+    );
+});
 
 export default UserPreferences;
