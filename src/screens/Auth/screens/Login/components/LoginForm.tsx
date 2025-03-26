@@ -46,14 +46,14 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = () => {
                     control={control}
                     type="email"
                     error={errors?.username?.message}
-                    wrapperProps={{ label: loginSchema.fields.username.spec.label }}
+                    wrapperProps={{ label: (loginSchema.fields.username as any).spec?.label }}
                 />
                 <FieldInput
                     name={'password'}
                     control={control}
                     type="password"
                     error={errors?.password?.message}
-                    wrapperProps={{ label: loginSchema.fields.password.spec.label }}
+                    wrapperProps={{ label: (loginSchema.fields.password as any).spec?.label }}
                 />
                 <div className={classNames('text-center', 'my-3')}>
                     <Link to={Router.generate(routes.PASSWORD_RECOVERY)} className={classNames('small')}>
