@@ -67,12 +67,15 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({ onSuccess }) => {
                         {'Forgot password?'}
                     </Link>
                 </div>
+                <div className={classNames('text-center')}>
+                    Don't have an account?{' '}
+                    <Link to={Router.generate(routes.SIGNUP)} className={classNames('small')}>
+                        Sign up
+                    </Link>
+                </div>
             </div>
             <div className={classNames('text-center')}>
-                <button
-                    type="submit"
-                    className={classNames(styles.button, 'btn', 'btn-primary', 'text-uppercase', 'w-50')}
-                >
+                <button type="submit" className={classNames('btn', 'btn-primary', 'text-uppercase', 'w-50')}>
                     {isSubmitting ? <span className={classNames('spinner-border')} /> : 'Sign in'}
                 </button>
             </div>

@@ -1,0 +1,147 @@
+@use '@/themes/variables' as *;
+
+@mixin card-footer {
+    font-size: 16px;
+    padding: 0;
+    border: none;
+    margin-top: 20px;
+
+    ul {
+        padding: 0;
+        @media screen and (max-width: $media-sm - 1) {
+            justify-content: flex-start !important;
+        }
+    }
+
+    :global {
+        .page-link {
+            background-color: transparent !important;
+            border-color: var(--line-color) !important;
+            color: var(--text-color) !important;
+        }
+
+        .page-item.disabled .page-link {
+            color: var(--secondary-color) !important;
+        }
+
+        .page-item.active .page-link {
+            background-color: var(--accent-color) !important;
+            border-color: var(--line-color) !important;
+            color: var(--button-text-color) !important;
+        }
+    }
+}
+
+/* Mixin for custom scroll bar:
+
+Example: @include custom_scrollbar(5px, 5px, #e4e4e4, #b2b2b2, #fff, 20px);
+
+*/
+
+@mixin custom_scrollbar($size, $radius, $track_bg, $thumb_bg, $wrap_bg, $offset) {
+    -ms-scrollbar-base-color: $thumb_bg;
+    scrollbar-color: rgba($thumb_bg, 0.5) $track_bg;
+    scrollbar-width: thin;
+    &::-webkit-scrollbar {
+        height: $size;
+        width: $size;
+    }
+    &::-webkit-scrollbar-track {
+        background-color: $track_bg;
+        box-shadow: inset $offset 0 0 1.5px $wrap_bg;
+    }
+    &::-webkit-scrollbar-thumb {
+        height: $size;
+        width: $size;
+        background-color: $thumb_bg;
+        border-radius: $radius;
+    }
+}
+
+@mixin underline-link-hover() {
+    text-decoration: none !important;
+    @media screen and (min-width: $media-xl) {
+        background: linear-gradient(0deg, currentColor, currentColor) no-repeat right bottom / 0 var(--bg-h);
+        transition: background-size 350ms;
+        --bg-h: 1px;
+        padding-bottom: 0;
+        &:where(:hover, :focus-visible) {
+            background-size: 100% var(--bg-h);
+            background-position-x: left;
+        }
+    }
+}
+@mixin underline-link-hover--reverse() {
+    text-decoration: none !important;
+    --bg-h: 1px;
+    background: linear-gradient(0deg, currentColor, currentColor) no-repeat right bottom / 0 var(--bg-h);
+    padding-bottom: 0;
+    background-size: 100% var(--bg-h);
+    @media screen and (min-width: $media-xl) {
+        transition: background-size 350ms;
+        &:where(:hover, :focus-visible) {
+            background-size: 0 var(--bg-h);
+            background-position-x: right;
+            color: currentColor;
+        }
+    }
+}
+
+@mixin custom-ul-marker($size, $space, $color) {
+    list-style: none;
+    padding: 0;
+    li {
+        padding-left: $space;
+        text-indent: -$space;
+        &:before {
+            content: '';
+            display: inline-block;
+            border-radius: 50%;
+            vertical-align: middle;
+            width: $size;
+            height: $size;
+            background-color: $color;
+            padding-right: calc($space / 2);
+        }
+    }
+}
+
+@mixin inputStyles {
+    background: transparent;
+    border-radius: 30px;
+    border: 1px solid var(--input-border-color);
+    font-size: $font-size-sm;
+    transition: all 0.3s;
+    position: relative;
+    color: var(--text-color);
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.07);
+    padding: 3px 24px;
+    height: 48px;
+
+    @media screen and (max-width: $media-xs) {
+        font-size: $font-size-sm;
+    }
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 1000px var(--input-bg-color) inset;
+        -webkit-text-fill-color: var(--secondary-color) !important;
+    }
+
+    &::placeholder {
+        color: $line-color;
+        opacity: 1;
+    }
+
+    &:focus,
+    &:focus-visible {
+        outline: none;
+        border-color: var(--accent-color);
+    }
+
+    &:read-only {
+        background-color: transparent;
+    }
+}

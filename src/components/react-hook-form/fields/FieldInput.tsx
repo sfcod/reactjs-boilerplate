@@ -19,7 +19,7 @@ interface FieldInputProps<Control> extends CommonFieldProps {
     disabled?: boolean;
 }
 
-type Props<C> = FieldInputProps<C> & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+export type Props<C> = FieldInputProps<C> & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 
 const FieldInput = <C extends Control<any>>({
     control,

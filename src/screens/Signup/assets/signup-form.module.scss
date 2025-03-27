@@ -1,3 +1,21 @@
+@use '@/themes/variables' as *;
+
+.formWrap {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 100px;
+}
+
+.formButtonSingle {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.button {
+    margin-bottom: 30px;
+}
+
 .content {
     background: #fff;
     padding: 10px 20px;
