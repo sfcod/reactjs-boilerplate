@@ -1,29 +1,28 @@
-import * as React from 'react';
-import styles from '../assets/login-form.module.scss';
 import classNames from 'classnames';
 import { useForm } from 'react-hook-form';
-import FieldInput from '../../../../../components/react-hook-form/fields/FieldInput';
-import type { GlobalError } from '../../../../../components/react-hook-form/utils/make-form-errors';
-import { withErrors } from '../../../../../components/react-hook-form/utils/make-form-errors';
+import FieldInput from 'src/components/react-hook-form/fields/FieldInput';
+import type { GlobalError } from 'src/components/react-hook-form/utils/make-form-errors';
+import { withErrors } from 'src/components/react-hook-form/utils/make-form-errors';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Link } from 'react-router-dom';
-import Router from '../../../../../navigation/router';
+import Router from 'src/navigation/router';
 import routes from 'src/navigation/routes';
-import SummaryError from '../../../../../components/react-hook-form/SummaryError';
+import SummaryError from 'src/components/react-hook-form/SummaryError';
 import { loginSchema } from '../schema/login';
 import { useDispatch } from 'src/hooks/dispatch';
 import { login } from 'src/store/thunks/auth-thunks';
+import FieldPassword from 'src/components/react-hook-form/fields/FieldPassword';
+import { Form } from 'react-bootstrap';
+import Button from 'src/components/Button';
+import { LoginData } from 'src/types/auth';
 
-interface LoginFormData {
-    username: string;
-    password: string;
-}
+type LoginFormData = LoginData;
 
-interface LoginFormProps {
+interface Props {
     onSuccess?: () => void;
 }
 
-const LoginForm: React.FunctionComponent<LoginFormProps> = ({ onSuccess }) => {
+const LoginForm = ({ onSuccess }: Props) => {
     const dispatch = useDispatch();
     const {
         control,
@@ -42,8 +41,11 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({ onSuccess }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <div className={classNames(styles.content, styles.blueBorder)}>
+        <div className={classNames('d-flex', 'justify-content-center', 'align-items-center', 'h-100')}>
+            <Form
+                onSubmit={handleSubmit(onSubmit)}
+                className={classNames('w-50', 'mt-4', 'd-flex', 'flex-column', 'gap-3')}
+            >
                 <SummaryError error={(errors as GlobalError)?._error?.message} />
 
                 <FieldInput
@@ -54,14 +56,29 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({ onSuccess }) => {
                     error={errors?.username?.message}
                     wrapperProps={{ label: (loginSchema.fields.username as any).spec?.label }}
                 />
-                <FieldInput
+                {/* <FieldInput
                     name={'password'}
                     control={control}
                     type="password"
                     autoComplete="current-password"
                     error={errors?.password?.message}
                     wrapperProps={{ label: (loginSchema.fields.password as any).spec?.label }}
+                /> */}
+
+                <FieldPassword
+                    control={control}
+                    name={'password'}
+                    placeholder={'Choose a Password'}
+                    error={errors.password?.message}
+                    aria-label={'Password'}
+                    wrapperProps={{ label: 'Password' }}
+                    autoComplete="current-password"
                 />
+
+                <Button type="submit">
+                    {isSubmitting ? <span className={classNames('spinner-border')} /> : 'Sign in'}
+                </Button>
+
                 <div className={classNames('text-center', 'my-3')}>
                     <Link to={Router.generate(routes.PASSWORD_RECOVERY)} className={classNames('small')}>
                         {'Forgot password?'}
@@ -73,13 +90,8 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({ onSuccess }) => {
                         Sign up
                     </Link>
                 </div>
-            </div>
-            <div className={classNames('text-center')}>
-                <button type="submit" className={classNames('btn', 'btn-primary', 'text-uppercase', 'w-50')}>
-                    {isSubmitting ? <span className={classNames('spinner-border')} /> : 'Sign in'}
-                </button>
-            </div>
-        </form>
+            </Form>
+        </div>
     );
 };
 

@@ -54,18 +54,7 @@ const LoginScreen: React.FC<Props> = () => {
     return (
         <NotAuthenticated redirectTo={Router.generate(routes.DASHBOARD)}>
             <MainLayout>
-                <div className={classNames(styles.login)}>
-                    <div className={classNames('container')}>
-                        <div className={classNames('row')}>
-                            <div className={classNames('col-lg-12')}>
-                                <h1 className={classNames(styles.heading)}>Company Name</h1>
-                                <div className={classNames('col-lg-6', 'offset-lg-3')}>
-                                    <LoginForm onSuccess={onLogin} />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <LoginForm onSuccess={onLogin} />
             </MainLayout>
         </NotAuthenticated>
     );
