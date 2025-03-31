@@ -20,7 +20,7 @@ export enum State {
 }
 
 const VerifyCodeLinkScreen: React.FC<Props> = () => {
-    const { token, username, state: initialState = State.LOADING } = useQuery();
+    const { code, username, state: initialState = State.LOADING } = useQuery();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [state, setState] = useState(Number(initialState) || State.LOADING);
@@ -42,17 +42,17 @@ const VerifyCodeLinkScreen: React.FC<Props> = () => {
     }, []);
 
     useEffect(() => {
-        if (!token) {
+        if (!code) {
             state === State.LOADING && setState(State.EXPIRED);
             return;
         }
 
         setState(State.LOADING);
-        dispatch(validateRecoveryCode({ token }))
+        dispatch(validateRecoveryCode({ code }))
             .unwrap()
-            .then(() => navigate(Router.generate(routes.CHANGE_PASSWORD), { state: { setup: true } }))
+            .then(() => navigate(Router.generate(routes.PROFILE), { state: { setup: true } }))
             .catch(() => setState(State.EXPIRED));
-    }, [token]);
+    }, [code]);
 
     return (
         <MainLayout>

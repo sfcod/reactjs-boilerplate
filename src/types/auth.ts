@@ -12,7 +12,7 @@ export interface RecoveryRequestFormData {
 }
 
 export interface ValidateCodeFormData {
-    token: string;
+    code: string;
 }
 
 export interface ResetPasswordFormData {

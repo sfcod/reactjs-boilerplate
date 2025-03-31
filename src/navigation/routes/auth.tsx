@@ -4,10 +4,11 @@ import routes from '../routes';
 import LogoutScreen from '../../screens/Auth/screens/Logout';
 import CustomerLoginScreen from '../../screens/Auth/screens/Login';
 import ForgotPasswordScreen from '../../screens/ForgotPassword/screens/ForgotPassword';
-import ChangePasswordScreen from '../../screens/ForgotPassword/screens/ChangePassword';
+import ProfileScreen from '../../screens/ForgotPassword/screens/Profile';
 import Router from '../router';
 import NotAuthenticated from 'src/components/auth/NotAuthenticated';
 import VerifyCodeLinkScreen from 'src/screens/ForgotPassword/screens/VerifyCodeLink';
+import Authenticated from 'src/components/auth/Authenticated';
 
 const authRoutes = [
     <Route key={routes.HOME} path={routes.HOME} element={<CustomerLoginScreen />} />,
@@ -31,12 +32,12 @@ const authRoutes = [
         }
     />,
     <Route
-        key={routes.CHANGE_PASSWORD}
-        path={routes.CHANGE_PASSWORD}
+        key={routes.PROFILE}
+        path={routes.PROFILE}
         element={
-            <NotAuthenticated redirectTo={Router.generate(routes.DASHBOARD)}>
-                <ChangePasswordScreen />
-            </NotAuthenticated>
+            <Authenticated redirectTo={Router.generate(routes.HOME)}>
+                <ProfileScreen />
+            </Authenticated>
         }
     />,
 ];

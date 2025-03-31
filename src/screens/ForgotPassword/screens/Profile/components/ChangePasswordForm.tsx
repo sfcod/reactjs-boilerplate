@@ -30,7 +30,7 @@ const ChangePasswordForm: React.FunctionComponent<VerifyFormProps> = ({}: Verify
         setError,
         handleSubmit,
         formState: { errors },
-    } = useForm<ResetPasswordFormData & { repeatPassword: string }>({
+    } = useForm<ResetPasswordFormData>({
         resolver: yupResolver(changePasswordSchema),
     });
 
@@ -50,6 +50,7 @@ const ChangePasswordForm: React.FunctionComponent<VerifyFormProps> = ({}: Verify
                 onSubmit={handleSubmit(onSubmit)}
                 className={classNames('w-50', 'mt-4', 'd-flex', 'flex-column', 'gap-3')}
             >
+                <h2>Change Password</h2>
                 <FormError
                     error={(errors as GlobalError)._error?.message}
                     classNames={{ errorContainer: 'text-center mb-2' }}
@@ -60,6 +61,7 @@ const ChangePasswordForm: React.FunctionComponent<VerifyFormProps> = ({}: Verify
                     placeholder={'New password'}
                     error={errors.password?.message}
                     showHelp={true}
+                    autoComplete="new-password"
                 />
                 <FieldPassword
                     control={control}
@@ -67,6 +69,7 @@ const ChangePasswordForm: React.FunctionComponent<VerifyFormProps> = ({}: Verify
                     name={'repeatPassword'}
                     placeholder={'Repeat password'}
                     error={errors.repeatPassword?.message}
+                    autoComplete="new-password"
                 />
 
                 <Button type={'submit'}>Confirm</Button>

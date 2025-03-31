@@ -4,7 +4,7 @@ import MainLayout from 'src/components/layout/MainLayout';
 
 interface Props {}
 
-const ChangePasswordScreen: React.FC<Props> = () => {
+const ProfileScreen: React.FC<Props> = () => {
     return (
         <MainLayout>
             <ChangePasswordForm />
@@ -12,4 +12,4 @@ const ChangePasswordScreen: React.FC<Props> = () => {
     );
 };
 
-export default ChangePasswordScreen;
+export default ProfileScreen;
