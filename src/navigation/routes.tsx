@@ -4,7 +4,10 @@ export default {
     DASHBOARD: '/dashboard',
 
     // LOGIN_CUSTOMER: '/customer/login',
-    PASSWORD_RECOVERY: '/password-recovery',
+
+    FORGOT_PASSWORD: '/forgot-password',
+    FORGOT_PASSWORD_VERIFY_CODE_LINK: '/forgot-password/verify-link',
+    CHANGE_PASSWORD: '/forgot-password/change',
 
     SIGNUP: '/signup',
 };

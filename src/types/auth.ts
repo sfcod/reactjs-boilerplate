@@ -17,5 +17,5 @@ export interface ValidateCodeFormData {
 
 export interface ResetPasswordFormData {
     password: string;
-    passwordRepeat: string;
+    repeatPassword: string;
 }

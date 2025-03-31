@@ -13,7 +13,7 @@ function validateResetPasswordToken(payload: { token: string }): AxiosPromise<an
     return EndPointService.post('/forgot-password/validate-token', payload);
 }
 
-function updatePassword(payload: { password: string; passwordRepeat: string }): AxiosPromise<any> {
+function updatePassword(payload: { password: string; repeatPassword: string }): AxiosPromise<any> {
     return EndPointService.post('/users/reset-password', payload);
 }
 
