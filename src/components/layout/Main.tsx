@@ -8,7 +8,7 @@ interface Props {
 }
 
 const Main: React.FunctionComponent<Props> = ({ children }: Props) => (
-    <main className={classNames(styles.main)}>{children}</main>
+    <main className={classNames(styles.main, 'content-wrapper', 'position-relative')}>{children}</main>
 );
 
 export default Main;
