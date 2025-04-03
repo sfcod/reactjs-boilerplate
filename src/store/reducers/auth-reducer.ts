@@ -1,5 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { login, logout, resetPasswordRequest, validateRecoveryCode } from 'src/store/thunks/auth-thunks';
+import {
+    login,
+    logout,
+    resetPasswordRequest,
+    validateRecoveryCode,
+    updatePassword,
+} from 'src/store/thunks/auth-thunks';
 import type { ReducerState } from 'src/store/configure-store';
 import { takeOne } from 'src/helpers/store';
 
@@ -33,6 +39,9 @@ export const slice = createSlice({
             .addCase(resetPasswordRequest.pending, takeOne.pendingActionCase)
             .addCase(resetPasswordRequest.fulfilled, takeOne.fulfilledActionCase)
             .addCase(resetPasswordRequest.rejected, takeOne.rejectedActionCase)
+            .addCase(updatePassword.pending, takeOne.pendingActionCase)
+            .addCase(updatePassword.fulfilled, takeOne.fulfilledActionCase)
+            .addCase(updatePassword.rejected, takeOne.rejectedActionCase)
             .addCase(validateRecoveryCode.pending, takeOne.pendingActionCase)
             .addCase(validateRecoveryCode.fulfilled, takeOne.fulfilledActionCase)
             .addCase(validateRecoveryCode.rejected, takeOne.rejectedActionCase);

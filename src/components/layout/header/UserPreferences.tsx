@@ -19,6 +19,8 @@ const UserPreferences: React.FunctionComponent<Props> = React.memo(({}: Props) =
         <div className={classNames('d-flex', 'align-items-center', 'gap-3', 'text-white')}>
             <span>{String(UserAuthService.getData()?.username)}</span>
             <NavDropdown title={<FontAwesomeIcon icon={faCog} />} id="nav-dropdown" align="end">
+                <NavDropdown.Item href={Router.generate(routes.PROFILE)}>Profile</NavDropdown.Item>
+                <NavDropdown.Divider />
                 <NavDropdown.Item href={Router.generate(routes.LOGOUT)}>Logout</NavDropdown.Item>
             </NavDropdown>
         </div>
