@@ -7,7 +7,7 @@ interface Props {
     message?: string;
 }
 
-const NoMatchScreen: React.FunctionComponent<Props> = ({ code, message }: Props) => (
+const NoMatchScreen: React.FunctionComponent<Props> = ({ code = 404, message = 'Page Not found' }: Props) => (
     <MainLayout>
         <div className={classNames('container')}>
             <div className={classNames('text-center', 'my-5', 'py-5')}>
@@ -17,10 +17,5 @@ const NoMatchScreen: React.FunctionComponent<Props> = ({ code, message }: Props)
         </div>
     </MainLayout>
 );
-
-NoMatchScreen.defaultProps = {
-    code: 404,
-    message: 'Page Not found',
-};
 
 export default NoMatchScreen;

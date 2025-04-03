@@ -1,43 +1,8 @@
-@import 'src/themes/theme';
+@use '@/themes/variables' as *;
 
 .footer {
     background: #fff;
     color: $main-color;
-}
-
-.top {
-    background: $main-color;
-    color: #fff;
-    padding-top: 50px;
-    padding-bottom: 15px;
-
-    p {
-        margin-bottom: 0.5rem;
-    }
-
-    @media (max-width: 768px) {
-        text-align: center;
-    }
-}
-
-.email {
-    a {
-        color: #fff;
-
-        &:hover {
-            text-decoration: none;
-        }
-    }
-}
-
-.socials {
-    a:not(:last-child) {
-        margin-right: 20px;
-
-        @media (min-width: 768px) and (max-width: 992px) {
-            margin-right: 10px;
-        }
-    }
 }
 
 .bottom {
