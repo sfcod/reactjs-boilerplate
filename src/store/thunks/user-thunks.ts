@@ -6,6 +6,7 @@ import type { QueryParams } from 'src/types/grid';
 import SortingService from '../../services/sorting';
 import type { User } from 'src/types/user';
 import { UserApi } from 'src/services/end-points';
+import { handleError, handleToastError, resolveApiCall } from 'src/services/api-handlers/api-resolver';
 
 export const listUsers = createAsyncThunk<Paginated<User>, QueryParams, ThunkConfig>(
     'user/list',
@@ -29,6 +30,28 @@ export const listUsers = createAsyncThunk<Paginated<User>, QueryParams, ThunkCon
                 }),
             payload.page,
             user.data,
+        );
+    },
+);
+
+export const deleteUser = createAsyncThunk<void, { id: string }, ThunkConfig>(
+    'user/delete',
+    async (payload, thunkAPI) => {
+        const { user } = thunkAPI.getState();
+
+        return resolveApiCall(
+            thunkAPI,
+            user,
+            async () => {
+                const response = await UserApi.deleteUser(payload.id);
+                return response.data;
+            },
+            async (err) => {
+                console.log(err);
+                handleError(err);
+                handleToastError(err);
+                return err;
+            },
         );
     },
 );

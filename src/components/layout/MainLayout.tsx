@@ -3,7 +3,7 @@ import styles from './assets/base-layout.module.scss';
 import classNames from 'classnames';
 import Header from './header/Header';
 import Footer from './footer/Footer';
-import Main from './Main';
+import Main from './main/Main';
 import Sidebar from './sidebar/Sidebar';
 
 interface Props {

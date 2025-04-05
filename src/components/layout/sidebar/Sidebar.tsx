@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Router from '../../../navigation/router';
 import routes from '../../../navigation/routes';
 import SidebarItem from './SidebarItem';
-import { faSuitcase, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faSuitcase, faTimes, faUsers } from '@fortawesome/free-solid-svg-icons';
 import styles from './assets/sidebar.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Authenticated from 'src/components/auth/Authenticated';
@@ -42,6 +42,7 @@ const Sidebar: React.FunctionComponent = React.memo(() => {
                                     icon={faSuitcase}
                                     link={Router.generate(routes.DASHBOARD)}
                                 />
+                                <SidebarItem title="Users" icon={faUsers} link={Router.generate(routes.USER_LIST)} />
                             </>
                         </Authenticated>
                     </ul>

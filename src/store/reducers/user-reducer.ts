@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { listUsers } from 'src/store/thunks/user-thunks';
+import { deleteUser, listUsers } from 'src/store/thunks/user-thunks';
 import type { ReducerState } from 'src/store/configure-store';
 import { takeOne } from 'src/helpers/store';
 import type { Paginated } from 'src/services/api-handlers/pagination';
@@ -33,7 +33,11 @@ export const slice = createSlice({
                 takeOne.fulfilledActionCase(state, action);
                 state.data = action.payload;
             })
-            .addCase(listUsers.rejected, takeOne.rejectedActionCase);
+            .addCase(listUsers.rejected, takeOne.rejectedActionCase)
+
+            .addCase(deleteUser.pending, takeOne.pendingActionCase)
+            .addCase(deleteUser.fulfilled, takeOne.fulfilledActionCase)
+            .addCase(deleteUser.rejected, takeOne.rejectedActionCase);
     },
 });
 
