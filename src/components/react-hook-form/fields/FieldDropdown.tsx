@@ -18,7 +18,7 @@ export interface Props<T extends any = any> extends CommonFieldProps {
     textField?: string | ((dataItem: any) => string);
     valueField?: string;
     placeholder?: string;
-    defaultValue?: string;
+    defaultValue?: string | number; // Allow number as defaultValue
     busy?: boolean;
     filter?: false | 'startsWith' | 'contains' | ((dataItem: any, str: string) => boolean);
     wrapperProps?: FieldWrapperProps;
@@ -49,11 +49,8 @@ const FieldDropdown: React.FunctionComponent<Props> = <T extends any = any>({
         name={name as `${string}`}
         control={control}
         defaultValue={defaultValue}
-        render={({ field }) => {
-            field = {
-                ...field,
-                selectIcon: <FontAwesomeIcon className={classNames(error && 'text-danger')} icon={faChevronDown} />,
-            } as any;
+        render={({ field: { onChange, value, ...restField } }) => {
+            const selectedItem = data.find((item) => (item as Record<string, any>)[valueField] === value) || null;
 
             return (
                 <FieldWrapper {...wrapperProps} name={name} error={error}>
@@ -67,7 +64,15 @@ const FieldDropdown: React.FunctionComponent<Props> = <T extends any = any>({
                         dataKey={valueField}
                         textField={textField}
                         filter={filter}
-                        {...field}
+                        value={selectedItem || value}
+                        onChange={(selected) => {
+                            const newValue = selected ? (selected as Record<string, any>)[valueField] : null;
+                            onChange(newValue);
+                        }}
+                        selectIcon={
+                            <FontAwesomeIcon className={classNames(error && 'text-danger')} icon={faChevronDown} />
+                        }
+                        {...restField}
                     />
                     {children}
                 </FieldWrapper>

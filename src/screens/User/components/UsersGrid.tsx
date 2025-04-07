@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 import textFilter from 'src/components/react-table/filters/text-filter';
 import Grid, { Column } from 'src/components/react-table/Grid';
 import { Paginated, PaginatedBaseMeta } from 'src/services/api-handlers/pagination';
@@ -10,6 +10,12 @@ import userStatus from 'src/enumerables/user-status';
 import DateTimeColumn from 'src/components/react-table/columns/DateTimeColumn';
 import dateFilter from 'src/components/react-table/filters/date-filter';
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Router from 'src/navigation/router';
+import classNames from 'classnames';
+import routes from 'src/navigation/routes';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router';
 
 interface Props {
     title?: ReactNode | string;
@@ -59,6 +65,17 @@ const UsersGrid: React.FC<Props> = ({ columns, actionsColumn, data, getData, tit
         return [...(columns || defaultColumns)];
     }, [columns]);
 
+    const renderTitle = useCallback(
+        () => (
+            <div className={classNames('d-flex', 'justify-content-end')}>
+                <Link className={classNames('text-decoration-none')} to={Router.generate(routes.USER_CREATE)}>
+                    <FontAwesomeIcon icon={faPlus} /> Create
+                </Link>
+            </div>
+        ),
+        [],
+    );
+
     if (actionsColumn) {
         resultColumns.push(actionsColumn);
     }
@@ -67,7 +84,7 @@ const UsersGrid: React.FC<Props> = ({ columns, actionsColumn, data, getData, tit
         <Grid<User>
             columns={resultColumns}
             data={data}
-            title="User List"
+            title={renderTitle()}
             getData={getData}
             defaultSorting={{ updatedAt: 'DESC' }}
             pageSize={10}

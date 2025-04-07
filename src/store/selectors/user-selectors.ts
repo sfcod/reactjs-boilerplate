@@ -6,3 +6,4 @@ export const usersSelector = (state: StoreState): Paginated<User> => state.user.
 // export const usersErrorSelector = (state: StoreState): string => state.user.error;
 export const usersLoadedSelector = (state: StoreState): boolean => state.user.loading === 'loaded';
 export const usersLoadingSelector = (state: StoreState): boolean => state.user.loading === 'loading';
+export const userCurrentSelector = (state: StoreState): User | null => state.user.current;
