@@ -1,19 +1,20 @@
 import type { ReactNode } from 'react';
-import React from 'react';
 import styles from './assets/base-layout.module.scss';
 import classNames from 'classnames';
 import Header from './header/Header';
-import Footer from './Footer';
-import Main from './Main';
+import Footer from './footer/Footer';
+import Main from './main/Main';
+import Sidebar from './sidebar/Sidebar';
 
 interface Props {
     children?: ReactNode;
 }
 
-const MainLayout: React.FunctionComponent<Props> = ({ children }: Props) => (
+const MainLayout = ({ children }: Props) => (
     <div className={classNames(styles.layout)}>
         <div className={classNames(styles.content)}>
             <Header />
+            <Sidebar />
             <Main>{children}</Main>
         </div>
         <Footer />

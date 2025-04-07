@@ -1,7 +1,6 @@
 @use '@/themes/theme' as *;
 
 .layout {
-    background: linear-gradient($main-color, #011a1f);
     display: flex;
     flex-direction: column;
     min-height: 100vh;

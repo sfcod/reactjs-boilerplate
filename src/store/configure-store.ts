@@ -1,6 +1,7 @@
 import rootReducer from './reducers';
 import type { createAsyncThunk } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
+import { User } from 'src/types/user';
 
 export const store = configureStore({
     reducer: rootReducer,
@@ -17,6 +18,7 @@ export type ReducerState = {
     loading: 'loading' | 'loaded' | 'none';
     requestIds: Record<string, string[]>;
     errors: Record<string, string>;
+    current: User | null;
 };
 export type AppDispatch = typeof store.dispatch;
 
