@@ -18,7 +18,7 @@ function updatePassword(payload: { password: string; passwordRepeat: string }): 
 }
 
 const refresh = (refreshToken: any): AxiosPromise<any> => {
-    return EndPointService.post(`/refresh`, { refreshToken });
+    return EndPointService.post(`/auths/refresh`, { refreshToken });
 };
 
 export default {
