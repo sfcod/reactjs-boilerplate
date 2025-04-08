@@ -54,9 +54,7 @@ const defaultColumns: Column<User>[] = [
         accessorKey: 'createdAt',
         cell: (props) => <DateTimeColumn value={props.row.original.createdAt} />,
         size: 200,
-        // enableColumnFilter: false, // You can disable column filter
-        filter: dateFilter(),
-        // filter: dateTimeFilter(),
+        enableColumnFilter: false,
     },
 ];
 
