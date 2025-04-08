@@ -1,8 +1,5 @@
-import moment from 'moment';
 import { DateTimePicker } from 'react-widgets';
 import type { Column } from '@tanstack/react-table';
-
-moment.locale('en');
 
 function dateFilter<T extends Record<string, unknown>>() {
     return ({ column }: { column: Column<T, unknown> }) => {
