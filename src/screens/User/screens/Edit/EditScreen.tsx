@@ -23,7 +23,7 @@ const EditScreen: React.FunctionComponent<Props> = () => {
     const loading = useSelector(usersLoadingSelector);
 
     const handleSubmit = async (data: UserFormData, dispatch: AppDispatch) => {
-        return id && dispatch(updateUser({ id, data }));
+        return id && dispatch(updateUser({ id, data })).unwrap();
     };
 
     const action = useCallback(() => {
