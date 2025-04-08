@@ -2,6 +2,12 @@
 
 .header {
     background: $main-color;
+    margin-left: 63px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 24px;
 }
 
 .holder {
