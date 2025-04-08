@@ -79,6 +79,7 @@ export function withErrors<T extends FieldValues>(
     setError: (name: FieldPath<T>, error: ErrorOption) => void,
 ): Promise<any> {
     return promise.catch((errors: FormErrors<T>) => {
+        console.log({ msg: 'withErrors', errors });
         if (errors instanceof Array) {
             errors.forEach((item) => setError(item.field, item.error));
         }
