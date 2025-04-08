@@ -12,11 +12,9 @@ interface Props {
 
 const MainLayout = ({ children }: Props) => (
     <div className={classNames(styles.layout)}>
-        <div className={classNames(styles.content)}>
-            <Header />
-            <Sidebar />
-            <Main>{children}</Main>
-        </div>
+        <Header />
+        <Sidebar />
+        <Main>{children}</Main>
         <Footer />
     </div>
 );
