@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { login, logout, resetPasswordRequest, validateRecoveryCode } from 'src/store/thunks/auth-thunks';
+import { login, logout, resetPasswordRequest, signup, validateRecoveryCode } from 'src/store/thunks/auth-thunks';
 import type { ReducerState } from 'src/store/configure-store';
 import { takeOne } from 'src/helpers/store';
 
@@ -35,7 +35,10 @@ export const slice = createSlice({
             .addCase(resetPasswordRequest.rejected, takeOne.rejectedActionCase)
             .addCase(validateRecoveryCode.pending, takeOne.pendingActionCase)
             .addCase(validateRecoveryCode.fulfilled, takeOne.fulfilledActionCase)
-            .addCase(validateRecoveryCode.rejected, takeOne.rejectedActionCase);
+            .addCase(validateRecoveryCode.rejected, takeOne.rejectedActionCase)
+            .addCase(signup.pending, takeOne.pendingActionCase)
+            .addCase(signup.fulfilled, takeOne.fulfilledActionCase)
+            .addCase(signup.rejected, takeOne.rejectedActionCase);
     },
 });
 

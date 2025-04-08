@@ -11,6 +11,9 @@ import type {
     ResetPasswordFormData,
     ValidateCodeFormData,
 } from '../../types/auth.ts';
+import { SignupApi } from 'src/services/end-points';
+import { makeFormErrorsFromResponse } from 'src/components/react-hook-form/utils/make-form-errors';
+import type { SignUpData } from '../../types/signup.ts';
 
 export const login = createAsyncThunk<void, LoginData, ThunkConfig>('auth/login', async (payload, thunkAPI) => {
     try {
@@ -104,3 +107,34 @@ export const updatePassword = createAsyncThunk<void, ResetPasswordFormData, Thun
         );
     },
 );
+
+export const signup = createAsyncThunk<void, SignUpData, ThunkConfig>('auth/signup', async (payload, thunkAPI) => {
+    console.debug({ payload });
+    return resolveApiCall(
+        thunkAPI,
+        thunkAPI.getState().auth,
+        async () => {
+            const response = await SignupApi.signup(payload);
+            return response.data;
+        },
+        async (err) => {
+            return makeFormErrorsFromResponse<SignUpData>(err.response.data);
+        },
+    );
+    // try {
+    //     const { data } = await SignupApi.signup(payload);
+    //     await UserAuthService.login(data.token, data.refreshToken);
+    // } catch (err) {
+    //     const { response } = err as any;
+    //     const error = (() => {
+    //         if ((err as any)?.code == AxiosError.ERR_NETWORK) {
+    //             return 'No internet connection. Check your network and try again';
+    //         }
+    //         if (response?.status < 500) {
+    //             return response.data.message || 'Incorrect credentials';
+    //         }
+    //         return 'Something went wrong';
+    //     })();
+    //     return makeFormErrorsFromResponse<SignUpData>(error);
+    // }
+});
