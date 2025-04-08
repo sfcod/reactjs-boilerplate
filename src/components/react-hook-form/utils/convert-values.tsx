@@ -1,6 +1,6 @@
 import { isSelectableItem } from 'src/enumerables/enumerable.abstract';
 import lodash from 'lodash';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 
 /**
  * Append value to form status
@@ -82,7 +82,7 @@ const convertValue = (value: any): any => {
     if (isSelectableItem(value)) {
         return value.value;
     } else if (value instanceof Date) {
-        return moment(value).format('YYYY-MM-DD[T]HH:mm:ss.SSS');
+        return DateTime.fromJSDate(new Date(value)).toFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     } else if (value instanceof Array) {
         return value.map((element) => convertValue(element));
     } else if (lodash.isObject(value)) {
