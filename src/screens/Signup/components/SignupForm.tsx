@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import { Form } from 'react-bootstrap';
 import { useDispatch } from 'src/hooks/dispatch';
 import { withErrors } from 'src/components/react-hook-form/utils/make-form-errors';
-import { signup } from 'src/store/thunks/signup-thunks';
+import { signup } from 'src/store/thunks/auth-thunks';
 import Button from 'src/components/Button';
 import { SignUpData } from 'src/types/signup';
 import SummaryError from 'src/components/react-hook-form/SummaryError';
@@ -50,6 +50,27 @@ const SignupScreen = ({ onSuccess }: Props) => {
 
                 <FieldInput
                     control={control}
+                    name={'firstName'}
+                    placeholder={'Enter Your First Name'}
+                    error={errors.firstName?.message}
+                    aria-label={'First Name'}
+                    type={'text'}
+                    wrapperProps={{ label: 'First Name' }}
+                    autoComplete="given-name"
+                />
+                <FieldInput
+                    control={control}
+                    name={'lastName'}
+                    placeholder={'Enter Your Last Name'}
+                    error={errors.lastName?.message}
+                    aria-label={'Last Name'}
+                    type={'text'}
+                    wrapperProps={{ label: 'Last Name' }}
+                    autoComplete="family-name"
+                />
+
+                <FieldInput
+                    control={control}
                     name={'email'}
                     placeholder={'Enter Your Email'}
                     error={errors.email?.message}
@@ -57,6 +78,17 @@ const SignupScreen = ({ onSuccess }: Props) => {
                     type={'email'}
                     wrapperProps={{ label: 'Email' }}
                     autoComplete="email"
+                />
+
+                <FieldInput
+                    control={control}
+                    name={'phoneNumber'}
+                    placeholder={'Enter Your Phone'}
+                    error={errors.phoneNumber?.message}
+                    aria-label={'Phone'}
+                    type={'phone'}
+                    wrapperProps={{ label: 'Phone Number' }}
+                    autoComplete="phone"
                 />
 
                 <FieldPassword
