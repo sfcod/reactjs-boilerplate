@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { SelectableItem } from 'src/enumerables/enumerable.abstract';
 import { useCallback } from 'react';
 import { DropdownList } from 'react-widgets';
-import { Column } from '@tanstack/react-table';
+import type { Column } from '@tanstack/react-table';
 
 type DropdownPropsType = React.ComponentProps<typeof DropdownList>;
 

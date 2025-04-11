@@ -1,14 +1,17 @@
 Based on:  
 React, Redux Toolkit (thunk), React Hook Form  
 Node: 18+
+
 ## Dev environment
 
 - Setup config
-```bash 
+
+```bash
 cp src/config/environments/env.dev.js src/config/env.js
 ```
 
 - Install vendors
+
 ```bash
 npm install
 ```
@@ -46,3 +49,20 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
+## Format code with prettier
+
+```bash
+npx prettier --write "**/*"
+```
+
+You can specify extensions:
+
+```bash
+npx prettier --write "**/*.{js,jsx,ts,tsx}"
+```
+
+## Use ESLint
+
+```bash
+npx eslint --fix "**/*.{js,jsx,ts,tsx}"
+```
