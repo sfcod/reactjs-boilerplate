@@ -9,9 +9,7 @@ module.exports = {
     parserOptions: {
         ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
         sourceType: 'module', // Allows for the use of imports
-        ecmaFeatures: {
-            jsx: true,
-        },
+        ecmaFeatures: { jsx: true },
         project: ['./tsconfig.json', './tsconfig.node.json'],
         tsconfigRootDir: __dirname,
     },
@@ -26,11 +24,10 @@ module.exports = {
         '@typescript-eslint/no-non-null-assertion': ['off', {}],
         '@typescript-eslint/no-unnecessary-type-constraint': ['off', {}],
         '@typescript-eslint/explicit-module-boundary-types': ['off', {}],
-        "@typescript-eslint/consistent-type-imports": ["error", {
-            "prefer": "type-imports",
-            "disallowTypeAnnotations": false
-          }
-        ]
+        '@typescript-eslint/consistent-type-imports': [
+            'error',
+            { prefer: 'type-imports', disallowTypeAnnotations: false },
+        ],
     },
     settings: {
         react: {

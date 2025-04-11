@@ -1,6 +1,6 @@
 import { DateTimePicker } from 'react-widgets';
 import moment from 'moment';
-import { Column } from '@tanstack/react-table';
+import type { Column } from '@tanstack/react-table';
 
 moment.locale('en');
 
