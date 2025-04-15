@@ -4,14 +4,16 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
 import checker from 'vite-plugin-checker';
 import { VitePWA } from 'vite-plugin-pwa';
+import path from 'path'; // Add this import for path resolution
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    build: {
-        outDir: 'build',
-    },
-    server: {
-        port: 3000,
+    build: { outDir: 'build' },
+    server: { port: 3000 },
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'src'), // Alias '@' to 'src/'
+        },
     },
     plugins: [
         react(),
