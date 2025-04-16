@@ -8,7 +8,7 @@
     width: auto;
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
 
     @media (max-width: 768px) {
         flex-direction: column;
@@ -30,21 +30,4 @@
 
 .logoImg {
     max-height: 50px;
-}
-
-.storeButton {
-    color: #fff;
-    padding: 15px;
-    background: linear-gradient(#042e33, #0e5361);
-
-    &:hover {
-        text-decoration: none;
-        color: #fff;
-    }
-}
-
-.loggedUserMenu {
-    a:not(:last-child) {
-        margin-right: 10px;
-    }
 }

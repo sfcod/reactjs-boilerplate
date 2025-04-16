@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import React from 'react';
 import styles from './assets/base-layout.module.scss';
 import classNames from 'classnames';
-import Header from './Header';
+import Header from './header/Header';
 import Footer from './Footer';
 import Main from './Main';
 
