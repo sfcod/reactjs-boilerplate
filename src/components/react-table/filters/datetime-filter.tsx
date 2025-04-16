@@ -1,14 +1,12 @@
 import { DateTimePicker } from 'react-widgets';
-import moment from 'moment';
 import type { Column } from '@tanstack/react-table';
-
-moment.locale('en');
+import { DateTime } from 'luxon';
 
 function dateTimeFilter<T extends Record<string, unknown>>() {
     return ({ column }: { column: Column<T, unknown> }) => {
         const handleChange = (date?: Date | null) => {
             if (date) {
-                column.setFilterValue(moment(date).format());
+                column.setFilterValue(DateTime.fromJSDate(date).toISO());
             } else {
                 column.setFilterValue(date);
             }

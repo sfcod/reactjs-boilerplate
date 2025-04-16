@@ -3,6 +3,9 @@ import { transformEmptyString } from 'src/helpers/transform';
 import * as yup from 'yup';
 
 export const signupSchema = yup.object().shape({
+    firstName: yup.string().required().max(255).label('First Name'),
+    lastName: yup.string().required().max(255).label('Last Name'),
+    phoneNumber: yup.string().required().max(255).label('Phone Number'),
     email: yup.string().required().email().max(255).label('Email'),
     password: passwordValidationSchema,
     repeatPassword: yup

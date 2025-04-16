@@ -2,7 +2,7 @@ import type { AxiosPromise } from 'axios';
 import { EndPointService } from 'src/services/api-handlers/axios';
 
 function login(username: string, password: string): AxiosPromise<any> {
-    return EndPointService.post('/auths/admin', { username, password });
+    return EndPointService.post('/auths/user', { username, password });
 }
 
 function resetPasswordRequest(payload: { username: string }): AxiosPromise<any> {
