@@ -121,20 +121,4 @@ export const signup = createAsyncThunk<void, SignUpData, ThunkConfig>('auth/sign
             return makeFormErrorsFromResponse<SignUpData>(err.response.data);
         },
     );
-    // try {
-    //     const { data } = await SignupApi.signup(payload);
-    //     await UserAuthService.login(data.token, data.refreshToken);
-    // } catch (err) {
-    //     const { response } = err as any;
-    //     const error = (() => {
-    //         if ((err as any)?.code == AxiosError.ERR_NETWORK) {
-    //             return 'No internet connection. Check your network and try again';
-    //         }
-    //         if (response?.status < 500) {
-    //             return response.data.message || 'Incorrect credentials';
-    //         }
-    //         return 'Something went wrong';
-    //     })();
-    //     return makeFormErrorsFromResponse<SignUpData>(error);
-    // }
 });
