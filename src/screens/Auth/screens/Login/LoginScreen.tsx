@@ -21,7 +21,6 @@ import dropdownFilter from 'src/components/react-table/filters/dropdown-filter';
 import userStatus from 'src/enumerables/user-status';
 import textFilter from 'src/components/react-table/filters/text-filter';
 import dateFilter from 'src/components/react-table/filters/date-filter';
-import dateTimeFilter from 'src/components/react-table/filters/datetime-filter';
 
 export interface StateProps {}
 
