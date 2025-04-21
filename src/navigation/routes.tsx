@@ -1,7 +1,13 @@
 export default {
     HOME: '/',
     LOGOUT: '/logout',
-    // LOGIN_CUSTOMER: '/customer/login',
+    DASHBOARD: '/dashboard',
     PROFILE: '/profile',
-    PASSWORD_RECOVERY: '/password-recovery',
+
+    // LOGIN_CUSTOMER: '/customer/login',
+
+    FORGOT_PASSWORD: '/forgot-password',
+    FORGOT_PASSWORD_VERIFY_CODE_LINK: '/forgot-password/verify-link',
+
+    SIGNUP: '/signup',
 };

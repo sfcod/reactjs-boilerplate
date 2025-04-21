@@ -14,10 +14,10 @@ interface Props {
 
 const Button: React.FunctionComponent<Props & React.HTMLProps<HTMLButtonElement>> = ({
     children,
-    type,
+    type = 'button',
     onClick,
     className,
-    disabled,
+    disabled = false,
     loading,
     ...rest
 }: Props) => (
@@ -38,10 +38,5 @@ const Button: React.FunctionComponent<Props & React.HTMLProps<HTMLButtonElement>
         {children}
     </button>
 );
-
-Button.defaultProps = {
-    type: 'button',
-    disabled: false,
-};
 
 export default Button;

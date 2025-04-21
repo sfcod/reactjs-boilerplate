@@ -1,4 +1,4 @@
-@import "src/themes/theme";
+@use '@/themes/variables' as *;
 
 .errorRow {
     display: flex;
