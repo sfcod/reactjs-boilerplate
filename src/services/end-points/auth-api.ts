@@ -6,15 +6,15 @@ function login(username: string, password: string): AxiosPromise<any> {
 }
 
 function resetPasswordRequest(payload: { username: string }): AxiosPromise<any> {
-    return EndPointService.post('/forgot-password', payload);
-}
-
-function validateResetPasswordToken(payload: { token: string }): AxiosPromise<any> {
-    return EndPointService.post('/forgot-password/validate-token', payload);
-}
-
-function updatePassword(payload: { password: string; passwordRepeat: string }): AxiosPromise<any> {
     return EndPointService.post('/users/reset-password', payload);
+}
+
+function validateResetPasswordCode(payload: { code: string }): AxiosPromise<any> {
+    return EndPointService.post('/users/verify-reset-password-code', payload);
+}
+
+function updatePassword(payload: { password: string; repeatPassword: string }): AxiosPromise<any> {
+    return EndPointService.post('/users/change-password', payload);
 }
 
 const refresh = (refreshToken: any): AxiosPromise<any> => {
@@ -24,7 +24,7 @@ const refresh = (refreshToken: any): AxiosPromise<any> => {
 export default {
     login,
     resetPasswordRequest,
-    validateResetPasswordToken,
+    validateResetPasswordCode,
     updatePassword,
     refresh,
 };

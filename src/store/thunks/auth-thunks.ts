@@ -73,7 +73,7 @@ export const validateRecoveryCode = createAsyncThunk<void, ValidateCodeFormData,
             thunkAPI,
             auth,
             async () => {
-                const { data } = await AuthApi.validateResetPasswordToken(payload);
+                const { data } = await AuthApi.validateResetPasswordCode(payload);
                 await UserAuthService.login(data.token, data.refreshToken);
             },
             async (err) => {
@@ -96,7 +96,9 @@ export const updatePassword = createAsyncThunk<void, ResetPasswordFormData, Thun
         return resolveApiCall(
             thunkAPI,
             auth,
-            async () => AuthApi.updatePassword(payload),
+            async () => {
+                await AuthApi.updatePassword(payload);
+            },
             async (err) => {
                 const { response } = err;
 

@@ -80,7 +80,7 @@ const LoginForm = ({ onSuccess }: Props) => {
                 </Button>
 
                 <div className={classNames('text-center', 'my-3')}>
-                    <Link to={Router.generate(routes.PASSWORD_RECOVERY)} className={classNames('small')}>
+                    <Link to={Router.generate(routes.FORGOT_PASSWORD)} className={classNames('small')}>
                         {'Forgot password?'}
                     </Link>
                 </div>

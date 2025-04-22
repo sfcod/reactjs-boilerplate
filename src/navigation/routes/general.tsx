@@ -1,7 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router';
 import routes from '../routes';
-import CustomerLoginScreen from '../../screens/Auth/screens/Login';
 import DashboardScreen from '../../screens/Dashboard/DashboardScreen';
 import SignupScreen from '../../screens/Signup/SignupScreen';
 import NotAuthenticated from 'src/components/auth/NotAuthenticated';
