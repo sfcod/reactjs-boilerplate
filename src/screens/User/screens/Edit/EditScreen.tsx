@@ -12,7 +12,6 @@ import { getUser, updateUser } from 'src/store/thunks/user-thunks';
 import UserForm, { UserFormData } from '../../components/UserForm';
 import { useDispatch } from 'src/hooks/dispatch';
 import { AppDispatch } from 'src/store/configure-store';
-import Resource from 'src/components/Resource';
 
 interface Props {}
 
@@ -26,22 +25,16 @@ const EditScreen: React.FunctionComponent<Props> = () => {
         return id && dispatch(updateUser({ id, data })).unwrap();
     };
 
-    const action = useCallback(() => {
-        id && dispatch(getUser({ id }));
-    }, [id]);
-
     return (
         <MainLayout>
-            <Resource action={action}>
-                <ContentHeader
-                    title="Edit user"
-                    breadcrumbs={[{ title: 'Users', link: Router.generate(routes.USER_LIST) }]}
-                />
-                <Content loading={!user || user.id !== id}>
-                    <UserForm title="Edit" user={user} onSubmit={handleSubmit} />
-                    {loading && <Loader />}
-                </Content>
-            </Resource>
+            <ContentHeader
+                title="Edit user"
+                breadcrumbs={[{ title: 'Users', link: Router.generate(routes.USER_LIST) }]}
+            />
+            <Content loading={!user || user.id !== id}>
+                <UserForm title="Edit" user={user} onSubmit={handleSubmit} />
+                {loading && <Loader />}
+            </Content>
         </MainLayout>
     );
 };
