@@ -6,7 +6,7 @@ interface Props {
     message?: string;
 }
 
-const Error: React.FC<Props> = ({ code, message }: Props) => {
+const Error: React.FC<Props> = ({ code = 404, message = 'Page Not found' }: Props) => {
     return (
         <div className={classNames('container')}>
             <div className={classNames('text-center', 'my-5', 'py-5')}>
@@ -15,11 +15,6 @@ const Error: React.FC<Props> = ({ code, message }: Props) => {
             </div>
         </div>
     );
-};
-
-Error.defaultProps = {
-    code: 404,
-    message: 'Page Not found',
 };
 
 export default Error;
