@@ -1,18 +1,21 @@
-import React, { useEffect } from 'react';
-import routes from 'src/navigation/routes';
+import type React from 'react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
+import { useAuth } from '../../../../hooks/auth';
+import routes from '../../../../navigation/routes';
 import Router from '../../../../navigation/router';
-import { useDispatch } from 'src/hooks/dispatch';
-import { logout } from 'src/store/thunks/auth-thunks';
-import { Navigate } from 'react-router-dom';
 
 const LogoutScreen: React.FunctionComponent = () => {
-    const dispatch = useDispatch();
-    console.log('logout screen');
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+
     useEffect(() => {
-        dispatch(logout());
+        logout().then(() => {
+            navigate(Router.generate(routes.HOME), { replace: true });
+        });
     }, []);
 
-    return <Navigate replace={true} to={Router.generate(routes.HOME)} />;
+    return null;
 };
 
 export default LogoutScreen;

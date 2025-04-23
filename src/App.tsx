@@ -1,27 +1,33 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { routesList } from './navigation';
-import { Provider } from 'react-redux';
-import { store } from './store/configure-store';
-import NoMatch from 'src/screens/NoMatch';
+import React from 'react';
 import { ToastContainer } from 'react-toastify';
-import { appMount } from 'src/store/reducers/app-reducer';
+import { RouterProvider } from 'react-router';
+import routesConfig from './navigation';
+import AuthProvider from './contexts/AuthProvider.tsx';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { isAxiosError } from 'axios';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-function App(): React.ReactElement {
-    useEffect(() => {
-        store.dispatch(appMount());
-    }, []);
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 1000,
+            retry: (count, err) => {
+                // Retry on all errors except 401 Unauthorized
+                return isAxiosError(err) && err.response?.status === 401 ? false : count < 2;
+            },
+        },
+    },
+});
 
+function App() {
     return (
-        <Provider store={store}>
-            <BrowserRouter>
-                <Routes>
-                    {routesList.map((route, i) => React.cloneElement(route, { key: i }))}
-                    <Route path={'*'} element={<NoMatch />} />
-                </Routes>
-            </BrowserRouter>
-            <ToastContainer />
-        </Provider>
+        <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+                <RouterProvider router={routesConfig} />
+                <ToastContainer />
+            </AuthProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
     );
 }
 

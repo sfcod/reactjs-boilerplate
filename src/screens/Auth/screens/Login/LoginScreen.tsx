@@ -1,129 +1,76 @@
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
+import GuestLayout from '../../../../components/layouts/guest/GuestLayout';
+import { useForm } from 'react-hook-form';
+import { useLogin } from 'src/react-query/auth';
+import type { LoginData } from 'src/types/auth';
 import styles from './assets/login-screen.module.scss';
-import LoginForm from './components/LoginForm';
-import classNames from 'classnames';
-import MainLayout from 'src/components/layout/MainLayout';
-import UserAuthService from '../../../../services/user-auth';
-import { Link } from 'react-router-dom';
-import Router from '../../../../navigation/router';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { loginSchema } from './schema/login';
+import FieldInput from '../../../../components/react-hook-form/FieldInput';
+import Form from '../../../../components/react-hook-form/Form';
+import Button from '../../../../components/ui/Button';
+import { fieldLabel } from '../../../../helpers/form';
+import Error from '../../../../components/ui/Error';
+import { Link, useNavigate } from 'react-router';
 import routes from 'src/navigation/routes';
-import { useDispatch } from 'src/hooks/dispatch';
-import { useSelector } from 'react-redux';
-import { usersSelector } from 'src/store/selectors/user-selectors';
-import { listUsers } from 'src/store/thunks/user-thunks';
-import Grid, { Column } from 'src/components/react-table/Grid';
-import { User } from 'src/types/user';
-import { QueryParams } from 'src/types/grid';
-import DateTimeColumn from 'src/components/react-table/columns/DateTimeColumn';
-import UserStatusColumn from './components/UserStatusColumn';
-import dropdownFilter from 'src/components/react-table/filters/dropdown-filter';
-import userStatus from 'src/enumerables/user-status';
-import textFilter from 'src/components/react-table/filters/text-filter';
-import dateFilter from 'src/components/react-table/filters/date-filter';
-import dateTimeFilter from 'src/components/react-table/filters/datetime-filter';
+import FieldCheckbox from '../../../../components/react-hook-form/FieldCheckbox';
+import { useAuth } from '../../../../hooks/auth';
 
-export interface StateProps {}
+export interface Props {}
 
-export interface DispatchProps {}
-
-export interface OwnProps {}
-
-export interface Props extends StateProps, DispatchProps, OwnProps {}
+type FormData = LoginData & { remember: boolean | null };
 
 const LoginScreen: React.FC<Props> = () => {
-    const dispatch = useDispatch();
-    const users = useSelector(usersSelector);
+    const navigate = useNavigate();
+    const { login } = useAuth();
+    const { mutateAsync } = useLogin();
+    const form = useForm<FormData>({
+        resolver: yupResolver(loginSchema),
+    });
+    const {
+        handleSubmit,
+        setError,
+        formState: { errors, isSubmitting },
+    } = form;
 
-    useEffect(() => {
-        console.log(users);
-    }, [users]);
+    const onSubmit = async ({ remember, ...data }: FormData) => {
+        try {
+            const res = await mutateAsync(data);
+            await login(res.token, res.refreshToken, remember || false);
+            navigate(routes.HOME);
+        } catch {
+            setError('root', { message: 'Invalid username or password' });
+        }
+    };
 
-    const getData = useCallback((params: QueryParams) => {
-        dispatch(
-            listUsers({
-                ...params,
-                filters: { ...params.filters },
-            }),
-        );
-    }, []);
+    return (
+        <GuestLayout classNameWrapper={'vh-100 d-flex align-items-center justify-content-center'}>
+            <Form methods={form} onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+                <h2 className={'mb-3'}>Sign In</h2>
+                <FieldInput
+                    name={'username'}
+                    autoComplete={'username'}
+                    placeholder={fieldLabel(loginSchema, 'username')}
+                />
+                <FieldInput
+                    type={'password'}
+                    name={'password'}
+                    autoComplete={'current-password'}
+                    placeholder={fieldLabel(loginSchema, 'password')}
+                />
+                <Error>{errors.root?.message}</Error>
+                <FieldCheckbox name={'remember'} label={fieldLabel(loginSchema, 'remember')} />
+                <div className={'d-flex mt-3'}>
+                    <Button type={'submit'} className={'btn btn-primary'} disabled={isSubmitting}>
+                        Submit
+                    </Button>
 
-    const defaultColumns: Column<User>[] = [
-        {
-            header: 'First Name',
-            accessorKey: 'firstName',
-        },
-        {
-            header: 'Last Name',
-            accessorKey: 'lastName',
-            enableColumnFilter: false,
-        },
-        {
-            header: 'Email',
-            accessorKey: 'email',
-            filter: textFilter('text', 2000), // Custom settings example
-            size: 200,
-        },
-        {
-            header: 'Status',
-            accessorKey: 'status',
-            cell: (props) => <UserStatusColumn value={props.row.original.status} />,
-            enableSorting: false,
-            filter: dropdownFilter<User>(userStatus.mapData()),
-            size: 200,
-        },
-        {
-            header: 'Created at',
-            accessorKey: 'createdAt',
-            cell: (props) => <DateTimeColumn value={props.row.original.createdAt} />,
-            size: 200,
-            // enableColumnFilter: false, // You can disable column filter
-            filter: dateFilter(),
-            // filter: dateTimeFilter(),
-        },
-    ];
-
-    return UserAuthService.isLoggedIn() ? (
-        <MainLayout>
-            <div className={classNames(styles.login)}>
-                <div className={classNames('container')}>
-                    <div className={classNames('row')}>
-                        <div className={classNames('col-lg-12', 'py-2')}>
-                            <div className={classNames(styles.noteHeading, 'mb-4')}>
-                                You are logged as {String(UserAuthService.getData()?.username)}
-                            </div>
-                            <div className={classNames('mb-4')}>
-                                <Link to={Router.generate(routes.LOGOUT)} className={classNames('btn', 'btn-primary')}>
-                                    {'Sign Out'}
-                                </Link>
-                            </div>
-                            <Grid<User>
-                                columns={defaultColumns}
-                                data={users}
-                                title="User List"
-                                getData={getData}
-                                defaultSorting={{ updatedAt: 'DESC' }}
-                                pageSize={10}
-                            />
-                        </div>
-                    </div>
+                    <Link to={routes.SIGNUP} className={'ms-auto align-self-center'}>
+                        Sign Up
+                    </Link>
                 </div>
-            </div>
-        </MainLayout>
-    ) : (
-        <MainLayout>
-            <div className={classNames(styles.login)}>
-                <div className={classNames('container')}>
-                    <div className={classNames('row')}>
-                        <div className={classNames('col-lg-12')}>
-                            <h1 className={classNames(styles.heading)}>Login</h1>
-                            <div className={classNames('col-lg-6', 'offset-lg-3')}>
-                                <LoginForm />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </MainLayout>
+            </Form>
+        </GuestLayout>
     );
 };
 

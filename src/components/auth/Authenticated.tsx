@@ -1,21 +1,23 @@
-import type { ReactElement } from 'react';
 import React from 'react';
-import { Navigate } from 'react-router-dom';
-import user from '../../services/user-auth';
-import routes from 'src/navigation/routes';
-import Router from '../../navigation/router';
+import { useAuth } from 'src/hooks/auth';
+import { Navigate, Outlet } from 'react-router';
+import routes from '../../navigation/routes';
+import Loader from '../ui/Loader';
 
-interface Props {
-    children: ReactElement;
-    redirectTo?: string;
-}
+interface Props {}
 
-const Authenticated: React.FunctionComponent<Props> = ({ children, redirectTo }) => {
-    if (!user.isLoggedIn()) {
-        return <Navigate replace={true} to={redirectTo ? redirectTo : Router.generate(routes.HOME)} />;
+const Authenticated: React.FC<Props> = () => {
+    const { user, loading } = useAuth();
+
+    if (loading) {
+        return <Loader />;
     }
 
-    return children;
+    if (!user) {
+        return <Navigate to={routes.LOGIN} />;
+    }
+
+    return <Outlet />;
 };
 
 export default Authenticated;

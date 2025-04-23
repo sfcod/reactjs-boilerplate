@@ -1,37 +1,7 @@
-@import '../../../../../themes/theme';
-
-.login {
-    background: url('images/bg.jpg') center center;
-    background-size: cover;
-}
-
-.heading {
-    color: $main-color;
-    font-size: 40px;
-    font-weight: bold;
-
-    @media (max-width: 768px) {
-        text-align: center;
-    }
-}
-
-.subHeading {
-    color: #606061;
-    font-size: 48px;
-    font-weight: 400;
-
-    @media (max-width: 768px) {
-        text-align: center;
-    }
-}
-
-.note {
-    text-align: center;
-    color: #606061;
-    font-size: 18px;
-}
-
-.noteHeading {
-    color: $main-color;
-    font-size: 18px;
+.form {
+    width: 300px;
+    max-width: 100%;
+    padding: 40px 30px;
+    border-radius: 5px;
+    box-shadow: 0 15px 30px 1px #e4e4e4;
 }
