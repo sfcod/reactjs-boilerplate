@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import Router from '../../../navigation/router';
 import routes from '../../../navigation/routes';
-import { Link } from 'react-router-dom';
 import UserAuthService from 'src/services/user-auth';
 
 interface Props {}
@@ -16,7 +15,7 @@ const UserPreferences: React.FunctionComponent<Props> = React.memo(({}: Props) =
     }
 
     return (
-        <div className={classNames('d-flex', 'align-items-center', 'gap-3', 'text-white')}>
+        <div className={classNames('d-flex', 'align-items-center', 'gap-3', 'text-white', 'ml-auto')}>
             <span>{String(UserAuthService.getData()?.username)}</span>
             <NavDropdown title={<FontAwesomeIcon icon={faCog} />} id="nav-dropdown" align="end">
                 <NavDropdown.Item href={Router.generate(routes.LOGOUT)}>Logout</NavDropdown.Item>

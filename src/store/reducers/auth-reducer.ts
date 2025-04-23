@@ -13,6 +13,7 @@ const initialState: AuthState = {
     errors: {},
     loading: 'none',
     requestIds: {},
+    current: null,
     // inProgress: false,
     // authorized: false,
     // error: {},

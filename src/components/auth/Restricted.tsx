@@ -1,19 +1,31 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Navigate } from 'react-router-dom';
 import securityService from '../../security/security';
 import NoMatch from 'src/screens/NoMatch';
 
-const Restricted: any = ({
+const Restricted = ({
     children,
     authParams,
     redirectTo,
 }: {
     children: any;
-    authParams?: { action: string; subject?: any } | null;
+    authParams?: { action: string; subject?: any }[] | null;
     redirectTo?: string;
 }) => {
-    if (authParams && !securityService.isGranted(authParams.action, authParams.subject)) {
-        return redirectTo ? <Navigate replace={true} to={redirectTo} /> : <NoMatch code={403} message="No access" />;
+    const isGranted = useMemo<boolean>(() => {
+        if (authParams) {
+            for (const authParam of authParams) {
+                if (securityService.isGranted(authParam.action, authParam.subject)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
+    }, [authParams]);
+
+    if (!isGranted) {
+        return redirectTo ? <Navigate replace to={redirectTo} /> : <NoMatch code={403} message="No access" />;
     }
 
     return children;

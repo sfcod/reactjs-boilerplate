@@ -1,6 +1,7 @@
 import general from './routes/general';
-import auth from './routes/auth';
+import authRoutes from './routes/auth';
+import userRoutes from './routes/user';
 
-const routesList = [...general, ...auth];
+const routesList = [...general, ...authRoutes, ...userRoutes];
 
 export { routesList };
