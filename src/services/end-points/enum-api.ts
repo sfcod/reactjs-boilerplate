@@ -1,4 +1,4 @@
-import { EndPointService } from 'src/services/api-handlers/axios';
+import { EndPointService } from 'src/services/axios';
 
 const ROUTE = 'enums';
 

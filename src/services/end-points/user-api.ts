@@ -1,4 +1,4 @@
-import { EndPointService } from 'src/services/api-handlers/axios';
+import { EndPointService } from 'src/services/axios';
 import type { User } from '../../types/user';
 import type { AxiosPromise } from 'axios';
 

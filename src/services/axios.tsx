@@ -1,7 +1,7 @@
 import type { AxiosPromise, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 import { isAxiosError } from 'axios';
 import axios from 'axios';
-import UserAuthService from '../user-auth';
+import UserAuthService from './user-auth';
 import { API_URL } from 'src/config/env';
 
 const axiosInstance = axios.create({
