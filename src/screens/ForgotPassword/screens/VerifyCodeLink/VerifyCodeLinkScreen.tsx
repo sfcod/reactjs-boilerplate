@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Router from 'src/navigation/router';
 import routes from 'src/navigation/routes';
-import Button from 'src/components/Button';
+import Button from 'src/components/ui/Button';
 import classNames from 'classnames';
 import { resetPasswordRequest, validateRecoveryCode } from 'src/store/thunks/auth-thunks.ts';
 import { useDispatch } from 'src/hooks/dispatch';

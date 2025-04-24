@@ -15,7 +15,7 @@ import { resetPasswordRequest } from 'src/store/thunks/auth-thunks';
 import { useDispatch } from 'src/hooks/dispatch';
 import { State } from '../../VerifyCodeLink/VerifyCodeLinkScreen.tsx';
 import { Form } from 'react-bootstrap';
-import Button from 'src/components/Button.tsx';
+import Button from 'src/components/ui/Button.tsx';
 
 interface VerifyFormProps {}
 

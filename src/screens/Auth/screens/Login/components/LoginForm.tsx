@@ -13,7 +13,7 @@ import { useDispatch } from 'src/hooks/dispatch';
 import { login } from 'src/store/thunks/auth-thunks';
 import FieldPassword from 'src/components/react-hook-form/fields/FieldPassword';
 import { Form } from 'react-bootstrap';
-import Button from 'src/components/Button';
+import Button from 'src/components/ui/Button';
 import type { LoginData } from 'src/types/auth';
 import { fieldLabel } from 'src/helpers/yup';
 
