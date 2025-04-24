@@ -14,7 +14,7 @@ import { login } from 'src/store/thunks/auth-thunks';
 import FieldPassword from 'src/components/react-hook-form/fields/FieldPassword';
 import { Form } from 'react-bootstrap';
 import Button from 'src/components/Button';
-import { LoginData } from 'src/types/auth';
+import type { LoginData } from 'src/types/auth';
 import { fieldLabel } from 'src/helpers/yup';
 
 type LoginFormData = LoginData;

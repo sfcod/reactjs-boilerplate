@@ -10,7 +10,7 @@ import { useDispatch } from 'src/hooks/dispatch';
 import { withErrors } from 'src/components/react-hook-form/utils/make-form-errors';
 import { signup } from 'src/store/thunks/auth-thunks';
 import Button from 'src/components/Button';
-import { SignUpData } from 'src/types/signup';
+import type { SignUpData } from 'src/types/signup';
 import SummaryError from 'src/components/react-hook-form/SummaryError';
 import { Link } from 'react-router-dom';
 import Router from 'src/navigation/router';
