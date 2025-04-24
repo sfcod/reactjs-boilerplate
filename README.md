@@ -2,6 +2,13 @@ Based on:
 React, Redux Toolkit (thunk), React Hook Form  
 Node: 18+
 
+## About
+
+This branch does not contain specific functionality for users or admins. Instead, there are two separate branches:
+
+- `portal` - User Portal
+- `admin` - Admin Panel
+
 ## Dev environment
 
 - Setup config
