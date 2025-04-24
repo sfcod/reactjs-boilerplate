@@ -2,7 +2,7 @@ import type { ListUsersQueryParams, UpdateUserData, UpdateUserResultData, User }
 import { createTagProvider, paginatedTransformer } from '../../helpers/store';
 import { api } from './';
 import type { Paginated } from '../../types/common';
-import { prepareQueryParams } from '../../helpers/axios';
+import { prepareQueryParams } from 'src/helpers/store';
 
 const userApi = api.enhanceEndpoints({ addTagTypes: ['User', 'Users'] }).injectEndpoints({
     endpoints: (builder) => ({

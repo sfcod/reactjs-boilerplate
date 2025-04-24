@@ -2,7 +2,7 @@ import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import axios from 'axios';
 import UserAuthService from '../services/user-auth';
 import type { ResultDescription } from '@reduxjs/toolkit/query';
-import type { Paginated } from '../types/common';
+import type { Paginated, QueryParams } from '../types/common';
 
 // export const axiosBaseQuery =
 //     (
@@ -212,4 +212,22 @@ export const paginatedTransformer = <R, M extends { response?: { headers?: any }
         totalCount: Number(headers?.['x-total-count'] || len),
     };
     return result;
+};
+
+export const prepareSortingParams = <S extends AnyObject>(sorting: QueryParams<any, S>['sorting']) => {
+    const order: Record<string, any> = {};
+
+    if (!sorting) {
+        return order;
+    }
+
+    Object.keys(sorting).forEach((key) => {
+        order[`sort[${key}]`] = sorting[key as keyof S];
+    });
+
+    return order;
+};
+
+export const prepareQueryParams = <F, S>({ filters, sorting, ...rest }: QueryParams<F, S>) => {
+    return { ...rest, ...filters, ...prepareSortingParams(sorting) };
 };
