@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import React from 'react';
 import classNames from 'classnames';
-import Loader from '../../Loader';
+import Loader from '../../ui/Loader';
 
 interface Props {
     loading?: boolean;

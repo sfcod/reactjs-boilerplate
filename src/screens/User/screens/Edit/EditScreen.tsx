@@ -7,7 +7,7 @@ import Content from '../../../../components/layout/main/Content';
 import { useParams } from 'react-router';
 import { useSelector } from 'react-redux';
 import { userCurrentSelector, usersLoadingSelector } from 'src/store/selectors/user-selectors';
-import Loader from '../../../../components/Loader';
+import Loader from '../../../../components/ui/Loader';
 import { updateUser } from 'src/store/thunks/user-thunks';
 import type { UserFormData } from '../../components/UserForm';
 import UserForm from '../../components/UserForm';

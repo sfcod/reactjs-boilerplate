@@ -10,7 +10,7 @@ import { loginSchema } from '../schema/login';
 import { useDispatch } from 'src/hooks/dispatch';
 import { login } from 'src/store/thunks/auth-thunks';
 import { Form } from 'react-bootstrap';
-import Button from 'src/components/Button';
+import Button from 'src/components/ui/Button';
 import { fieldLabel } from 'src/helpers/yup';
 
 interface LoginFormData {

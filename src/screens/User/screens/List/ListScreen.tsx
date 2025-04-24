@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import Content from 'src/components/layout/main/Content';
 import ContentHeader from 'src/components/layout/main/ContentHeader';
 import MainLayout from 'src/components/layout/MainLayout';
-import Loader from 'src/components/Loader';
+import Loader from 'src/components/ui/Loader';
 import { useDispatch } from 'src/hooks/dispatch';
 import type { Paginated } from 'src/services/api-handlers/pagination';
 import { usersLoadingSelector, usersSelector } from 'src/store/selectors/user-selectors';

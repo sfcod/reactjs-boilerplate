@@ -5,7 +5,7 @@ import Router from 'src/navigation/router';
 import routes from 'src/navigation/routes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faList, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import Button from 'src/components/Button';
+import Button from 'src/components/ui/Button';
 import styles from '../assets/actions.module.scss';
 import type { User } from 'src/types/user';
 import DeleteUserAction from '../../../components/DeleteUserAction';

@@ -8,7 +8,7 @@ import routes from 'src/navigation/routes';
 import Content from '../../../../components/layout/main/Content';
 import classNames from 'classnames';
 import Actions from './components/Actions';
-import Loader from '../../../../components/Loader';
+import Loader from '../../../../components/ui/Loader';
 import { userCurrentSelector, usersLoadingSelector } from 'src/store/selectors/user-selectors';
 import UserInfo from './components/UserInfo';
 import { getUser } from 'src/store/thunks/user-thunks';

@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 import type { SelectableItem } from 'src/enumerables/enumerable.abstract';
 import FieldInput from '../../../components/react-hook-form/fields/FieldInput';
 import { withErrors } from 'src/components/react-hook-form/utils/make-form-errors';
-import Button from '../../../components/Button';
+import Button from '../../../components/ui/Button';
 import FieldDropdown from 'src/components/react-hook-form/fields/FieldDropdown';
 import FieldPhoneInput, { phoneValidationSchema } from 'src/components/react-hook-form/fields/FieldPhoneInput';
 import type { User } from 'src/types/user';
