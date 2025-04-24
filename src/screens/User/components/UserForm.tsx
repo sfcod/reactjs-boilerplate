@@ -16,7 +16,7 @@ import { withErrors } from 'src/components/react-hook-form/utils/make-form-error
 import Button from '../../../components/Button';
 import FieldDropdown from 'src/components/react-hook-form/fields/FieldDropdown';
 import FieldPhoneInput, { phoneValidationSchema } from 'src/components/react-hook-form/fields/FieldPhoneInput';
-import { User } from 'src/types/user';
+import type { User } from 'src/types/user';
 import userStatus from 'src/enumerables/user-status';
 import userGender from 'src/enumerables/user-gender';
 import { fieldLabel } from 'src/helpers/yup';
@@ -45,7 +45,7 @@ const transformEmptyString = (value: string): string | undefined => (value === '
 
 const UserForm: React.FunctionComponent<UserFormProps> = ({ title, user, onSubmit, defaultValues }: UserFormProps) => {
     const validationSchema = useMemo(() => {
-        let emailSchema = yup.string().email().max(255);
+        const emailSchema = yup.string().email().max(255);
 
         return yup.object().shape({
             firstName: yup.string().required().max(255).label('First Name'),

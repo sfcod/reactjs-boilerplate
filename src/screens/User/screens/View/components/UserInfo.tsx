@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { formatPhoneNumber } from 'src/helpers/phone-number';
-import { User } from 'src/types/user';
+import type { User } from 'src/types/user';
 
 interface Props {
     user: User;
