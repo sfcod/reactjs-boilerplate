@@ -2,6 +2,28 @@ Based on:
 React, Redux Toolkit (thunk), React Hook Form  
 Node: 18+
 
+## Main Functionality
+
+### Authentication
+
+#### Login
+
+- Form with email and password fields
+- Successful login redirects to Dashboard page
+
+### Core Pages
+
+#### Dashboard
+
+- Main landing page after authentication
+- Displays "Dashboard" text in center
+
+#### Users CRUD
+
+- Table with users
+- Create user form
+- Update user form
+
 ## Dev environment
 
 - Setup config
