@@ -70,7 +70,6 @@ const UserForm: React.FunctionComponent<UserFormProps> = ({ title, user, onSubmi
         handleSubmit,
         setError,
         formState: { isSubmitting, submitCount, isSubmitSuccessful, errors },
-        watch,
     } = form;
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -88,6 +87,8 @@ const UserForm: React.FunctionComponent<UserFormProps> = ({ title, user, onSubmi
 
     const submit = async (data: FormData) => {
         await withErrors<UserFormData>(onSubmit(data, dispatch), setError);
+        // setError('firstName', { message: 'test' });
+        console.log(data);
     };
 
     return (

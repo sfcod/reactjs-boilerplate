@@ -3,18 +3,9 @@
 .footer {
     background: #fff;
     color: $main-color;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 24px;
 }
-
-// .bottom {
-//     .bottomHolder {
-//         display: flex;
-//         justify-content: space-between;
-//         align-items: center;
-//         height: 75px;
-
-//         @media (max-width: 576px) {
-//             flex-direction: column;
-//             padding: 5px 0;
-//         }
-//     }
-// }

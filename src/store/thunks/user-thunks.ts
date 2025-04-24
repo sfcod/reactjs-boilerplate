@@ -8,7 +8,7 @@ import type { User } from 'src/types/user';
 import { UserApi } from 'src/services/end-points';
 import { handleError, handleToastError, resolveApiCall } from 'src/services/api-handlers/api-resolver';
 import { UserFormData } from 'src/screens/User/components/UserForm';
-import { makeFormErrors } from 'src/components/react-hook-form/utils/make-form-errors';
+import { makeFormErrors, makeFormErrorsFromResponse } from 'src/components/react-hook-form/utils/make-form-errors';
 
 export const listUsers = createAsyncThunk<Paginated<User>, QueryParams, ThunkConfig>(
     'user/list',
@@ -82,11 +82,7 @@ export const updateUser = createAsyncThunk<User, { id: string; data: UserFormDat
                 console.log(err);
                 handleError(err);
                 handleToastError(err);
-                return thunkAPI.rejectWithValue(
-                    makeFormErrors<UserFormData>({
-                        _error: err,
-                    }),
-                );
+                return makeFormErrorsFromResponse<UserFormData>(err.response.data);
             },
         );
     },
@@ -107,11 +103,7 @@ export const createUser = createAsyncThunk<User, { data: UserFormData }, ThunkCo
                 console.log(err);
                 handleError(err);
                 handleToastError(err);
-                return thunkAPI.rejectWithValue(
-                    makeFormErrors<UserFormData>({
-                        _error: err,
-                    }),
-                );
+                return makeFormErrorsFromResponse<UserFormData>(err.response.data);
             },
         );
     },

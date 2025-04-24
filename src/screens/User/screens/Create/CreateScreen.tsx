@@ -16,7 +16,7 @@ interface Query {
 interface Props {}
 
 const CreateScreen: React.FunctionComponent<Props> = () => {
-    const handleSubmit = (data: UserFormData, dispatch: AppDispatch) => dispatch(createUser({ data }));
+    const handleSubmit = (data: UserFormData, dispatch: AppDispatch) => dispatch(createUser({ data })).unwrap();
 
     const defaultValues = useMemo<Partial<UserFormData>>(() => {
         return {
