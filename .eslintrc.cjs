@@ -20,6 +20,7 @@ module.exports = {
         'react/prop-types': ['off'],
         'react/display-name': ['off'],
         'react/no-unknown-property': ['off'],
+        'react/react-in-jsx-scope': 'off',
         '@typescript-eslint/no-explicit-any': ['off', {}],
         '@typescript-eslint/no-non-null-assertion': ['off', {}],
         '@typescript-eslint/no-unnecessary-type-constraint': ['off', {}],
