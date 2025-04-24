@@ -1,7 +1,7 @@
 import type { AxiosPromise, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 import { isAxiosError } from 'axios';
 import axios from 'axios';
-import UserAuthService from '../user-auth';
+import UserAuthService from './user-auth';
 import { API_URL } from 'src/config/env';
 
 const axiosInstance = axios.create({
@@ -22,6 +22,11 @@ class Axios {
         resolve: (value: string) => void;
         reject: (reason: any) => void;
     }> = [];
+
+    public request({ handleRefreshTokens, ...config }: Config): AxiosPromise<any> {
+        const promise = axiosInstance(config);
+        return handleRefreshTokens ? this.handleRefreshToken(promise) : promise;
+    }
 
     public get(
         endPoint: string,
@@ -162,4 +167,4 @@ class Axios {
 
 const EndPointService = new Axios();
 
-export { Axios, EndPointService };
+export { EndPointService };

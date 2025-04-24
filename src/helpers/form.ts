@@ -3,8 +3,6 @@ import { ObjectSchema } from 'yup';
 import isArray from 'lodash/isArray';
 import type { FieldErrors, FieldValues, UseFormSetError } from 'react-hook-form';
 import type { FieldPath } from 'react-hook-form';
-import type { AxiosError } from 'axios';
-import { isAxiosError } from 'axios';
 
 export type GlobalError = FieldErrors<{ _error: string }>;
 
@@ -60,16 +58,28 @@ export function makeFormErrorsFromResponse<T extends FieldValues>({ error, messa
     return result;
 }
 
-export function withErrors<T extends AnyObject>(setError: UseFormSetError<T>) {
-    return {
-        onError: (err: AxiosError<ErrorResponse<T>> | Error) => {
-            if (!isAxiosError<ErrorResponse<T>>(err) || err.status !== 400 || !err.response?.data) return;
+// export function withErrors<T extends AnyObject>(setError: UseFormSetError<T>) {
+//     return {
+//         onError: (err: AxiosError<ErrorResponse<T>> | Error) => {
+//             if (!isAxiosError<ErrorResponse<T>>(err) || err.status !== 400 || !err.response?.data) return;
+//
+//             makeFormErrorsFromResponse(err.response.data).forEach((item) => {
+//                 setError(item.field, item.error);
+//             });
+//         },
+//     };
+// }
 
-            makeFormErrorsFromResponse(err.response.data).forEach((item) => {
-                setError(item.field, item.error);
-            });
-        },
-    };
+export function withErrors<T extends FieldValues>(promise: Promise<any>, setError: UseFormSetError<T>): Promise<any> {
+    return promise.catch((error: FormErrors<T> | any) => {
+        // @TODO: check this
+        if (error?.data?.message instanceof Array) {
+            console.log(error);
+            makeFormErrorsFromResponse(error.data).forEach((item) => setError(item.field as any, item.error));
+        }
+
+        return Promise.reject(error);
+    });
 }
 
 export function fieldLabel<T extends AnyObject, K extends keyof T>(

@@ -10,23 +10,29 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from 'react-toastify';
 import { useAuth } from 'src/hooks/auth';
 import { profileSchema } from '../schema/profile';
-import type { UpdateProfileData } from 'src/types/user';
-import { useUpdateUser } from 'src/react-query/user';
+import type { UpdateUserData } from 'src/types/user';
+// import { useUpdateUser } from 'src/react-query/user';
 import Input from '../../../components/ui/Input';
 import FieldWrapper from '../../../components/react-hook-form/FieldWrapper';
 import FieldDropdown from '../../../components/react-hook-form/FieldDropdown';
-import { useEnums } from 'src/react-query/enum';
+// import { useEnums } from 'src/react-query/enum';
 import FieldPhoneInput from '../../../components/react-hook-form/FieldPhoneInput';
 import { Link } from 'react-router';
 import routes from '../../../navigation/routes';
+import { useEditUserMutation } from '../../../store/api/user';
+import { useEnumsQuery } from '../../../store/api/enum';
 
 interface Props {}
 
 const ProfileForm: React.FC<Props> = () => {
     const { user } = useAuth();
-    const { mutateAsync } = useUpdateUser();
-    const { data: genders } = useEnums('UserGender');
-    const form = useForm<UpdateProfileData>({
+    // const { mutateAsync } = useUpdateUser();
+    const [updateUser] = useEditUserMutation();
+
+    // const { data: genders } = useEnums('UserGender');
+    const { data } = useEnumsQuery();
+    const genders = data?.UserGender || [];
+    const form = useForm<UpdateUserData>({
         resolver: yupResolver(profileSchema) as any,
         defaultValues: {
             firstName: user!.firstName,
@@ -41,9 +47,10 @@ const ProfileForm: React.FC<Props> = () => {
         formState: { isSubmitting, errors },
     } = form;
 
-    const onSubmit = async (data: UpdateProfileData) => {
+    const onSubmit = async (data: UpdateUserData) => {
         try {
-            await mutateAsync({ id: user!.id, ...data }, withErrors(setError));
+            await withErrors(updateUser({ id: user!.id, ...data }).unwrap(), setError);
+            // await mutateAsync({ id: user!.id, ...data }, withErrors(setError));
             toast.success('Profile updated successfully');
         } catch {
             alert(123);

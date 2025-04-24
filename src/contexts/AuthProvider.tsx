@@ -6,7 +6,10 @@ import { createContext } from 'react';
 import React from 'react';
 import UserAuthService from 'src/services/user-auth';
 import type { User } from 'src/types/user';
-import { useUser } from 'src/react-query/user';
+import { useGetUserQuery } from '../store/api/user';
+import { api } from '../store/api';
+import { useDispatch } from 'react-redux';
+// import { useUser } from 'src/react-query/user';
 
 interface Props {}
 
@@ -26,7 +29,9 @@ export const AuthContext = createContext<Data>({
 
 const AuthProvider: React.FC<PropsWithChildren<Props>> = ({ children }) => {
     const [id, setId] = useState(UserAuthService.getId());
-    const { data = null, isLoading, error } = useUser(id as string);
+    const dispatch = useDispatch();
+    // const { data = null, isLoading, error } = useUser(id as string);
+    const { data = null, isLoading, error } = useGetUserQuery(id as string, { skip: !id });
 
     const login: Data['login'] = async (token: string, refreshToken: string | null, remember?: boolean) => {
         await UserAuthService.login(token, refreshToken, remember || false);
@@ -35,6 +40,7 @@ const AuthProvider: React.FC<PropsWithChildren<Props>> = ({ children }) => {
 
     const logout: Data['logout'] = async () => {
         await UserAuthService.logout();
+        dispatch(api.util.resetApiState());
         setId(null);
     };
 

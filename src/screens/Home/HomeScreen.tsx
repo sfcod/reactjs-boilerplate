@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import DefaultLayout from 'src/components/layouts/default/DefaultLayout';
-import { useUsers } from 'src/react-query/user';
+import { useGetUsersQuery } from 'src/store/api/user';
 
 interface Props {}
 
 const HomeScreen: React.FC<Props> = () => {
-    const { data } = useUsers({ limit: 5, filters: { email: 'doe@mail.com' } });
+    // const { data } = useUsers({ limit: 5, filters: { email: 'doe@mail.com' } });
+    const { data } = useGetUsersQuery({ limit: 5, filters: { email: 'doe@mail.com' } });
 
     useEffect(() => {
         console.log(data);

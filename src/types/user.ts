@@ -20,14 +20,14 @@ export interface User {
     gender: 'male' | 'female' | 'other';
 }
 
-export type UpdateProfileData = {
+export type UpdateUserData = {
     firstName: string;
     lastName: string;
     phoneNumber: string;
     gender: string;
 };
 
-export type UpdateProfileResultData = User;
+export type UpdateUserResultData = User;
 
 export type FilterUsersData = Partial<{
     id: string;

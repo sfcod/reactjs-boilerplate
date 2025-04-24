@@ -1,7 +1,7 @@
 import React from 'react';
 import GuestLayout from '../../../../components/layouts/guest/GuestLayout';
 import { useForm } from 'react-hook-form';
-import { useLogin } from 'src/react-query/auth';
+// import { useLogin } from 'src/react-query/auth';
 import type { LoginData } from 'src/types/auth';
 import styles from './assets/login-screen.module.scss';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,6 +15,7 @@ import { Link, useNavigate } from 'react-router';
 import routes from 'src/navigation/routes';
 import FieldCheckbox from '../../../../components/react-hook-form/FieldCheckbox';
 import { useAuth } from '../../../../hooks/auth';
+import { useLoginMutation } from '../../../../store/api/auth';
 
 export interface Props {}
 
@@ -23,7 +24,8 @@ type FormData = LoginData & { remember: boolean | null };
 const LoginScreen: React.FC<Props> = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
-    const { mutateAsync } = useLogin();
+    // const { mutateAsync } = useLogin();
+    const [loginMutation] = useLoginMutation();
     const form = useForm<FormData>({
         resolver: yupResolver(loginSchema),
     });
@@ -35,7 +37,7 @@ const LoginScreen: React.FC<Props> = () => {
 
     const onSubmit = async ({ remember, ...data }: FormData) => {
         try {
-            const res = await mutateAsync(data);
+            const res = await loginMutation(data).unwrap();
             await login(res.token, res.refreshToken, remember || false);
             navigate(routes.HOME);
         } catch {

@@ -1,25 +1,27 @@
 import React from 'react';
-import GuestLayout from '../../../../components/layouts/guest/GuestLayout';
-import Form from '../../../../components/react-hook-form/Form';
+import GuestLayout from 'src/components/layouts/guest/GuestLayout';
+import Form from 'src/components/react-hook-form/Form';
 import styles from './assets/signup-screen.module.scss';
-import FieldInput from '../../../../components/react-hook-form/FieldInput';
-import { fieldLabel, withErrors } from '../../../../helpers/form';
-import Error from '../../../../components/ui/Error';
-import Button from '../../../../components/ui/Button';
+import FieldInput from 'src/components/react-hook-form/FieldInput';
+import { fieldLabel, withErrors } from 'src/helpers/form';
+import Error from 'src/components/ui/Error';
+import Button from 'src/components/ui/Button';
 import { Link, useNavigate } from 'react-router';
-import routes from '../../../../navigation/routes';
+import routes from 'src/navigation/routes';
 import { useForm } from 'react-hook-form';
 import type { SignupData } from 'src/types/auth';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { signupSchema } from './schema/signup';
-import { useSignup } from 'src/react-query/auth';
+// import { useSignup } from 'src/react-query/auth';
 import { toast } from 'react-toastify';
+import { useSignupMutation } from 'src/store/api/auth';
 
 interface Props {}
 
 const SignupScreen: React.FC<Props> = () => {
     const navigate = useNavigate();
-    const { mutateAsync } = useSignup();
+    // const { mutateAsync } = useSignup();
+    const [signupMutation] = useSignupMutation();
     const form = useForm<SignupData>({
         resolver: yupResolver(signupSchema),
     });
@@ -31,7 +33,7 @@ const SignupScreen: React.FC<Props> = () => {
 
     const onSubmit = async (data: SignupData) => {
         try {
-            await mutateAsync(data, withErrors(setError));
+            await withErrors(signupMutation(data).unwrap(), setError);
             toast.success('Account created successfully');
             navigate(routes.LOGIN);
         } catch {}
