@@ -56,48 +56,52 @@ const VerifyCodeLinkScreen: React.FC<Props> = () => {
 
     return (
         <MainLayout>
-            {state === State.EXPIRED && (
-                <>
+            <div className={classNames('container', 'mt-4')}>
+                {state === State.EXPIRED && (
+                    <>
+                        <div>
+                            Your one-time link has expired.
+                            <br />
+                            Click the button below to request a new link to set your password.
+                        </div>
+
+                        {username && (
+                            <div className={classNames('mt-3')}>
+                                <Button type={'button'} onClick={onResend}>
+                                    Request a new one-time link
+                                </Button>
+                            </div>
+                        )}
+                    </>
+                )}
+
+                {state === State.RESEND_SUCCESS && (
                     <div>
-                        Your one-time link has expired.
-                        <br />
-                        Click the button below to request a new link to set your password.
+                        We have sent you a new one-time link. <br />
+                        Please check your email.
+                        <div className={classNames('mt-3')}>
+                            <Button type={'button'} onClick={goToLogin}>
+                                Login
+                            </Button>
+                        </div>
                     </div>
+                )}
 
-                    {username && (
-                        <Button type={'button'} onClick={onResend}>
-                            Request a new one-time link
-                        </Button>
-                    )}
-                </>
-            )}
-
-            {state === State.RESEND_SUCCESS && (
-                <div>
-                    We have sent you a new one-time link. <br />
-                    Please check your email.
-                    <div className={classNames('mt-5')}>
-                        <Button type={'button'} onClick={goToLogin}>
-                            Login
-                        </Button>
+                {state === State.RESEND_ERROR && (
+                    <div>
+                        Something went wrong. <br />
+                        Please contact us at{' '}
+                        <a className="link" href="mailto:hello@example.com">
+                            hello@example.com
+                        </a>
+                        <div className={classNames('mt-3')}>
+                            <Button type={'button'} onClick={goToLogin}>
+                                Login
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            )}
-
-            {state === State.RESEND_ERROR && (
-                <div>
-                    Something went wrong. <br />
-                    Please contact us at{' '}
-                    <a className="link" href="mailto:hello@example.com">
-                        hello@example.com
-                    </a>
-                    <div className={classNames('mt-5')}>
-                        <Button type={'button'} onClick={goToLogin}>
-                            Login
-                        </Button>
-                    </div>
-                </div>
-            )}
+                )}
+            </div>
         </MainLayout>
     );
 };
