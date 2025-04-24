@@ -11,6 +11,9 @@ import type {
     ResetPasswordFormData,
     ValidateCodeFormData,
 } from '../../types/auth.ts';
+import { SignupApi } from 'src/services/end-points';
+import { makeFormErrorsFromResponse } from 'src/components/react-hook-form/utils/make-form-errors';
+import type { SignUpData } from '../../types/signup.ts';
 
 export const login = createAsyncThunk<void, LoginData, ThunkConfig>('auth/login', async (payload, thunkAPI) => {
     try {
@@ -106,3 +109,18 @@ export const updatePassword = createAsyncThunk<void, ResetPasswordFormData, Thun
         );
     },
 );
+
+export const signup = createAsyncThunk<void, SignUpData, ThunkConfig>('auth/signup', async (payload, thunkAPI) => {
+    console.debug({ payload });
+    return resolveApiCall(
+        thunkAPI,
+        thunkAPI.getState().auth,
+        async () => {
+            const response = await SignupApi.signup(payload);
+            return response.data;
+        },
+        async (err) => {
+            return makeFormErrorsFromResponse<SignUpData>(err.response.data);
+        },
+    );
+});
