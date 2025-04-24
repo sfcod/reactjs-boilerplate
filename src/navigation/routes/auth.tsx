@@ -11,7 +11,15 @@ import VerifyCodeLinkScreen from 'src/screens/ForgotPassword/screens/VerifyCodeL
 import Authenticated from 'src/components/auth/Authenticated';
 
 const authRoutes = [
-    <Route key={routes.HOME} path={routes.HOME} element={<CustomerLoginScreen />} />,
+    <Route
+        key={routes.HOME}
+        path={routes.HOME}
+        element={
+            <NotAuthenticated redirectTo={Router.generate(routes.DASHBOARD)}>
+                <CustomerLoginScreen />
+            </NotAuthenticated>
+        }
+    />,
     <Route key={routes.LOGOUT} path={routes.LOGOUT} element={<LogoutScreen />} />,
     <Route
         key={routes.FORGOT_PASSWORD}
