@@ -11,6 +11,7 @@ import { useDispatch } from 'src/hooks/dispatch';
 import { login } from 'src/store/thunks/auth-thunks';
 import { Form } from 'react-bootstrap';
 import Button from 'src/components/ui/Button';
+import { fieldLabel } from 'src/helpers/yup';
 
 interface LoginFormData {
     username: string;
@@ -53,7 +54,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({ onSuccess }) => {
                     type="email"
                     autoComplete="username"
                     error={errors?.username?.message}
-                    wrapperProps={{ label: (loginSchema.fields.username as any).spec?.label }}
+                    wrapperProps={{ label: fieldLabel(loginSchema, 'username') }}
                 />
                 <FieldInput
                     name={'password'}
@@ -61,7 +62,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({ onSuccess }) => {
                     type="password"
                     autoComplete="current-password"
                     error={errors?.password?.message}
-                    wrapperProps={{ label: (loginSchema.fields.password as any).spec?.label }}
+                    wrapperProps={{ label: fieldLabel(loginSchema, 'password') }}
                 />
 
                 <Button type="submit">
