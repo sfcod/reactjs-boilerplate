@@ -26,7 +26,6 @@ export interface UserFormData {
     lastName: string;
     email: string;
     password: string;
-    dob: string;
     phoneNumber: string;
     status: SelectableItem | number;
     gender: SelectableItem | string;
@@ -52,7 +51,6 @@ const UserForm: React.FunctionComponent<UserFormProps> = ({ title, user, onSubmi
             lastName: yup.string().required().max(255).label('Last Name'),
             email: emailSchema.label('Email'),
             password: yup.string().transform(transformEmptyString).notRequired().min(6).max(20).label('Password'),
-            dob: yup.string().required().label('Date of Birth'),
             phoneNumber: phoneValidationSchema.required().label('Phone Number'),
             status: yup.mixed().required().label('Status'),
             gender: yup.mixed().required().label('Gender'),
@@ -147,12 +145,6 @@ const UserForm: React.FunctionComponent<UserFormProps> = ({ title, user, onSubmi
                                 wrapperProps={{
                                     label: fieldLabel(validationSchema, 'phoneNumber'),
                                 }}
-                            />
-                            <FieldInput
-                                control={control}
-                                name="dob"
-                                wrapperProps={{ label: fieldLabel(validationSchema, 'dob') }}
-                                error={errors.dob?.message}
                             />
                         </div>
                     </div>
