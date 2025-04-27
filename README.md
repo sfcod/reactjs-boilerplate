@@ -6,9 +6,8 @@ Node: 18+
 
 This branch does not contain specific functionality for users or admins. Instead, there are two separate branches:
 
-- `portal` - User Portal
-- `admin` - Admin Panel
-
+- [**Portal** (User Portal)](https://github.com/sfcod/reactjs-boilerplate/tree/portal)
+- [**Admin** (Admin Panel)](https://github.com/sfcod/reactjs-boilerplate/tree/admin)
 ## Dev environment
 
 - Setup config
