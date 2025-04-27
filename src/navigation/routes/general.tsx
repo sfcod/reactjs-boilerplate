@@ -7,15 +7,6 @@ import NotAuthenticated from 'src/components/auth/NotAuthenticated';
 import Router from '../router';
 
 const generalRoutes = [
-    <Route
-        key={routes.HOME}
-        path={routes.HOME}
-        element={
-            <NotAuthenticated redirectTo={Router.generate(routes.DASHBOARD)}>
-                <CustomerLoginScreen />
-            </NotAuthenticated>
-        }
-    />,
     <Route key={routes.DASHBOARD} path={routes.DASHBOARD} element={<DashboardScreen />} />,
     <Route
         key={routes.SIGNUP}

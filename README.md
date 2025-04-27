@@ -2,6 +2,40 @@ Based on:
 React, Redux Toolkit (thunk), React Hook Form  
 Node: 18+
 
+## Main Functionality
+
+### Authentication
+
+#### Login
+
+- Form with email and password fields
+- Contains links to:
+    - "Forgot password" flow
+    - "Sign up" flow
+- Successful login redirects to Dashboard page
+
+#### Sign Up
+
+- Initial form with email field
+- After submission, user receives an email with registration continuation link
+- Email verification based registration flow
+
+#### Password Management
+
+- **Forgot Password**
+    - Form with email/username field
+    - After submission, user receives an email with password reset link
+- **Change Password**
+    - Available for authenticated users in profile settings
+    - Requires two fields for password change (likely new password and confirmation)
+
+### Core Pages
+
+#### Dashboard
+
+- Main landing page after authentication
+- Displays "Dashboard" text in center
+
 ## Dev environment
 
 - Setup config

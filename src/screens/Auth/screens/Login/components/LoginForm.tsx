@@ -13,8 +13,9 @@ import { useDispatch } from 'src/hooks/dispatch';
 import { login } from 'src/store/thunks/auth-thunks';
 import FieldPassword from 'src/components/react-hook-form/fields/FieldPassword';
 import { Form } from 'react-bootstrap';
-import Button from 'src/components/Button';
-import { LoginData } from 'src/types/auth';
+import Button from 'src/components/ui/Button';
+import type { LoginData } from 'src/types/auth';
+import { fieldLabel } from 'src/helpers/yup';
 
 type LoginFormData = LoginData;
 
@@ -54,25 +55,16 @@ const LoginForm = ({ onSuccess }: Props) => {
                     type="email"
                     autoComplete="username"
                     error={errors?.username?.message}
-                    wrapperProps={{ label: (loginSchema.fields.username as any).spec?.label }}
+                    wrapperProps={{ label: fieldLabel(loginSchema, 'username') }}
                 />
-                {/* <FieldInput
+
+                <FieldPassword
                     name={'password'}
                     control={control}
                     type="password"
                     autoComplete="current-password"
-                    error={errors?.password?.message}
-                    wrapperProps={{ label: (loginSchema.fields.password as any).spec?.label }}
-                /> */}
-
-                <FieldPassword
-                    control={control}
-                    name={'password'}
-                    placeholder={'Choose a Password'}
                     error={errors.password?.message}
-                    aria-label={'Password'}
-                    wrapperProps={{ label: 'Password' }}
-                    autoComplete="current-password"
+                    wrapperProps={{ label: fieldLabel(loginSchema, 'password') }}
                 />
 
                 <Button type="submit">

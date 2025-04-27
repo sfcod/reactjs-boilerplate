@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import Router from '../../../navigation/router';
 import routes from '../../../navigation/routes';
-import { Link } from 'react-router-dom';
 import UserAuthService from 'src/services/user-auth';
 
 interface Props {}

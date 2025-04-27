@@ -15,7 +15,7 @@ import { changePasswordSchema } from '../schema/change-password';
 import { toast } from 'react-toastify';
 import FieldPassword from 'src/components/react-hook-form/fields/FieldPassword';
 import { Form } from 'react-bootstrap';
-import Button from 'src/components/Button';
+import Button from 'src/components/ui/Button';
 
 interface VerifyFormProps {
     className?: string;
