@@ -1,5 +1,4 @@
 import { EndPointService } from 'src/services/api-handlers/axios';
-import { User } from 'src/types/user';
 
 const ROUTE = 'users';
 

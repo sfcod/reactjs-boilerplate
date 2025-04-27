@@ -7,8 +7,8 @@ import SortingService from '../../services/sorting';
 import type { User } from 'src/types/user';
 import { UserApi } from 'src/services/end-points';
 import { handleError, handleToastError, resolveApiCall } from 'src/services/api-handlers/api-resolver';
-import { UserFormData } from 'src/screens/User/components/UserForm';
-import { makeFormErrors, makeFormErrorsFromResponse } from 'src/components/react-hook-form/utils/make-form-errors';
+import type { UserFormData } from 'src/screens/User/components/UserForm';
+import { makeFormErrorsFromResponse } from 'src/components/react-hook-form/utils/make-form-errors';
 
 export const listUsers = createAsyncThunk<Paginated<User>, QueryParams, ThunkConfig>(
     'user/list',

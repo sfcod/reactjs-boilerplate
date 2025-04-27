@@ -3,13 +3,13 @@ import { useSelector } from 'react-redux';
 import Content from 'src/components/layout/main/Content';
 import ContentHeader from 'src/components/layout/main/ContentHeader';
 import MainLayout from 'src/components/layout/MainLayout';
-import Loader from 'src/components/Loader';
+import Loader from 'src/components/ui/Loader';
 import { useDispatch } from 'src/hooks/dispatch';
-import { Paginated } from 'src/services/api-handlers/pagination';
+import type { Paginated } from 'src/services/api-handlers/pagination';
 import { usersLoadingSelector, usersSelector } from 'src/store/selectors/user-selectors';
 import { listUsers } from 'src/store/thunks/user-thunks';
-import { QueryParams } from 'src/types/grid';
-import { User } from 'src/types/user';
+import type { QueryParams } from 'src/types/grid';
+import type { User } from 'src/types/user';
 import UsersGrid from '../../components/UsersGrid';
 import ActionsColumn from '../../components/ActionsColumn';
 

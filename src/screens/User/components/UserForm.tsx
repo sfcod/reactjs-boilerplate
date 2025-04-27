@@ -13,19 +13,19 @@ import { toast } from 'react-toastify';
 import type { SelectableItem } from 'src/enumerables/enumerable.abstract';
 import FieldInput from '../../../components/react-hook-form/fields/FieldInput';
 import { withErrors } from 'src/components/react-hook-form/utils/make-form-errors';
-import Button from '../../../components/Button';
+import Button from '../../../components/ui/Button';
 import FieldDropdown from 'src/components/react-hook-form/fields/FieldDropdown';
 import FieldPhoneInput, { phoneValidationSchema } from 'src/components/react-hook-form/fields/FieldPhoneInput';
-import { User } from 'src/types/user';
+import type { User } from 'src/types/user';
 import userStatus from 'src/enumerables/user-status';
 import userGender from 'src/enumerables/user-gender';
+import { fieldLabel } from 'src/helpers/yup';
 
 export interface UserFormData {
     firstName: string;
     lastName: string;
     email: string;
     password: string;
-    dob: string;
     phoneNumber: string;
     status: SelectableItem | number;
     gender: SelectableItem | string;
@@ -44,14 +44,13 @@ const transformEmptyString = (value: string): string | undefined => (value === '
 
 const UserForm: React.FunctionComponent<UserFormProps> = ({ title, user, onSubmit, defaultValues }: UserFormProps) => {
     const validationSchema = useMemo(() => {
-        let emailSchema = yup.string().email().max(255);
+        const emailSchema = yup.string().email().max(255);
 
         return yup.object().shape({
             firstName: yup.string().required().max(255).label('First Name'),
             lastName: yup.string().required().max(255).label('Last Name'),
             email: emailSchema.label('Email'),
             password: yup.string().transform(transformEmptyString).notRequired().min(6).max(20).label('Password'),
-            dob: yup.string().required().label('Date of Birth'),
             phoneNumber: phoneValidationSchema.required().label('Phone Number'),
             status: yup.mixed().required().label('Status'),
             gender: yup.mixed().required().label('Gender'),
@@ -101,26 +100,26 @@ const UserForm: React.FunctionComponent<UserFormProps> = ({ title, user, onSubmi
                             <FieldInput
                                 control={control}
                                 name="firstName"
-                                wrapperProps={{ label: (validationSchema.fields.firstName as any).spec.label }}
+                                wrapperProps={{ label: fieldLabel(validationSchema, 'firstName') }}
                                 error={errors.firstName?.message}
                             />
                             <FieldInput
                                 control={control}
                                 name="lastName"
-                                wrapperProps={{ label: (validationSchema.fields.lastName as any).spec.label }}
+                                wrapperProps={{ label: fieldLabel(validationSchema, 'lastName') }}
                                 error={errors.lastName?.message}
                             />
                             <FieldInput
                                 control={control}
                                 name="email"
-                                wrapperProps={{ label: (validationSchema.fields.email as any).spec.label }}
+                                wrapperProps={{ label: fieldLabel(validationSchema, 'email') }}
                                 error={errors.email?.message}
                             />
                             <FieldInput
                                 control={control}
                                 name="password"
                                 type="password"
-                                wrapperProps={{ label: (validationSchema.fields.password as any).spec.label }}
+                                wrapperProps={{ label: fieldLabel(validationSchema, 'password') }}
                                 error={errors.password?.message}
                             />
                         </div>
@@ -129,14 +128,14 @@ const UserForm: React.FunctionComponent<UserFormProps> = ({ title, user, onSubmi
                                 control={control}
                                 data={userStatus.mapData()}
                                 name="status"
-                                wrapperProps={{ label: (validationSchema.fields.status as any).spec.label }}
+                                wrapperProps={{ label: fieldLabel(validationSchema, 'status') }}
                                 error={errors.status?.message}
                             />
                             <FieldDropdown
                                 control={control}
                                 data={userGender.mapData()}
                                 name="gender"
-                                wrapperProps={{ label: (validationSchema.fields.gender as any).spec.label }}
+                                wrapperProps={{ label: fieldLabel(validationSchema, 'gender') }}
                                 error={errors.gender?.message}
                             />
                             <FieldPhoneInput
@@ -144,14 +143,8 @@ const UserForm: React.FunctionComponent<UserFormProps> = ({ title, user, onSubmi
                                 name={'phoneNumber'}
                                 error={errors.phoneNumber?.message}
                                 wrapperProps={{
-                                    label: (validationSchema.fields.phoneNumber as any).spec.label,
+                                    label: fieldLabel(validationSchema, 'phoneNumber'),
                                 }}
-                            />
-                            <FieldInput
-                                control={control}
-                                name="dob"
-                                wrapperProps={{ label: (validationSchema.fields.dob as any).spec.label }}
-                                error={errors.dob?.message}
                             />
                         </div>
                     </div>

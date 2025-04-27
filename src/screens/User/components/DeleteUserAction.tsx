@@ -1,4 +1,3 @@
-// TODO
 import type { PropsWithChildren } from 'react';
 import React, { useCallback, useState } from 'react';
 import { Modal } from 'react-bootstrap';
@@ -6,9 +5,9 @@ import { useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { usersLoadingSelector } from 'src/store/selectors/user-selectors';
 import { deleteUser } from 'src/store/thunks/user-thunks';
-import Button from 'src/components/Button';
+import Button from 'src/components/ui/Button';
 import { toast } from 'react-toastify';
-import { User } from 'src/types/user';
+import type { User } from 'src/types/user';
 import { useDispatch } from 'src/hooks/dispatch';
 
 interface Props {

@@ -1,7 +1,7 @@
 import rootReducer from './reducers';
 import type { createAsyncThunk } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
-import { User } from 'src/types/user';
+import type { User } from 'src/types/user';
 
 export const store = configureStore({
     reducer: rootReducer,

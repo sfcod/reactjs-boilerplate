@@ -9,7 +9,7 @@ import classNames from 'classnames';
 import styles from '../assets/actions-column.module.scss';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import DeleteUserAction from './DeleteUserAction';
-import { User } from 'src/types/user';
+import type { User } from 'src/types/user';
 
 interface Props extends CellContext<User, any> {
     actions: Array<'view' | 'create' | 'edit' | 'delete'>;

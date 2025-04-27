@@ -5,8 +5,9 @@ import Router from '../../../../navigation/router';
 import routes from 'src/navigation/routes';
 import Content from '../../../../components/layout/main/Content';
 import userStatus from 'src/enumerables/user-status';
-import UserForm, { UserFormData } from '../../components/UserForm';
-import { AppDispatch } from 'src/store/configure-store';
+import type { UserFormData } from '../../components/UserForm';
+import UserForm from '../../components/UserForm';
+import type { AppDispatch } from 'src/store/configure-store';
 import { createUser } from 'src/store/thunks/user-thunks';
 
 interface Query {

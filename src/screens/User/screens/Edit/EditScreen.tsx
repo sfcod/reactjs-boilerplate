@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import MainLayout from '../../../../components/layout/MainLayout';
 import ContentHeader from '../../../../components/layout/main/ContentHeader';
 import Router from '../../../../navigation/router';
@@ -7,11 +7,12 @@ import Content from '../../../../components/layout/main/Content';
 import { useParams } from 'react-router';
 import { useSelector } from 'react-redux';
 import { userCurrentSelector, usersLoadingSelector } from 'src/store/selectors/user-selectors';
-import Loader from '../../../../components/Loader';
-import { getUser, updateUser } from 'src/store/thunks/user-thunks';
-import UserForm, { UserFormData } from '../../components/UserForm';
+import Loader from '../../../../components/ui/Loader';
+import { updateUser } from 'src/store/thunks/user-thunks';
+import type { UserFormData } from '../../components/UserForm';
+import UserForm from '../../components/UserForm';
 import { useDispatch } from 'src/hooks/dispatch';
-import { AppDispatch } from 'src/store/configure-store';
+import type { AppDispatch } from 'src/store/configure-store';
 
 interface Props {}
 

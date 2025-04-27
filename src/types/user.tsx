@@ -13,7 +13,6 @@ export interface User {
     createdAt: string;
     updatedAt: string;
     deletedAt: string | null;
-    dob: string;
     phoneNumber: string;
     gender: 'male' | 'female' | 'other';
 }
