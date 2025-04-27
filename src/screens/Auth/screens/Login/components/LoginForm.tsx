@@ -57,23 +57,14 @@ const LoginForm = ({ onSuccess }: Props) => {
                     error={errors?.username?.message}
                     wrapperProps={{ label: fieldLabel(loginSchema, 'username') }}
                 />
-                {/* <FieldInput
+
+                <FieldPassword
                     name={'password'}
                     control={control}
                     type="password"
                     autoComplete="current-password"
-                    error={errors?.password?.message}
-                    wrapperProps={{ label: fieldLabel(loginSchema, 'password') }}
-                /> */}
-
-                <FieldPassword
-                    control={control}
-                    name={'password'}
-                    placeholder={'Choose a Password'}
                     error={errors.password?.message}
-                    aria-label={'Password'}
-                    wrapperProps={{ label: 'Password' }}
-                    autoComplete="current-password"
+                    wrapperProps={{ label: fieldLabel(loginSchema, 'password') }}
                 />
 
                 <Button type="submit">
