@@ -14,5 +14,4 @@ export interface User {
     updatedAt: string;
     deletedAt: string | null;
     phoneNumber: string;
-    gender: 'male' | 'female' | 'other';
 }

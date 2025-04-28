@@ -18,7 +18,6 @@ import FieldDropdown from 'src/components/react-hook-form/fields/FieldDropdown';
 import FieldPhoneInput, { phoneValidationSchema } from 'src/components/react-hook-form/fields/FieldPhoneInput';
 import type { User } from 'src/types/user';
 import userStatus from 'src/enumerables/user-status';
-import userGender from 'src/enumerables/user-gender';
 import { fieldLabel } from 'src/helpers/yup';
 
 export interface UserFormData {
@@ -28,7 +27,6 @@ export interface UserFormData {
     password: string;
     phoneNumber: string;
     status: SelectableItem | number;
-    gender: SelectableItem | string;
 }
 
 interface FormData extends UserFormData {}
@@ -53,7 +51,6 @@ const UserForm: React.FunctionComponent<UserFormProps> = ({ title, user, onSubmi
             password: yup.string().transform(transformEmptyString).notRequired().min(6).max(20).label('Password'),
             phoneNumber: phoneValidationSchema.required().label('Phone Number'),
             status: yup.mixed().required().label('Status'),
-            gender: yup.mixed().required().label('Gender'),
         });
     }, [user]);
     const form = useForm<FormData>({
@@ -130,13 +127,6 @@ const UserForm: React.FunctionComponent<UserFormProps> = ({ title, user, onSubmi
                                 name="status"
                                 wrapperProps={{ label: fieldLabel(validationSchema, 'status') }}
                                 error={errors.status?.message}
-                            />
-                            <FieldDropdown
-                                control={control}
-                                data={userGender.mapData()}
-                                name="gender"
-                                wrapperProps={{ label: fieldLabel(validationSchema, 'gender') }}
-                                error={errors.gender?.message}
                             />
                             <FieldPhoneInput
                                 control={control}
