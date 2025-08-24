@@ -5,25 +5,21 @@ import Router from '../../../../navigation/router';
 import routes from 'src/navigation/routes';
 import Content from '../../../../components/layout/main/Content';
 import { useParams } from 'react-router';
-import { useSelector } from 'react-redux';
-import { userCurrentSelector, usersLoadingSelector } from 'src/store/selectors/user-selectors';
 import Loader from '../../../../components/ui/Loader';
-import { updateUser } from 'src/store/thunks/user-thunks';
+import { useGetUserQuery, useUpdateUserMutation } from 'src/store/api/users';
 import type { UserFormData } from '../../components/UserForm';
 import UserForm from '../../components/UserForm';
-import { useDispatch } from 'src/hooks/dispatch';
-import type { AppDispatch } from 'src/store/configure-store';
 
 interface Props {}
 
 const EditScreen: React.FunctionComponent<Props> = () => {
     const { id } = useParams<'id'>();
-    const dispatch = useDispatch();
-    const user = useSelector(userCurrentSelector);
-    const loading = useSelector(usersLoadingSelector);
+    const { data: user } = useGetUserQuery(id as string, { skip: !id });
+    const [updateUser, { isLoading }] = useUpdateUserMutation();
 
-    const handleSubmit = async (data: UserFormData, dispatch: AppDispatch) => {
-        return id && dispatch(updateUser({ id, data })).unwrap();
+    const handleSubmit = async (data: UserFormData) => {
+        const status = (data as any)?.status?.value ?? data.status;
+        return id && updateUser({ id, data: { ...data, status } }).unwrap();
     };
 
     return (
@@ -34,7 +30,7 @@ const EditScreen: React.FunctionComponent<Props> = () => {
             />
             <Content loading={!user || user.id !== id}>
                 <UserForm title="Edit" user={user} onSubmit={handleSubmit} />
-                {loading && <Loader />}
+                {isLoading && <Loader />}
             </Content>
         </MainLayout>
     );
