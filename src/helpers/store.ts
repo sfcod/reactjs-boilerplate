@@ -1,194 +1,262 @@
-import type { AsyncThunk } from '@reduxjs/toolkit';
-import type { ReducerState, StoreState, ThunkConfig } from 'src/store/configure-store';
-import type { Paginated } from 'src/services/api-handlers/pagination';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSelector } from '@reduxjs/toolkit';
+import type { BaseQueryFn, FetchBaseQueryError, FetchBaseQueryMeta, ResultDescription } from '@reduxjs/toolkit/query';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import UserAuthService from 'src/services/user-auth';
+import { API_URL } from 'src/config/env';
+import sortingService from 'src/services/sorting';
 
-type AsyncThunkPendingActionCreator<A, C extends ThunkConfig> = AsyncThunk<any, A, C>['pending'];
-type AsyncThunkRejectedActionCreator<A, C extends ThunkConfig> = AsyncThunk<any, A, C>['rejected'];
-type AsyncThunkFulfilledActionCreator<R, A, C extends ThunkConfig> = AsyncThunk<R, A, C>['fulfilled'];
-
-const getActionType = (type: string) => {
-    return type.replace(/\/(fulfilled|rejected|pending)$/, '');
+type AxiosBaseQueryArgs = {
+    baseUrl?: string;
+    paramsSerializer?: (params: Record<string, any>) => string;
 };
 
-const onePendingActionCase = <
-    S extends ReducerState,
-    A extends ReturnType<AsyncThunkPendingActionCreator<any, ThunkConfig>>,
->(
-    state: S,
-    action: A,
-    callback?: (state: S, action: A) => void,
-) => {
-    // remove all other request ids from state
-    state.requestIds[getActionType(action.type)] = [action.meta.requestId];
-    state.loading = 'loading';
-    state.errors[getActionType(action.type)] = '';
-    callback && callback(state, action);
-};
+type AxiosBaseQueryExtraOptions = { disableRefreshToken?: boolean; [k: string]: any };
 
-const everyPendingActionCase = <
-    S extends ReducerState,
-    A extends ReturnType<AsyncThunkPendingActionCreator<any, ThunkConfig>>,
->(
-    state: S,
-    action: A,
-    callback?: (state: S, action: A) => void,
-) => {
-    // push to existing request ids in state
-    state.requestIds[getActionType(action.type)] = state.requestIds[getActionType(action.type)] || [];
-    state.requestIds[getActionType(action.type)].push(action.meta.requestId);
-    state.loading = 'loading';
-    state.errors[getActionType(action.type)] = '';
-    callback && callback(state, action);
-};
+export const axiosBaseQueryWithRefreshToken = ({
+    baseUrl = API_URL,
+    paramsSerializer,
+}: AxiosBaseQueryArgs = {}): BaseQueryFn<
+    | string
+    | {
+          url: string;
+          method?: AxiosRequestConfig['method'];
+          params?: Record<string, any>;
+          body?: any;
+          data?: any;
+          headers?: Record<string, any>;
+      },
+    unknown,
+    FetchBaseQueryError,
+    AxiosBaseQueryExtraOptions,
+    FetchBaseQueryMeta
+> => {
+    let isRefreshing = false;
+    let refreshQueue: Array<{ resolve: () => void; reject: () => void }> = [];
 
-const fulfilledActionCase = <
-    S extends ReducerState,
-    A extends ReturnType<AsyncThunkFulfilledActionCreator<any, any, ThunkConfig>>,
->(
-    state: S,
-    action: A,
-    callback?: (state: S, action: A) => void,
-) => {
-    const requestIds = state.requestIds[getActionType(action.type)] || [];
-    if (requestIds.includes(action.meta.requestId)) {
-        const allRequestIds = Object.values(state.requestIds).reduce((prev, cur) => {
-            prev.push(...cur);
-            return prev;
-        }, []);
+    const axiosInstance = axios.create({
+        baseURL: baseUrl,
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            Accept: 'application/json',
+        },
+        paramsSerializer: paramsSerializer ? { serialize: paramsSerializer } : undefined,
+        withCredentials: false,
+    });
 
-        state.loading = allRequestIds.length > 1 ? state.loading : 'loaded';
-        callback && callback(state, action);
-    }
+    const processRefreshQueue = (isSuccess: boolean) => {
+        refreshQueue.forEach((item) => {
+            isSuccess ? item.resolve() : item.reject();
+        });
+        refreshQueue = [];
+    };
 
-    state.requestIds[getActionType(action.type)] = requestIds.filter((rid) => rid !== action.meta.requestId);
-};
-
-const rejectedActionCase = <
-    S extends ReducerState,
-    A extends ReturnType<AsyncThunkRejectedActionCreator<any, ThunkConfig>>,
->(
-    state: S,
-    action: A,
-    callback?: (state: S, action: A) => void,
-) => {
-    const requestIds = state.requestIds[getActionType(action.type)] || [];
-    if (requestIds.includes(action.meta.requestId)) {
-        const allRequestIds = Object.values(state.requestIds).reduce((prev, cur) => {
-            prev.push(...cur);
-            return prev;
-        }, []);
-
-        state.errors[getActionType(action.type)] = action.payload?.message || '';
-        state.loading = allRequestIds.length > 1 ? state.loading : 'loaded';
-        callback && callback(state, action);
-    }
-
-    state.requestIds[getActionType(action.type)] = requestIds.filter((rid) => rid !== action.meta.requestId);
-};
-
-export const takeOne = {
-    pendingActionCase: onePendingActionCase,
-    fulfilledActionCase,
-    rejectedActionCase,
-};
-
-export const takeEvery = {
-    pendingActionCase: everyPendingActionCase,
-    fulfilledActionCase,
-    rejectedActionCase,
-};
-
-const afterList = <
-    Entity extends { id: string },
-    Store extends { data: Paginated<Entity> },
-    Action extends PayloadAction<Paginated<Entity>>,
->(
-    store: Store,
-    action: Action,
-) => {
-    store.data = action.payload;
-};
-
-const afterGet = <
-    Entity extends { id: string } | null,
-    Store extends { current: Entity },
-    Action extends PayloadAction<Entity>,
->(
-    store: Store,
-    action: Action,
-) => {
-    store.current = action.payload;
-};
-
-const afterCreate = <
-    Entity extends { id: string },
-    Store extends { current: Entity | null },
-    Action extends PayloadAction<Entity>,
->(
-    store: Store,
-    action: Action,
-) => {
-    store.current = action.payload;
-};
-
-const afterUpdate = <
-    Entity extends { id: string },
-    Store extends { current?: Entity | null; data?: Paginated<Entity> },
-    Action extends PayloadAction<Entity>,
->(
-    store: Store,
-    action: Action,
-) => {
-    const entity = action.payload;
-    if (store.current && store.current.id === entity.id) {
-        store.current = entity;
-    }
-    const index = store.data?.list.findIndex(({ id }) => id === entity.id);
-    if (store.data && index !== -1) {
-        store.data.list[index as number] = entity;
-    }
-};
-
-const afterDelete = <
-    Store extends { current?: any | null; data?: Paginated<any> },
-    Action extends PayloadAction<any, any, { arg: string }>,
->(
-    store: Store,
-    action: Action,
-) => {
-    const deletedId = action.meta.arg;
-    if (store.current && store.current.id === deletedId) {
-        store.current = null;
-    }
-    const filtered = store.data?.list.filter(({ id }) => id !== deletedId);
-
-    if (store.data && filtered && store.data.list.length > filtered.length) {
-        store.data.list = filtered;
-        store.data.totalCount = (store.data.totalCount as number) - 1;
-    }
-};
-
-export const crudHelpers = {
-    afterList,
-    afterGet,
-    afterCreate,
-    afterUpdate,
-    afterDelete,
-};
-
-export const createLoadingSelector = (stateSelector: (store: StoreState) => ReducerState) => {
-    const selector = createSelector(
-        [stateSelector, (state: any, action?: AsyncThunk<any, any, any>) => action],
-        (state, action) => {
-            if (action) {
-                return state.requestIds[getActionType(action.typePrefix)]?.length > 0;
+    const doRequest = async (
+        args:
+            | string
+            | {
+                  url: string;
+                  method?: AxiosRequestConfig['method'];
+                  params?: Record<string, any>;
+                  body?: any;
+                  data?: any;
+                  headers?: Record<string, any>;
+              },
+    ): Promise<{
+        data?: any;
+        error?: FetchBaseQueryError;
+        meta?: FetchBaseQueryMeta;
+    }> => {
+        try {
+            const config: AxiosRequestConfig =
+                typeof args === 'string' ? ({ url: args } as AxiosRequestConfig) : ({ ...args } as AxiosRequestConfig);
+            config.method = (config.method || 'GET') as AxiosRequestConfig['method'];
+            // Normalize body -> data for axios
+            const body = (config as any).body;
+            if (body !== undefined && (config as any).data === undefined) {
+                (config as any).data = body;
+                delete (config as any).body;
             }
 
-            return state.loading === 'loading';
-        },
-    );
+            const token = UserAuthService.getToken();
+            config.headers = {
+                ...(config.headers || {}),
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            };
 
-    return (action: AsyncThunk<any, any, any>) => (state: StoreState) => selector(state, action);
+            const response: AxiosResponse = await axiosInstance.request(config);
+
+            const meta: FetchBaseQueryMeta = {
+                request: {
+                    url: response?.config?.url,
+                    method: response?.config?.method,
+                    headers: response?.config?.headers,
+                } as any,
+                response: {
+                    status: response.status,
+                    headers: response.headers,
+                    url: response.request?.responseURL,
+                } as any,
+            };
+
+            return { data: response.data, meta };
+        } catch (err) {
+            const error = err as AxiosError<any>;
+            const status = error.response?.status;
+            const meta: FetchBaseQueryMeta | undefined = error.response
+                ? {
+                      request: {
+                          url: error.config?.url,
+                          method: error.config?.method,
+                          headers: error.config?.headers,
+                      } as any,
+                      response: {
+                          status: error.response?.status,
+                          headers: error.response?.headers,
+                          url: (error.response?.request as any)?.responseURL,
+                      } as any,
+                  }
+                : undefined;
+
+            if (typeof status === 'number') {
+                return {
+                    error: {
+                        status,
+                        data: (error.response?.data as unknown) ?? { message: error.message },
+                    } as FetchBaseQueryError,
+                    meta,
+                };
+            }
+
+            return {
+                error: { status: 'FETCH_ERROR', error: error.message } as FetchBaseQueryError,
+                meta,
+            };
+        }
+    };
+
+    return async (fetchArgs, _api, extraOptions: AxiosBaseQueryExtraOptions = {}) => {
+        const disableRefreshToken = extraOptions.disableRefreshToken ?? false;
+
+        const result = await doRequest(fetchArgs);
+
+        if (!result.error || disableRefreshToken || result.error.status !== 401) {
+            return result;
+        }
+
+        // Queue for token refresh and retry
+        const delayedRequest = new Promise<void>((resolve, reject) => {
+            refreshQueue.push({ resolve, reject });
+        })
+            .then(() => doRequest(fetchArgs))
+            .catch(() => result);
+
+        if (isRefreshing) {
+            return delayedRequest;
+        }
+
+        isRefreshing = true;
+        const refreshToken = UserAuthService.getRefreshToken();
+
+        if (!refreshToken) {
+            isRefreshing = false;
+            processRefreshQueue(false);
+            await UserAuthService.logout();
+            window.location.pathname = '/';
+            return result;
+        }
+
+        try {
+            const refreshResponse = await axiosInstance.post('/auths/refresh', { refreshToken });
+            const { token: newToken, refreshToken: newRefreshToken } = refreshResponse.data || {};
+            await UserAuthService.login(newToken, newRefreshToken || null);
+
+            processRefreshQueue(true);
+            isRefreshing = false;
+            return delayedRequest;
+        } catch (e) {
+            isRefreshing = false;
+            processRefreshQueue(false);
+            await UserAuthService.logout();
+            window.location.pathname = '/';
+            return result;
+        }
+    };
+};
+
+export type FetchMeta = FetchBaseQueryMeta;
+
+export const createTagProvider = <T extends string, R, Q, E, M>(
+    tag: T,
+    opts?: { invalidateOnError?: boolean; idKey?: string },
+): ResultDescription<T, R, Q, E, M> => {
+    return (result: any, err: any) => {
+        const typedTag = null;
+        const invalidateOnError = opts?.invalidateOnError ?? false;
+        const idKey = opts?.idKey ?? 'id';
+        const resultArray = Array.isArray(result?.list) ? result.list : Array.isArray(result) ? result : [result];
+        const resultWithIds = resultArray.filter((item: any) => Boolean(item?.[idKey]));
+        const type = tag;
+
+        if (err && !invalidateOnError) {
+            return [] as any;
+        }
+        return [
+            tag,
+            ...resultWithIds.map((item: any) => ({
+                type,
+                id: item?.[idKey],
+            })),
+        ] as const;
+    };
+};
+
+export const paginatedTransformer = <R, M extends { response?: { headers?: any } }, A>(
+    rawResult: R[],
+    meta?: M,
+    _?: A,
+) => {
+    const headers = (meta as any)?.response?.headers || {};
+    const len = (rawResult as any)?.length || 1;
+    return {
+        list: rawResult,
+        page: Number(headers?.['x-current-page'] || 1),
+        pageSize: Number(headers?.['x-per-page'] || len),
+        totalPages: Number(headers?.['x-page-count'] || 1),
+        totalCount: Number(headers?.['x-total-count'] || len),
+    } as any;
+};
+
+export const prepareSortingParams = (sorting: Record<string, any> | undefined) => {
+    return sortingService.makeOrder(sorting);
+};
+
+export const prepareQueryParams = <F, S>(params?: { filters?: any; sorting?: any } | void) => {
+    if (!params) return {};
+    const { filters, sorting, ...rest } = params as any;
+    return { ...rest, ...filters, ...prepareSortingParams(sorting) };
+};
+
+export const rateLimitTransformer = <R, M extends { response?: { headers?: any } }, A>(
+    rawResult: R,
+    meta?: M,
+    _?: A,
+) => {
+    const headers = (meta as any)?.response?.headers || {};
+    return {
+        ...(rawResult as any),
+        rateLimitRemaining: Number(headers?.['x-ratelimit-remaining'] || 0),
+        rateLimitReset: headers?.['x-ratelimit-reset'],
+    } as any;
+};
+
+export const paramsSerializer = (params: Record<string, any>) => {
+    const searchParams = new URLSearchParams();
+    for (const key in params) {
+        const value = params[key];
+        if (Array.isArray(value)) {
+            value.forEach((item) => searchParams.append(`${key}[]`, item));
+        } else if (value !== undefined && value !== null) {
+            searchParams.append(key, String(value));
+        }
+    }
+    return searchParams.toString();
 };

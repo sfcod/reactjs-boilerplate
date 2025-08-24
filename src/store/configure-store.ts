@@ -1,14 +1,14 @@
 import rootReducer from './reducers';
+import { api } from './api';
 import type { createAsyncThunk } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
 
 export const store = configureStore({
     reducer: rootReducer,
-    middleware: (getDefaultMiddleware) => {
-        return getDefaultMiddleware({
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
             serializableCheck: false,
-        });
-    },
+        }).concat(api.middleware),
     devTools: process.env.NODE_ENV === 'development',
 });
 
