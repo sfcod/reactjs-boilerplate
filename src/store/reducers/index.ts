@@ -1,10 +1,8 @@
 import { combineReducers } from 'redux';
 import app from './app-reducer';
-import auth from './auth-reducer';
-import user from './user-reducer';
+import { api } from 'src/store/api';
 
 export default combineReducers({
     app,
-    auth,
-    user,
+    [api.reducerPath]: api.reducer,
 });

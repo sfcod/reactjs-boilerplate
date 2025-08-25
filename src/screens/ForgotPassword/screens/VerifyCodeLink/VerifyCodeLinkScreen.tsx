@@ -4,8 +4,7 @@ import Router from 'src/navigation/router';
 import routes from 'src/navigation/routes';
 import Button from 'src/components/ui/Button';
 import classNames from 'classnames';
-import { resetPasswordRequest, validateRecoveryCode } from 'src/store/thunks/auth-thunks.ts';
-import { useDispatch } from 'src/hooks/dispatch';
+import { useResetPasswordRequestMutation, useValidateResetPasswordCodeMutation } from 'src/store/api/auth';
 import { useQuery } from 'src/hooks/query';
 // import Logo from 'src/components/assets/images/2fa-logo.svg?react';
 import MainLayout from 'src/components/layout/MainLayout';
@@ -21,14 +20,15 @@ export enum State {
 
 const VerifyCodeLinkScreen: React.FC<Props> = () => {
     const { code, username, state: initialState = State.LOADING } = useQuery();
-    const dispatch = useDispatch();
+    const [resetPasswordRequest] = useResetPasswordRequestMutation();
+    const [validateRecoveryCode] = useValidateResetPasswordCodeMutation();
     const navigate = useNavigate();
     const [state, setState] = useState(Number(initialState) || State.LOADING);
 
     const onResend = useCallback(() => {
         if (!username) return;
         setState(State.LOADING);
-        dispatch(resetPasswordRequest({ username }))
+        resetPasswordRequest({ username })
             .unwrap()
             .then(() => {
                 setState(State.RESEND_SUCCESS);
@@ -48,7 +48,7 @@ const VerifyCodeLinkScreen: React.FC<Props> = () => {
         }
 
         setState(State.LOADING);
-        dispatch(validateRecoveryCode({ code }))
+        validateRecoveryCode({ code })
             .unwrap()
             .then(() => navigate(Router.generate(routes.PROFILE), { state: { setup: true } }))
             .catch(() => setState(State.EXPIRED));

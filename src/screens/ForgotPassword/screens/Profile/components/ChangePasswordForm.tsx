@@ -4,12 +4,11 @@ import classNames from 'classnames';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { GlobalError } from 'src/components/react-hook-form/utils/make-form-errors';
 import { withErrors } from 'src/components/react-hook-form/utils/make-form-errors';
-import { useDispatch } from 'src/hooks/dispatch';
 import FormError from 'src/components/react-hook-form/FormError';
 import { useNavigate } from 'react-router-dom';
 import Router from 'src/navigation/router';
 import routes from 'src/navigation/routes';
-import { updatePassword } from 'src/store/thunks/auth-thunks';
+import { useUpdatePasswordMutation } from 'src/store/api/auth';
 import type { ResetPasswordFormData } from 'src/types/auth';
 import { changePasswordSchema } from '../schema/change-password';
 import { toast } from 'react-toastify';
@@ -22,7 +21,7 @@ interface VerifyFormProps {
 }
 
 const ChangePasswordForm: React.FunctionComponent<VerifyFormProps> = ({}: VerifyFormProps) => {
-    const dispatch = useDispatch();
+    const [updatePassword] = useUpdatePasswordMutation();
     const navigate = useNavigate();
 
     const {
@@ -35,7 +34,7 @@ const ChangePasswordForm: React.FunctionComponent<VerifyFormProps> = ({}: Verify
     });
 
     const onSubmit = async (data: ResetPasswordFormData) => {
-        const res = await withErrors<ResetPasswordFormData>(dispatch(updatePassword(data)).unwrap(), setError);
+        const res = await withErrors<ResetPasswordFormData>(updatePassword(data).unwrap(), setError);
 
         if (res !== false) {
             navigate(Router.generate(routes.HOME));

@@ -9,8 +9,7 @@ import Router from 'src/navigation/router';
 import routes from 'src/navigation/routes';
 import SummaryError from 'src/components/react-hook-form/SummaryError';
 import { loginSchema } from '../schema/login';
-import { useDispatch } from 'src/hooks/dispatch';
-import { login } from 'src/store/thunks/auth-thunks';
+import { useLoginMutation } from 'src/store/api/auth';
 import FieldPassword from 'src/components/react-hook-form/fields/FieldPassword';
 import { Form } from 'react-bootstrap';
 import Button from 'src/components/ui/Button';
@@ -24,7 +23,7 @@ interface Props {
 }
 
 const LoginForm = ({ onSuccess }: Props) => {
-    const dispatch = useDispatch();
+    const [login] = useLoginMutation();
     const {
         control,
         handleSubmit,
@@ -35,7 +34,7 @@ const LoginForm = ({ onSuccess }: Props) => {
     });
 
     const onSubmit = async (data: LoginFormData) => {
-        const res = await withErrors<LoginFormData>(dispatch(login(data)).unwrap(), setError);
+        const res = await withErrors<LoginFormData>(login(data).unwrap(), setError);
         if (res !== false) {
             onSuccess && onSuccess();
         }
