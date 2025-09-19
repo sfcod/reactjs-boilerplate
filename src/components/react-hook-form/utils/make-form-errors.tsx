@@ -1,5 +1,5 @@
 import isArray from 'lodash/isArray';
-import type { ErrorOption, FieldErrors, FieldValues } from 'react-hook-form';
+import type { FieldErrors, FieldValues, UseFormSetError } from 'react-hook-form';
 import type { FieldPath } from 'react-hook-form';
 
 export type GlobalError = FieldErrors<{ _error: string }>;
@@ -74,16 +74,16 @@ export function makeFormErrors<T extends FieldValues>(
     return result;
 }
 
-export function withErrors<T extends FieldValues>(
-    promise: Promise<any>,
-    setError: (name: FieldPath<T>, error: ErrorOption) => void,
-): Promise<any> {
-    return promise.catch((errors: FormErrors<T>) => {
-        if (errors instanceof Array) {
-            errors.forEach((item) => setError(item.field, item.error));
+export function withErrors<T extends FieldValues, D = any>(
+    promise: Promise<D>,
+    setError: UseFormSetError<T>,
+): Promise<D> {
+    return promise.catch((error: FormErrors<T> | any) => {
+        if (error?.data?.message instanceof Array) {
+            makeFormErrorsFromResponse(error.data).forEach((item) => setError(item.field as any, item.error));
         }
 
-        return false;
+        return Promise.reject(error);
     });
 }
 
