@@ -7,17 +7,18 @@ import Content from '../../../../components/layout/main/Content';
 import userStatus from 'src/enumerables/user-status';
 import type { UserFormData } from '../../components/UserForm';
 import UserForm from '../../components/UserForm';
-import type { AppDispatch } from 'src/store/configure-store';
-import { createUser } from 'src/store/thunks/user-thunks';
-
-interface Query {
-    clinicId?: string;
-}
+import { useCreateUserMutation } from 'src/store/api/users';
+import type { SelectableItem } from 'src/enumerables/enumerable.abstract';
 
 interface Props {}
 
 const CreateScreen: React.FunctionComponent<Props> = () => {
-    const handleSubmit = (data: UserFormData, dispatch: AppDispatch) => dispatch(createUser({ data })).unwrap();
+    const [createUser] = useCreateUserMutation();
+    const handleSubmit = (data: UserFormData) => {
+        const status = (data?.status as SelectableItem)?.value ?? data.status;
+        const payload = { ...data, status } as any;
+        return createUser(payload).unwrap();
+    };
 
     const defaultValues = useMemo<Partial<UserFormData>>(() => {
         return {

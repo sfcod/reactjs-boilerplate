@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import textFilter from 'src/components/react-table/filters/text-filter';
 import type { Column } from 'src/components/react-table/Grid';
 import Grid from 'src/components/react-table/Grid';
@@ -17,13 +17,13 @@ import classNames from 'classnames';
 import routes from 'src/navigation/routes';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router';
+import { useListUsersQuery } from 'src/store/api/users';
+import { useState } from 'react';
 
 interface Props {
     title?: ReactNode | string;
     columns?: Column<User>[];
     actionsColumn?: Column<User>;
-    data: Paginated<User, PaginatedBaseMeta>;
-    getData: (params: QueryParams) => void;
 }
 
 const defaultColumns: Column<User>[] = [
@@ -59,10 +59,14 @@ const defaultColumns: Column<User>[] = [
     },
 ];
 
-const UsersGrid: React.FC<Props> = ({ columns, actionsColumn, data, getData, title }: Props) => {
+const UsersGrid: React.FC<Props> = ({ columns, actionsColumn }: Props) => {
+    const [queryParams, setQueryParams] = useState<QueryParams>({ page: 1, limit: 10 });
+    const { data } = useListUsersQuery(queryParams);
+
     const resultColumns = useMemo<Column<User>[]>(() => {
-        return [...(columns || defaultColumns)];
-    }, [columns]);
+        const base = columns ? [...columns] : [...defaultColumns];
+        return actionsColumn ? [...base, actionsColumn] : base;
+    }, [columns, actionsColumn]);
 
     const renderTitle = useCallback(
         () => (
@@ -75,16 +79,24 @@ const UsersGrid: React.FC<Props> = ({ columns, actionsColumn, data, getData, tit
         [],
     );
 
-    if (actionsColumn) {
-        resultColumns.push(actionsColumn);
-    }
+    const handleGetData = useCallback((params: QueryParams) => {
+        setQueryParams((prev) => {
+            const hasChanged =
+                prev.page !== params.page ||
+                prev.limit !== params.limit ||
+                JSON.stringify(prev.filters) !== JSON.stringify(params.filters) ||
+                JSON.stringify(prev.sorting) !== JSON.stringify(params.sorting);
+
+            return hasChanged ? params : prev;
+        });
+    }, []);
 
     return (
         <Grid<User>
             columns={resultColumns}
             data={data}
             title={renderTitle()}
-            getData={getData}
+            getData={handleGetData}
             defaultSorting={{ updatedAt: 'DESC' }}
             pageSize={10}
         />

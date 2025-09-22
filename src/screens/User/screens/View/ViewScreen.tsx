@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router';
-import { useSelector } from 'react-redux';
 import MainLayout from '../../../../components/layout/MainLayout';
 import ContentHeader from '../../../../components/layout/main/ContentHeader';
 import Router from '../../../../navigation/router';
@@ -9,22 +8,14 @@ import Content from '../../../../components/layout/main/Content';
 import classNames from 'classnames';
 import Actions from './components/Actions';
 import Loader from '../../../../components/ui/Loader';
-import { userCurrentSelector, usersLoadingSelector } from 'src/store/selectors/user-selectors';
 import UserInfo from './components/UserInfo';
-import { getUser } from 'src/store/thunks/user-thunks';
-import { useDispatch } from 'src/hooks/dispatch';
+import { useGetUserQuery } from 'src/store/api/users';
 
 interface Props {}
 
 const ViewScreen: React.FunctionComponent<Props> = () => {
     const { id } = useParams<'id'>();
-    const dispatch = useDispatch();
-    const user = useSelector(userCurrentSelector);
-    const loading = useSelector(usersLoadingSelector);
-
-    useEffect(() => {
-        id && dispatch(getUser({ id }));
-    }, [id]);
+    const { data: user, isLoading: loading } = useGetUserQuery(id as string, { skip: !id });
 
     return (
         <MainLayout>
@@ -47,7 +38,7 @@ const ViewScreen: React.FunctionComponent<Props> = () => {
                     </div>
                 )}
             </Content>
-            {loading && user?.id !== id && <Loader />}
+            {loading && <Loader />}
         </MainLayout>
     );
 };

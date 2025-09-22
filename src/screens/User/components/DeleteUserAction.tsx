@@ -1,30 +1,27 @@
 import type { PropsWithChildren } from 'react';
 import React, { useCallback, useState } from 'react';
 import { Modal } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { usersLoadingSelector } from 'src/store/selectors/user-selectors';
-import { deleteUser } from 'src/store/thunks/user-thunks';
+import { useDeleteUserMutation } from 'src/store/api/users';
 import Button from 'src/components/ui/Button';
 import { toast } from 'react-toastify';
 import type { User } from 'src/types/user';
-import { useDispatch } from 'src/hooks/dispatch';
 
 interface Props {
     user: User;
     successCallback?: () => void;
 }
 
-const DeleteUserAction: React.FunctionComponent<PropsWithChildren<Props>> = ({ user, children, successCallback }) => {
-    const dispatch = useDispatch();
-    const loading = useSelector(usersLoadingSelector);
+const DeleteUserAction: React.FunctionComponent<PropsWithChildren<Props>> = ({ user, children }) => {
+    const [deleteUser] = useDeleteUserMutation();
+    const loading = !!user;
     const [show, setShow] = useState<boolean>(false);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleDelete = useCallback(async () => {
         try {
-            await dispatch(deleteUser({ id: user.id })).unwrap();
+            await deleteUser(user.id).unwrap();
             toast.success('User was removed');
         } catch (e) {
             toast.error('Something went wrong');
