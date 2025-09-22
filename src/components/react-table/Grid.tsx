@@ -18,7 +18,6 @@ import Pagination from './Pagination';
 import type { QueryParams, SortDirection } from 'src/types/grid';
 import styles from './assets/grid.module.scss';
 import textFilter from './filters/text-filter';
-import useMemoCompare from './hooks/memo-compare';
 import GridInfo from './GridInfo';
 import { faSortAlphaUp, faSortAlphaDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -44,7 +43,7 @@ export interface Props<T extends Record<any, any>> {
     title?: ReactNode | string;
     scrollableByXAxis?: boolean;
     columns: Column<T>[];
-    data: Paginated<T, PaginatedBaseMeta>;
+    data?: Paginated<T, PaginatedBaseMeta>;
     getData: (params: QueryParams) => void;
     className?: string;
     defaultSorting?: Partial<{ [x in keyof T]: SortDirection }>;
@@ -57,7 +56,11 @@ export interface Props<T extends Record<any, any>> {
 function Grid<T extends Record<any, any>>(props: Props<T>): ReactElement {
     const {
         columns,
-        data,
+        data = {
+            list: [],
+            page: 1,
+            meta: {},
+        },
         getData,
         title,
         className,
@@ -144,9 +147,7 @@ function Grid<T extends Record<any, any>>(props: Props<T>): ReactElement {
         return result;
     }, [sorting]);
 
-    const updatedAt = useMemoCompare(Date.now(), () => {
-        return data.meta?.updatedAt !== 0;
-    });
+    const updatedAt = data.meta?.updatedAt;
 
     // explicitly move to first page if some filter applied
     useEffect(() => {

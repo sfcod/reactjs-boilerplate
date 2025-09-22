@@ -11,8 +11,7 @@ import routes from 'src/navigation/routes';
 import type { RecoveryRequestFormData } from 'src/types/auth';
 import FieldInput from 'src/components/react-hook-form/fields/FieldInput';
 import { forgotPasswordSchema } from '../schema/forgor-password';
-import { resetPasswordRequest } from 'src/store/thunks/auth-thunks';
-import { useDispatch } from 'src/hooks/dispatch';
+import { useResetPasswordRequestMutation } from 'src/store/api/auth';
 import { State } from '../../VerifyCodeLink/VerifyCodeLinkScreen.tsx';
 import { Form } from 'react-bootstrap';
 import Button from 'src/components/ui/Button.tsx';
@@ -20,6 +19,7 @@ import Button from 'src/components/ui/Button.tsx';
 interface VerifyFormProps {}
 
 const ForgotPasswordForm: React.FunctionComponent<VerifyFormProps> = ({}: VerifyFormProps) => {
+    const [resetPasswordRequest] = useResetPasswordRequestMutation();
     const {
         control,
         handleSubmit,
@@ -33,9 +33,8 @@ const ForgotPasswordForm: React.FunctionComponent<VerifyFormProps> = ({}: Verify
 
     const navigate = useNavigate();
 
-    const dispatch = useDispatch();
     const onSubmit = async (data: RecoveryRequestFormData) => {
-        const res = await withErrors<RecoveryRequestFormData>(dispatch(resetPasswordRequest(data)).unwrap(), setError);
+        const res = await withErrors<RecoveryRequestFormData>(resetPasswordRequest(data).unwrap(), setError);
         // TODO: move to if condition
         navigate(
             Router.generate(routes.FORGOT_PASSWORD_VERIFY_CODE_LINK, {

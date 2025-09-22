@@ -9,8 +9,7 @@ import Router from 'src/navigation/router';
 import routes from 'src/navigation/routes';
 import SummaryError from 'src/components/react-hook-form/SummaryError';
 import { loginSchema } from '../schema/login';
-import { useDispatch } from 'src/hooks/dispatch';
-import { login } from 'src/store/thunks/auth-thunks';
+import { useLoginMutation } from 'src/store/api/auth';
 import FieldPassword from 'src/components/react-hook-form/fields/FieldPassword';
 import { Form } from 'react-bootstrap';
 import Button from 'src/components/ui/Button';
@@ -24,7 +23,7 @@ interface Props {
 }
 
 const LoginForm = ({ onSuccess }: Props) => {
-    const dispatch = useDispatch();
+    const [login] = useLoginMutation();
     const {
         control,
         handleSubmit,
@@ -35,9 +34,15 @@ const LoginForm = ({ onSuccess }: Props) => {
     });
 
     const onSubmit = async (data: LoginFormData) => {
-        const res = await withErrors<LoginFormData>(dispatch(login(data)).unwrap(), setError);
-        if (res !== false) {
-            onSuccess && onSuccess();
+        try {
+            const res = await withErrors<LoginFormData>(login(data).unwrap(), setError);
+            if (res !== false) {
+                onSuccess && onSuccess();
+            }
+        } catch (e: any) {
+            if ((e?.data?.message && typeof e?.data?.message === 'string') || !e?.data?.message) {
+                setError('root', { message: e?.data?.message });
+            }
         }
     };
 
@@ -47,7 +52,7 @@ const LoginForm = ({ onSuccess }: Props) => {
                 onSubmit={handleSubmit(onSubmit)}
                 className={classNames('w-50', 'mt-4', 'd-flex', 'flex-column', 'gap-3')}
             >
-                <SummaryError error={(errors as GlobalError)?._error?.message} />
+                <SummaryError error={errors.root?.message} />
 
                 <FieldInput
                     name={'username'}

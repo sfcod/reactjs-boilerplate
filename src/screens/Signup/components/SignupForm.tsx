@@ -6,9 +6,8 @@ import FieldPassword from 'src/components/react-hook-form/fields/FieldPassword';
 import FieldInput from 'src/components/react-hook-form/fields/FieldInput';
 import classNames from 'classnames';
 import { Form } from 'react-bootstrap';
-import { useDispatch } from 'src/hooks/dispatch';
 import { withErrors } from 'src/components/react-hook-form/utils/make-form-errors';
-import { signup } from 'src/store/thunks/auth-thunks';
+import { useSignupMutation } from 'src/store/api/auth';
 import Button from 'src/components/ui/Button';
 import type { SignUpData } from 'src/types/signup';
 import SummaryError from 'src/components/react-hook-form/SummaryError';
@@ -23,7 +22,7 @@ interface Props {
 }
 
 const SignupScreen = ({ onSuccess }: Props) => {
-    const dispatch = useDispatch();
+    const [signup] = useSignupMutation();
     const {
         control,
         handleSubmit,
@@ -34,7 +33,7 @@ const SignupScreen = ({ onSuccess }: Props) => {
     });
 
     const onSubmit = async (data: SignUpFormData) => {
-        const res = await withErrors<SignUpFormData>(dispatch(signup(data)).unwrap(), setError);
+        const res = await withErrors<SignUpFormData>(signup(data).unwrap(), setError);
         if (res !== false) {
             onSuccess && onSuccess();
         }
